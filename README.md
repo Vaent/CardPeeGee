@@ -13,7 +13,6 @@ Microsoft's C# conventions should be followed by default, unless they contradict
 - Fields representing elements which are exposed in the Unity Editor should be declared with `public` accessibility, and assigned in Unity using the Inspector.
 - Fields used to manage state should be declared `private`, with no accessors unless required for a particular purpose. Do not use a leading `_` in the field name.
 - Where both kinds of field described above are used in a script, the declarations should be in separate blocks, preceded by the comments `// component references` and `// state variables` respectively. An empty line may be used to separate the blocks.
-- If static fields are required
 - Fields should be listed alphabetically by field name, one per line, with no empty lines between declarations.
 
 ### Single-line conditionals

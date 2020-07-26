@@ -18,7 +18,7 @@ public class PreloadTitle : MonoBehaviour
 
     IEnumerator PauseThenFanfare()
     {
-        yield return new WaitForSecondsRealtime(1);
+        yield return new WaitForSecondsRealtime(0.5F);
         audioSource.PlayOneShot(fanfare);
     }
 }

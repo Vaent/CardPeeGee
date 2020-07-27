@@ -608,15 +608,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 6f88572237d551c4b8b9e2e46d0d9836, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3ce1aa3a13bb90241ba6ad35873649af, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.76, y: 0.76}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &95814546
@@ -979,15 +979,15 @@ SpriteRenderer:
   m_SortingLayerID: -733827415
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c653e7312f0ece74abb1742fd3c4f9fc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b134e5db0baddf4ab5649ae7ac5ee9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.15, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &169101862
@@ -1014,14 +1014,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 169101860}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de7396cfea14b694d840996e986bbf23, type: 3}
+  m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  handL: {fileID: 2100345797}
-  deck: {fileID: 1977669076}
-  steps: 0
-  rate: 0
-  movevector: {x: 0, y: 0, z: 0}
 --- !u!1 &183545105
 GameObject:
   m_ObjectHideFlags: 0
@@ -1552,6 +1547,133 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322646078}
   m_CullTransparentMesh: 0
+--- !u!1 &329626338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 329626339}
+  - component: {fileID: 329626340}
+  m_Layer: 0
+  m_Name: musicbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &329626339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329626338}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1950136605}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &329626340
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329626338}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &334828892
 GameObject:
   m_ObjectHideFlags: 0
@@ -1934,15 +2056,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: c882b54b79ad9ae48895f19414627799, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eaafea93371120c408edc2a248750548, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.76, y: 0.76}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &429909361
@@ -2698,15 +2820,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 60f5bd1388f5c5748993c111eb5751c7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dd42c3813a0f68840a9dd11c05305918, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.76, y: 0.76}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &706809723
@@ -2797,15 +2919,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 651e7e6df77453b4c85c8e9a6bd38115, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5c184ce1d2067ee478e495d3c29914ce, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &734093884
@@ -3176,15 +3298,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 9bfbd7329625079458bd5911021a80f3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 73c9c1b79e0985347bbb9817441254f1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 14, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &833964292
@@ -3199,7 +3321,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &834231757
 GameObject:
@@ -3292,7 +3414,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &835909092
 GameObject:
@@ -3724,17 +3846,16 @@ TextMesh:
   m_GameObject: {fileID: 955353400}
   m_Text: '
 
-    
+
 
     Click on the deck (or press the ''D'' key) to:
 
-    - deal
-    a Character card
+    - deal a Character
+    card
 
     - determine your initial HP
 
-    - deal a starting hand
-    of 5 cards'
+    - deal a starting hand of 5 cards'
   m_OffsetZ: 0
   m_CharacterSize: 0.07
   m_LineSpacing: 1
@@ -4221,15 +4342,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 62667fe04129d1d4d814aefed9a60c22, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e9b1261e371e1ec4795d44d3b3beb394, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1047018289
@@ -4467,7 +4588,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1117947542
 GameObject:
@@ -4546,7 +4667,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1117947545}
   m_OnClick:
     m_PersistentCalls:
@@ -5872,7 +5993,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1396811605
 GameObject:
@@ -6125,15 +6246,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: d184b1d98792db14ca6586b0498798a4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8c8099acf68c99f44b08f667774e49c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.76, y: 0.76}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1470722970
@@ -6224,15 +6345,15 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: af1a93ef282447a478e13485f02e64f2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6e684f17670336c4985cde2fc045bdbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1496524844
@@ -7042,7 +7163,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1694712686
 GameObject:
@@ -7397,7 +7518,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1712345381
 GameObject:
@@ -7528,18 +7649,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7490d316dfe54f4e8ade3d5dfa8ae51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deck: {fileID: 1977669076}
-  cam: {fileID: 1523728542}
-  tutobj: {fileID: 185200, guid: 15a18491bbccd534c9870f5763ad106c, type: 2}
-  pfback: {fileID: 100000, guid: b58f0426cb820414fb96c2591b43fe9d, type: 2}
-  pagenum: 0
-  camsize: 0
-  blockaction: 0
-  maintext: {fileID: 0}
-  text1: {fileID: 0}
-  text2: {fileID: 0}
-  text3: {fileID: 0}
-  text4: {fileID: 0}
 --- !u!114 &1712345388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7552,9 +7661,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49c55045dacb4694c9f5ee72c91dfeb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selected: {fileID: 0}
-  blankredcard: {fileID: 132950, guid: dec4254819888ae43892cb59f08caf2f, type: 2}
-  blockplayace: 0
 --- !u!1 &1755246938
 GameObject:
   m_ObjectHideFlags: 0
@@ -7784,7 +7890,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1782681549}
   m_OnClick:
     m_PersistentCalls:
@@ -7930,7 +8036,7 @@ SpriteRenderer:
   m_SortingLayerID: -779041781
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2c280193a21c814419275fe7a5b0a98f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d8eda628eec886c43be4909125d9095e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
@@ -7938,7 +8044,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1851390015
@@ -7953,7 +8059,7 @@ Transform:
   m_LocalScale: {x: 14, y: 10, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1853718663
 GameObject:
@@ -8630,6 +8736,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 329626339}
   - {fileID: 833964292}
   - {fileID: 1977669078}
   - {fileID: 2098409779}
@@ -8656,7 +8763,6 @@ GameObject:
   - component: {fileID: 1977669079}
   - component: {fileID: 1977669080}
   - component: {fileID: 1977669083}
-  - component: {fileID: 1977669082}
   - component: {fileID: 1977669084}
   m_Layer: 0
   m_Name: deck
@@ -8704,15 +8810,15 @@ SpriteRenderer:
   m_SortingLayerID: 29153217
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d60d3673f13f2b247bf8c06b2a6508a6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ddf856c45c92c9449a0c601f4979bbe6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1977669078
@@ -8727,7 +8833,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1977669079
 MonoBehaviour:
@@ -8741,113 +8847,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9ae6b7413848847b02debc404b24e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  packofcards:
-  - {fileID: 100000, guid: 92b3a627f0d6d0b43811fd2cf7806a09, type: 2}
-  - {fileID: 100000, guid: 6a0cd7a249fe361448e64d1fbe9cb093, type: 2}
-  - {fileID: 100000, guid: 0289b13dcc782fd4d8fcbe506b70102e, type: 2}
-  - {fileID: 100000, guid: 71c0d9dbdef1fe9449022e73660da470, type: 2}
-  - {fileID: 100000, guid: 4d5d90c3f7a9aa34a8b071fed24da5e0, type: 2}
-  - {fileID: 100000, guid: 2b417324119a90c429dc230aa0bf0a4e, type: 2}
-  - {fileID: 100000, guid: 716b477dfae30ab48b1a00e149996870, type: 2}
-  - {fileID: 100000, guid: 8a56c141b9f985248af53742f2957c11, type: 2}
-  - {fileID: 100000, guid: 16c29ceb5f6cfcf41829810c073c9fdf, type: 2}
-  - {fileID: 100000, guid: 339962bbdad195246aa52449fc0b4ff1, type: 2}
-  - {fileID: 100000, guid: 7f0767e3bbff2fd4280b5de36bd2c466, type: 2}
-  - {fileID: 100000, guid: 7c3bc6a0667549f4685f39e909c61153, type: 2}
-  - {fileID: 100000, guid: 850c0096b2f0a594cb867b2eaaf80d72, type: 2}
-  - {fileID: 100000, guid: 04b80c2f3a2228e4d878694fa6769eb7, type: 2}
-  - {fileID: 100000, guid: 6bbac2006736a7842ad2eb1c5026af80, type: 2}
-  - {fileID: 100000, guid: 4964d92e9ef39f84b88d77ea3b220c9e, type: 2}
-  - {fileID: 100000, guid: ace7910287e5b684f91c32ba69d158d2, type: 2}
-  - {fileID: 100000, guid: b9014bedc474d5d419ab133c9f43e366, type: 2}
-  - {fileID: 100000, guid: 45117087939ac5843bf725df7a608a78, type: 2}
-  - {fileID: 100000, guid: a68d5c9260c217044a38e63503ca43f2, type: 2}
-  - {fileID: 100000, guid: 99c5db96ea767694caf3beab4d697584, type: 2}
-  - {fileID: 100000, guid: b287eb264d42bdb45a1430e266ac3f40, type: 2}
-  - {fileID: 100000, guid: a457184f4162a324394c8e43e010df9b, type: 2}
-  - {fileID: 100000, guid: 8caeca4fb0443a94b9b780dea3e96397, type: 2}
-  - {fileID: 100000, guid: 4f429ccd6500d254ba04e14debd750df, type: 2}
-  - {fileID: 100000, guid: 72861c4119823bc40a1d8044e7f5c394, type: 2}
-  - {fileID: 100000, guid: fbcfa93170dd1f64daa02c23de7bb9bb, type: 2}
-  - {fileID: 100000, guid: 1fe559e8197fdee40ae19b52da4cac33, type: 2}
-  - {fileID: 100000, guid: deee20f13fa580042a7598221460b43e, type: 2}
-  - {fileID: 100000, guid: 1e226734c23f71a4286e4f8ebb581d5e, type: 2}
-  - {fileID: 100000, guid: 05c79be3d9ebfdf478637a6b37242f43, type: 2}
-  - {fileID: 100000, guid: 40ad471a75b0df54cb52dcf1cde47b67, type: 2}
-  - {fileID: 100000, guid: 3b77f91ac9f7dfc40b83ce093478515a, type: 2}
-  - {fileID: 100000, guid: 02594237d2eb9544fa488af4a1962a60, type: 2}
-  - {fileID: 100000, guid: 6188e483e90efe5498e7e123c6b80e70, type: 2}
-  - {fileID: 100000, guid: 842a7613e7b56ed40a178fc36718771e, type: 2}
-  - {fileID: 100000, guid: 0c1c8e3f764d1c14396fc2d9887b14f5, type: 2}
-  - {fileID: 100000, guid: 63b3c27820d7e254a97a2b8051db1e23, type: 2}
-  - {fileID: 100000, guid: b82960943570f184eb489a21630823eb, type: 2}
-  - {fileID: 100000, guid: c2d0fd16f64e4804bbed00e2e6a83834, type: 2}
-  - {fileID: 100000, guid: ef3d6dd21b9386945ba7b732c2c70975, type: 2}
-  - {fileID: 100000, guid: b7ce6286b1e2e104eb6a55de4d1cb213, type: 2}
-  - {fileID: 100000, guid: dc2316cea91de894b9ed8b99d23b4d48, type: 2}
-  - {fileID: 100000, guid: 7038b60cb08186c49a48ae174c2e7a38, type: 2}
-  - {fileID: 100000, guid: 5499621e3f3dbba4998270182362d7e9, type: 2}
-  - {fileID: 100000, guid: ab7e6670082d6134791c5b46b6af46d5, type: 2}
-  - {fileID: 100000, guid: 1bdc3f404d870b74688b5d3dff67d60f, type: 2}
-  - {fileID: 100000, guid: b8c66b3c79098d9429ddd32f4b965305, type: 2}
-  - {fileID: 100000, guid: fc6bf7c7f38aaa344a56055285151993, type: 2}
-  - {fileID: 100000, guid: 3741c591d85fa84489b557088b8086be, type: 2}
-  - {fileID: 100000, guid: ada1c6fcdec50b8418308ca06589ebc7, type: 2}
-  - {fileID: 100000, guid: bfa7b3cd6125b054dad8fb3c5b7eeae8, type: 2}
-  suits:
-  - club
-  - diam
-  - hear
-  - spad
-  courtstoget:
-  - club
-  - diam
-  - hear
-  - spad
-  pct: {fileID: 429909361}
-  pdt: {fileID: 706809723}
-  pht: {fileID: 95814546}
-  pst: {fileID: 1470722970}
-  et: {fileID: 1501622610}
-  et2: {fileID: 2094671280}
-  et3: {fileID: 955353400}
-  ptxt: {fileID: 1110200137}
-  hptxt: {fileID: 100000, guid: 9fe80b3993f881b4a9e9c125697529dc, type: 2}
-  blankcard: {fileID: 100000, guid: a3c26a03af6f55a418956f41ad12558a, type: 2}
-  blankredcard: {fileID: 100000, guid: a9db6cf0efa96ea4e8a12cffbbcb90f7, type: 2}
-  blanksheet: {fileID: 1851390013}
-  selectedcard: {fileID: 0}
-  charactercard: {fileID: 0}
-  agitatorcard: {fileID: 0}
-  encounterart: {fileID: 0}
-  hp: 0
-  blockaction: 0
-  activatebutton: {fileID: 1496524844}
-  playbutton: {fileID: 734093884}
-  discardbutton: {fileID: 1047018289}
-  helpmenu: {fileID: 26639124}
-  leavebutton: {fileID: 1869004397}
-  allcards: []
-  cardsinhand: []
-  cardsactive: []
-  cardsinplay: []
-  cardprops: []
-  scorecards: []
-  viccards: []
-  vicdisplay: {fileID: 1623188657}
-  vicopen: 0
-  points: 0
-  fee: 0
-  healing: 0
-  canido: 0
-  jbwarning: 0
-  fight: 0
-  heroatk: 0
-  herodl: 0
-  monhp: 0
-  monatk: 0
-  mondl: 0
-  jailors: 0
 --- !u!65 &1977669080
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8873,115 +8872,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb06fbf5406972d4ea86cf47de178653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  et: {fileID: 1501622610}
-  et2: {fileID: 2094671280}
-  et3: {fileID: 955353400}
-  tutor: {fileID: 1712345381}
-  helpmenu: {fileID: 26639124}
-  assist: {fileID: 495078490}
-  helptext: {fileID: 1193170877}
-  options: {fileID: 420557254}
-  keybindings: {fileID: 216356389}
-  victorysheet: {fileID: 1000902794}
-  leggit: {fileID: 1649448968}
-  convok: 0
-  pages: 0
---- !u!82 &1977669082
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1977669076}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &1977669083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8994,8 +8884,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b07885f1bd08bc6458039307829f8589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicbox: {fileID: 0}
-  instmb: {fileID: 134484, guid: 83f21779addde4348ad2cbf1f470469c, type: 2}
 --- !u!114 &1977669084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9008,8 +8896,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa13c0b19185414b8df1557065737e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instear: {fileID: 125478, guid: f88d909e923cbea45847f7660ad5379e, type: 2}
-  volslide: {fileID: 377643249}
 --- !u!1 &2017059771
 GameObject:
   m_ObjectHideFlags: 0
@@ -9286,7 +9172,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1950136605}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2100345795
 GameObject:
@@ -9346,15 +9232,15 @@ SpriteRenderer:
   m_SortingLayerID: -733827415
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c653e7312f0ece74abb1742fd3c4f9fc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b134e5db0baddf4ab5649ae7ac5ee9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.15, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &2100345797

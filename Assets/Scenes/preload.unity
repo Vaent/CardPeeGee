@@ -651,6 +651,7 @@ GameObject:
   - component: {fileID: 480806339}
   - component: {fileID: 480806338}
   - component: {fileID: 480806337}
+  - component: {fileID: 480806340}
   m_Layer: 5
   m_Name: play
   m_TagString: Untagged
@@ -716,13 +717,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 480806338}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1404927220}
-        m_MethodName: gamebutton
+      - m_Target: {fileID: 480806340}
+        m_MethodName: NewGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -769,6 +770,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 480806335}
   m_CullTransparentMesh: 0
+--- !u!114 &480806340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480806335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86e38889121b3c44a977cd4e65839bf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &685235705
 GameObject:
   m_ObjectHideFlags: 0

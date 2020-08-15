@@ -1,0 +1,5 @@
+Most GameObjects in a scene are created in the Unity editor and have an appropriate script attached to them.
+
+In this regard, Cards are unusual: they are instantiated as virtual (C#) objects, as this makes it easier to programatically manage the individual properties of each card, namely its suit, value and related Sprite, based on an argument to the constructor. The virtual Card creates and manages a GameObject from the Abstract Card prefab, with the GameObject having no knowledge of the `Card` script. This approach allows Cards to be handled in a more generic fashion than the original game.
+
+Additionally, different areas of the game are being decoupled from the overarching game logic in an effort to move away from the monolithic `Deal.js` script which managed most aspects of the original game. The expectation going forward is that the deck, activated cards, cards in the player's hand and so on will each be represented as a `CardZone` having sole responsibility for managing any Cards which are sent to it. The higher-lever flow of the game is thereby largely reduced to determining which Cards should be sent where, based on current state and player decisions.

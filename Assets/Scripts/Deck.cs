@@ -2,36 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Deck : MonoBehaviour, CardZone
+public class Deck : CardZone
 {
-    private List<Card> cardsInDeck;
-
     void Start()
     {
-        cardsInDeck = new List<Card>();
         Sprite[] cardFaces = Resources.LoadAll<Sprite>("Graphics/Sprites/Card Faces/Standard");
         foreach (Sprite sprite in cardFaces)
         {
-            cardsInDeck.Add(new Card(sprite));
+            new Card(sprite, this);
         }
+        GameState.Register(this);
     }
 
-    public void Accept(List<Card> cards)
+    void OnMouseDown()
     {
-        cardsInDeck.AddRange(cards);
+        GameState.Next();
     }
 
     public void DealCards(CardZone target, int count)
     {
+        Debug.Log("Deal " + count + " cards to " + target);
         target.Accept(DrawCards(count));
     }
 
-    // this method will remove `count` cards from the top of the deck and return them to the caller
+    // this method will select `count` cards from the top of the deck and return them to the caller
+    // the cards remain in the deck until registered to another CardZone
     public List<Card> DrawCards(int count)
     {
-        List<Card> drawnCards = cardsInDeck.GetRange(0, count);
-        cardsInDeck.RemoveRange(0, count);
+        List<Card> drawnCards = Cards.GetRange(0, count);
         return drawnCards;
+    }
+
+    protected override void ProcessNewCards(List<Card> cards)
+    {
+        Debug.Log("Cards were returned to the Deck: " + string.Join(" | ", cards));
+        Debug.Log("Deck now contains the following: " + string.Join(" | ", Cards));
     }
 
     public void Shuffle()

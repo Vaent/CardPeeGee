@@ -4,10 +4,21 @@ Microsoft's C# conventions should be followed by default, unless they contradict
 
 ## Field declarations
 
+- If static fields are required they may be placed at the top of the class declaration, separate from instance variables.
 - Fields representing elements which are exposed in the Unity Editor should be declared with `public` accessibility, and assigned in Unity using the Inspector.
 - Fields used to manage state should be declared `private`, with no accessors unless required for a particular purpose. Do not use a leading `_` in the field name.
 - Where both kinds of field described above are used in a script, the declarations should be in separate blocks, preceded by the comments `// component references` and `// state variables` respectively. An empty line may be used to separate the blocks.
 - Fields should be listed alphabetically by field name, one per line, with no empty lines between declarations. If some other arrangement is preferred within a particular class (for instance, certain fields are closely associated or have a unique natural ordering) use comments to clarify the reason for varying from the standard.
+
+### Accessors
+
+If required for any fields, these should be listed alphabetically in a block following the field declaration block(s), before any constructors or other methods. Consideration should be given to whether a custom method is more appropriate than an accessor; for example, `Card.Convert(int newValue)` might behave like a simple setter, but calling a `Convert` method makes the caller's intention clearer than directly setting a `convertedValue` property and reduces coupling to the `Card` class.
+
+## Constructors
+
+If required, these are listed after fields/accessors and before methods. Overloads are ordered as for methods (see below).
+
+Do not include the default constructor unless it is needed alongside overloads.
 
 ## Method declarations
 

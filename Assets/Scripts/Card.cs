@@ -16,7 +16,9 @@ public class Card
     private Suit? convertedSuit;
     private int? convertedValue;
     // initial assigned values cannot be changed
+    private readonly CardMover cardMover;
     private readonly GameObject cardObject;
+    private SpriteRenderer cardRenderer;
     private readonly Sprite face;
     private readonly string name;
     private readonly Suit suit;
@@ -36,6 +38,9 @@ public class Card
         this.value = int.Parse(filenameParts[1]);
         this.name = (filenameParts.Length > 2) ? filenameParts[2] : filenameParts[1];
         cardObject = MonoBehaviour.Instantiate(abstractCard);
+        cardMover = cardObject.GetComponent<CardMover>();
+        cardMover.RegisterController(this);
+        cardRenderer = cardObject.GetComponent<SpriteRenderer>();
 
         this.currentLocation = startingLocation;
         startingLocation.Accept(new List<Card>{this});
@@ -54,6 +59,11 @@ public class Card
         // TODO: calculate and display the convertedFace sprite
     }
 
+    public void Flip()
+    {
+        cardRenderer.sprite = (cardRenderer.sprite == face ? back : face);
+    }
+
     public void Hide()
     {
         cardObject.SetActive(false);
@@ -62,24 +72,19 @@ public class Card
     public void MoveTo(Vector2 newPosition)
     {
         cardObject.SetActive(true);
-        cardObject.GetComponent<Transform>().position = newPosition;
-        // TODO: animate movement from current position to new position
+        cardMover.GoTo(newPosition, false);
     }
 
     public void MoveToFaceDown(Vector2 newPosition)
     {
         cardObject.SetActive(true);
-        cardObject.GetComponent<Transform>().position = newPosition;
-        TurnFaceDown();
-        // TODO: animate movement from current position to new position
+        cardMover.GoTo(newPosition, cardRenderer.sprite == face);
     }
 
     public void MoveToFaceUp(Vector2 newPosition)
     {
         cardObject.SetActive(true);
-        cardObject.GetComponent<Transform>().position = newPosition;
-        TurnFaceUp();
-        // TODO: animate movement from current position to new position
+        cardMover.GoTo(newPosition, cardRenderer.sprite != face);
     }
 
     public void RegisterTo(CardZone newLocation)
@@ -126,12 +131,12 @@ public class Card
 
     public void TurnFaceDown()
     {
-        cardObject.GetComponent<SpriteRenderer>().sprite = back;
+        cardRenderer.sprite = back;
     }
 
     public void TurnFaceUp()
     {
-        cardObject.GetComponent<SpriteRenderer>().sprite = face;
+        cardRenderer.sprite = face;
         // TODO: if card has been converted, use convertedFace instead of face
         // NB the above will likely never apply here so is not a priority
     }

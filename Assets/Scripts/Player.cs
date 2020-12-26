@@ -40,10 +40,12 @@ public class Player
 
     class CharacterCard : CardZone
     {
+        private static Vector2 characterCardPosition = new Vector2(-1, 1);
+
         protected override void ProcessNewCards(List<Card> cards)
         {
             if (cards.Count != 1) throw new System.Exception("CharacterCard can only Accept a single element List<Card>");
-            // TODO: move the card's sprite to the Character Card position
+            cards[0].MoveToFaceUp(characterCardPosition);
         }
     }
 

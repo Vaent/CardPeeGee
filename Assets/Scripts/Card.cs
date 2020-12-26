@@ -54,6 +54,34 @@ public class Card
         // TODO: calculate and display the convertedFace sprite
     }
 
+    public void Hide()
+    {
+        cardObject.SetActive(false);
+    }
+
+    public void MoveTo(Vector2 newPosition)
+    {
+        cardObject.SetActive(true);
+        cardObject.GetComponent<Transform>().position = newPosition;
+        // TODO: animate movement from current position to new position
+    }
+
+    public void MoveToFaceDown(Vector2 newPosition)
+    {
+        cardObject.SetActive(true);
+        cardObject.GetComponent<Transform>().position = newPosition;
+        TurnFaceDown();
+        // TODO: animate movement from current position to new position
+    }
+
+    public void MoveToFaceUp(Vector2 newPosition)
+    {
+        cardObject.SetActive(true);
+        cardObject.GetComponent<Transform>().position = newPosition;
+        TurnFaceUp();
+        // TODO: animate movement from current position to new position
+    }
+
     public void RegisterTo(CardZone newLocation)
     {
         if (newLocation == currentLocation) return;
@@ -69,15 +97,15 @@ public class Card
         convertedValue = null;
     }
 
-    public override string ToString()
+    public string ToStringVerbose()
     {
         return name + "_" + Suit;
     }
 
-    public string ToStringVerbose()
+    public override string ToString()
     {
         string displayName;
-        if (value == convertedValue && name == value.ToString())
+        if (convertedValue == null && name == value.ToString())
         {
             displayName = name + " of ";
         }
@@ -86,7 +114,7 @@ public class Card
             displayName = name + " [" + Value + "] of ";
         }
 
-        if (suit == convertedSuit)
+        if (convertedSuit == null)
         {
             return displayName + suit + "s :: " + currentLocation;
         }

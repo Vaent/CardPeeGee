@@ -37,6 +37,11 @@ public class Deck : CardZone
     {
         Debug.Log("Cards were returned to the Deck: " + string.Join(" | ", cards));
         Debug.Log("Deck now contains the following: " + string.Join(" | ", Cards));
+        cards.ForEach(card =>
+        {
+            card.MoveToFaceDown(GetComponent<Transform>().position);
+            card.Hide();
+        });
     }
 
     public void Shuffle()

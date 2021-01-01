@@ -102,17 +102,18 @@ public class Card
         convertedValue = null;
     }
 
-    public string ToStringVerbose()
+    public override string ToString()
     {
         return name + "_" + Suit;
     }
 
-    public override string ToString()
+    public string ToStringVerbose()
     {
         string displayName;
-        if (convertedValue == null && name == value.ToString())
+        int nameParsed;
+        if (convertedValue == null && int.TryParse(name, out nameParsed) && nameParsed == value)
         {
-            displayName = name + " of ";
+            displayName = value + " of ";
         }
         else
         {

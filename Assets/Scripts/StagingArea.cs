@@ -16,12 +16,26 @@ public class StagingArea : CardZone
     {
         Debug.Log("StagingArea received the following cards: " + string.Join(" | ", cards));
         Debug.Log("StagingArea now contains the following cards: " + string.Join(" | ", Cards));
-        cards.ForEach(card =>
+        StartCoroutine(CardMovementCoroutine(cards));
+    }
+
+    private IEnumerator CardMovementCoroutine(List<Card> cards)
+    {
+        List<Card> copyList = new List<Card>(cards);
+        while (copyList.Count > 0)
         {
+            Card card = copyList[0];
             int index = this.Cards.IndexOf(card);
             Vector2 positionAdjustment = Vector2.right * index * 1.1f;
             // TODO: further adjustment when there are too many cards to fit on screen
-            card.MoveToFaceUp(transformPosition + positionAdjustment);
-        });
+            CardMover.MovementTracker tracker = new CardMover.MovementTracker();
+            card.MoveToFaceUp(transformPosition + positionAdjustment, tracker);
+            while (!tracker.completed)
+            {
+                yield return null;
+            }
+            Debug.Log("StagingArea recorded movement complete for " + card);
+            copyList.RemoveAt(0);
+        }
     }
 }

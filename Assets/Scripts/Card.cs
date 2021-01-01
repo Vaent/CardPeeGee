@@ -67,6 +67,7 @@ public class Card
     public void Hide()
     {
         cardObject.SetActive(false);
+        cardMover.KillMovement();
     }
 
     public void MoveTo(Vector2 newPosition)
@@ -83,8 +84,15 @@ public class Card
 
     public void MoveToFaceUp(Vector2 newPosition)
     {
+        MoveToFaceUp(newPosition, null);
+    }
+
+    public void MoveToFaceUp(Vector2 newPosition, CardMover.MovementTracker tracker)
+    {
+
+        Debug.Log("MoveToFaceUp");
         cardObject.SetActive(true);
-        cardMover.GoTo(newPosition, cardRenderer.sprite != face);
+        cardMover.GoTo(newPosition, (cardRenderer.sprite != face), tracker);
     }
 
     public void RegisterTo(CardZone newLocation)

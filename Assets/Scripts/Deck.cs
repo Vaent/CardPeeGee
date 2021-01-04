@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Deck : CardZone
 {
+    public StagingArea stagingArea;
+
     void Start()
     {
         Sprite[] cardFaces = Resources.LoadAll<Sprite>("Graphics/Sprites/Card Faces/Standard");
@@ -17,6 +19,11 @@ public class Deck : CardZone
     void OnMouseDown()
     {
         GameState.Next();
+    }
+
+    public void DealCards(int count)
+    {
+        DealCards(stagingArea, count);
     }
 
     public void DealCards(CardZone target, int count)

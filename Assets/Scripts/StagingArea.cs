@@ -21,10 +21,9 @@ public class StagingArea : CardZone
 
     private IEnumerator CardMovementCoroutine(List<Card> cards)
     {
-        List<Card> copyList = new List<Card>(cards);
-        while (copyList.Count > 0)
+        for (var i = 0; i < cards.Count; i++)
         {
-            Card card = copyList[0];
+            Card card = cards[i];
             int index = this.Cards.IndexOf(card);
             Vector2 positionAdjustment = Vector2.right * index * 1.1f;
             // TODO: further adjustment when there are too many cards to fit on screen
@@ -35,7 +34,9 @@ public class StagingArea : CardZone
                 yield return null;
             }
             Debug.Log("StagingArea recorded movement complete for " + card);
-            copyList.RemoveAt(0);
         }
+
+        // placeholder until tracking is expanded in base class
+        GameState.NotifyCardsReceived(this, cards);
     }
 }

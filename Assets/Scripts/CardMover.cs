@@ -55,9 +55,9 @@ public class CardMover : MonoBehaviour
 
     private IEnumerator MoveCoroutine(Vector2 targetPosition, bool rotate, CardMover.MovementTracker tracker)
     {
-        Debug.Log("Checking for null targetPosition... " + this.targetPosition);
+        // Debug.Log("Checking for null targetPosition... " + this.targetPosition);
         while (this.targetPosition != null) yield return null;
-        Debug.Log("Ready to start new movement");
+        // Debug.Log("Ready to start new movement");
 
         this.speedModifier = Vector2.Distance(cardTransform.position, targetPosition) * 2;
         this.targetPosition = targetPosition;

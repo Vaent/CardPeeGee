@@ -14,9 +14,9 @@ public class Monster
 
     public Monster(Card agitator, List<Card> props)
     {
-        attack = agitator.Value + Cards.SumValues(props, Suit.Club);
-        deal = BaseDeal + Cards.CountValues(props, Suit.Spade);
-        hp = agitator.Value + Cards.SumValues(props, Suit.Heart);
+        attack = agitator.Value + CardUtil.SumValues(props, Suit.Club);
+        deal = BaseDeal + CardUtil.CountValues(props, Suit.Spade);
+        hp = agitator.Value + CardUtil.SumValues(props, Suit.Heart);
     }
 
     public void Damage(int amount)

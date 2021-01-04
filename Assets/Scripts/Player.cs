@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Player
 {
-    private readonly CharacterCard characterCard = new GameObject().AddComponent<CharacterCard>();
-    private readonly Hand hand = new GameObject().AddComponent<Hand>();
+    private readonly CharacterCardZone characterCard = new GameObject().AddComponent<CharacterCardZone>();
+    private readonly HandZone hand = new GameObject().AddComponent<HandZone>();
     private int hp;
+
+    public CardZone CharacterCard => characterCard;
 
     public Player(Card characterCard)
     {
@@ -38,18 +40,31 @@ public class Player
         return hp > 0;
     }
 
-    class CharacterCard : CardZone
+    class CharacterCardZone : CardZone
     {
         private static Vector2 characterCardPosition = new Vector2(-1, 1);
 
         protected override void ProcessNewCards(List<Card> cards)
         {
-            if (cards.Count != 1) throw new System.Exception("CharacterCard can only Accept a single element List<Card>");
-            cards[0].MoveToFaceUp(characterCardPosition);
+            if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards);
+            StartCoroutine(CardMovementCoroutine(cards[0]));
+        }
+
+        private IEnumerator CardMovementCoroutine(Card card)
+        {
+            CardMover.MovementTracker tracker = new CardMover.MovementTracker();
+            card.MoveToFaceUp(characterCardPosition, tracker);
+            while (!tracker.completed)
+            {
+                yield return null;
+            }
+
+            // placeholder until tracking is expanded in base class
+            GameState.NotifyCardsReceived(this, Cards);
         }
     }
 
-    class Hand : CardZone
+    class HandZone : CardZone
     {
         protected override void ProcessNewCards(List<Card> cards)
         {

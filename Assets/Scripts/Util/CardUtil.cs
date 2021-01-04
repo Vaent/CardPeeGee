@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class Cards
+public class CardUtil
 {
     public static int CountValues(List<Card> cards, Suit suit)
     {

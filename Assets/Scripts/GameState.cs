@@ -19,10 +19,13 @@ public class GameState
     {
         if (instance.locked) return;
         instance.locked = true;
+        // IMPORTANT: remember to unlock at the end of NewCards() branches!
 
         if (!instance.IsPlayerAlive())
         {
-            CreatePlayer();
+            instance.player = null;
+            instance.deck.DealCards(1);
+            // CreatePlayer();
         }
         else if (instance.IsEncounterActive())
         {
@@ -30,34 +33,17 @@ public class GameState
         }
         else
         {
+            // TODO: move this to a NewCards() branch
             Debug.Log("New Encounter");
             instance.deck.DealCards(instance.stagingArea, 3);
             instance.currentEncounter = Encounter.From(instance.stagingArea.Cards);
             Debug.Log("Started a " + instance.currentEncounter + " Encounter");
         }
-
-        instance.locked = false;
     }
 
-    public static void HarmPlayer(int amount)
+    public static void NotifyCardsReceived(CardZone cardZone, List<Card> cards)
     {
-        if (instance.IsPlayerAlive()) instance.player.Damage(amount);
-    }
-
-    public static void HealPlayer(int amount)
-    {
-        if (instance.IsPlayerAlive()) instance.player.Heal(amount);
-    }
-
-    public bool IsEncounterActive()
-    {
-        // placeholder logic
-        return instance.currentEncounter != null;
-    }
-
-    public bool IsPlayerAlive()
-    {
-        return (instance.player != null) && instance.player.IsAlive();
+        instance.NewCards(cardZone, cards);
     }
 
     public static void Register(CardZone cardZone)
@@ -74,14 +60,38 @@ public class GameState
 
 // private methods
 
-    private static void CreatePlayer()
+    private bool IsEncounterActive()
     {
-        instance.deck.DealCards(instance.stagingArea, 1);
-        // TODO: keep dealing single cards until a suitable Character card is found
-        instance.player = new Player(instance.stagingArea.Cards[0]);
-        instance.deck.DealCards(instance.stagingArea, 3);
-        instance.player.Heal(15 + Cards.SumValues(instance.stagingArea.Cards));
-        instance.deck.Accept(instance.stagingArea.Cards);
+        // placeholder logic
+        return currentEncounter != null;
+    }
+
+    private bool IsPlayerAlive()
+    {
+        return (player != null) && player.IsAlive();
+    }
+
+    private void NewCards(CardZone cardZone, List<Card> cards)
+    {
+        if (cardZone.Equals(stagingArea) && player == null)
+        {
+            if (stagingArea.Cards.Count != 1)
+            {
+                throw new System.Exception("Incorrect number of cards dealt for new player creation: " + stagingArea.Cards);
+            }
+            player = new Player(cards[0]);
+            // TODO: keep dealing single cards until a suitable Character card is found
+        }
+        else if (cardZone.Equals(player.CharacterCard))
+        {
+            deck.DealCards(3);
+        }
+        else if (cardZone.Equals(stagingArea) && !player.IsAlive())
+        {
+            player.Heal(15 + CardUtil.SumValues(cards));
+            deck.Accept(stagingArea.Cards);
+            locked = false;
+        }
         // TODO: deal the Player's starting hand
     }
 }

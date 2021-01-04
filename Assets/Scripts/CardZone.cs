@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/* Every part of the game area which can have cards placed in it should implement this interface
-   in a script which determines how cards are handled in that area. */
+/* Every part of the game area which can have cards placed in it
+   requires a script implementing this abstract class. */
 public abstract class CardZone : MonoBehaviour
 {
     private List<Card> cards = new List<Card>();
+    private Dictionary<Card, bool> cardsInMotion = new Dictionary<Card, bool>();
 
     public List<Card> Cards => new List<Card>(cards);
 

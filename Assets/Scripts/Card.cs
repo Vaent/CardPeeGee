@@ -18,7 +18,7 @@ public class Card
     // initial assigned values cannot be changed
     private readonly CardMover cardMover;
     private readonly GameObject cardObject;
-    private SpriteRenderer cardRenderer;
+    private readonly SpriteRenderer cardRenderer;
     private readonly Sprite face;
     private readonly string name;
     private readonly Suit suit;
@@ -43,7 +43,12 @@ public class Card
         cardRenderer = cardObject.GetComponent<SpriteRenderer>();
 
         this.currentLocation = startingLocation;
-        startingLocation.Accept(new List<Card>{this});
+    }
+
+    public void Convert(int newValue)
+    {
+        convertedValue = newValue;
+        // TODO: calculate and display the convertedFace sprite
     }
 
     // converting the card's suit also decreases its effective value by 2
@@ -51,12 +56,6 @@ public class Card
     {
         convertedSuit = newSuit;
         Convert(value - ConversionPenalty);
-    }
-
-    public void Convert(int newValue)
-    {
-        convertedValue = newValue;
-        // TODO: calculate and display the convertedFace sprite
     }
 
     public void Flip()
@@ -89,8 +88,6 @@ public class Card
 
     public void MoveToFaceUp(Vector2 newPosition, CardMover.MovementTracker tracker)
     {
-
-        Debug.Log("MoveToFaceUp");
         cardObject.SetActive(true);
         cardMover.GoTo(newPosition, (cardRenderer.sprite != face), tracker);
     }

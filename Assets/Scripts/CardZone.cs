@@ -7,15 +7,38 @@ using UnityEngine;
 public abstract class CardZone : MonoBehaviour
 {
     private List<Card> cards = new List<Card>();
-    private Dictionary<Card, bool> cardsInMotion = new Dictionary<Card, bool>();
+    protected Dictionary<Card, CardMover.MovementTracker> cardsInMotion = new Dictionary<Card, CardMover.MovementTracker>();
 
     public List<Card> Cards => new List<Card>(cards);
 
     public void Accept(List<Card> cards)
     {
         this.cards.AddRange(cards);
-        cards.ForEach(card => card.RegisterTo(this));
+        cards.ForEach(card =>
+        {
+            card.RegisterTo(this);
+            cardsInMotion.Add(card, new CardMover.MovementTracker());
+        });
         ProcessNewCards(cards);
+        StartCoroutine(ListenForMovement(cards));
+    }
+
+    private bool IsInMotion(Card card)
+    {
+        return cardsInMotion.ContainsKey(card)
+            && !(cardsInMotion[card].completed);
+    }
+
+    protected IEnumerator ListenForMovement(List<Card> cards)
+    {
+        while (cards.Exists(card => IsInMotion(card)))
+        {
+            yield return null;
+        }
+        // validate ownership in case a card was diverted while moving
+        cards.RemoveAll(card => !this.cards.Contains(card));
+        Debug.Log(this + " finished moving " + string.Join(" | ", cards));
+        if (cards.Count > 0) GameState.NotifyCardsReceived(this, cards);
     }
 
     // this method allows for custom behaviour after new cards have been registered
@@ -28,5 +51,6 @@ public abstract class CardZone : MonoBehaviour
         {
             cards.Remove(card);
         }
+        cardsInMotion.Remove(card);
     }
 }

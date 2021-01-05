@@ -4,26 +4,17 @@ using UnityEngine;
 
 public class CardMover : MonoBehaviour
 {
-    // component references
-    public Transform cardTransform;
-
-    // state variables
     private Card cardScript;
     private float speedModifier = 1;
     private bool rotate = false;
     private Vector2? targetPosition = null;
 
-    public void RegisterController(Card cardScript)
-    {
-        this.cardScript = cardScript;
-    }
-
     void Update()
     {
         if (targetPosition != null)
         {
-            cardTransform.position = Vector2.MoveTowards(cardTransform.position, (Vector2)targetPosition, Time.deltaTime * speedModifier);
-            if (targetPosition.Equals((Vector2)cardTransform.position))
+            transform.position = Vector2.MoveTowards(transform.position, (Vector2)targetPosition, Time.deltaTime * speedModifier);
+            if (targetPosition.Equals((Vector2)transform.position))
             {
                 targetPosition = null;
                 if (rotate == true)
@@ -59,12 +50,17 @@ public class CardMover : MonoBehaviour
         while (this.targetPosition != null) yield return null;
         // Debug.Log("Ready to start new movement");
 
-        this.speedModifier = Vector2.Distance(cardTransform.position, targetPosition) * 2;
+        this.speedModifier = Vector2.Distance(transform.position, targetPosition) * 2;
         this.targetPosition = targetPosition;
         this.rotate = rotate;
-        while (!targetPosition.Equals(cardTransform.position)) yield return null;
+        while (!targetPosition.Equals(transform.position)) yield return null;
         Debug.Log("Finished moving " + cardScript.ToStringVerbose());
         if (tracker != null) tracker.completed = true;
+    }
+
+    public void RegisterController(Card cardScript)
+    {
+        this.cardScript = cardScript;
     }
 
     public class MovementTracker

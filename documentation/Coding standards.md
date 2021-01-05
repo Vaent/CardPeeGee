@@ -41,6 +41,14 @@ public void MyMethod(int param1, bool param2) {}  // int,bool
 
 Any variation to the above must be justified/clarified in comments, like for field declarations.
 
+## Inner classes/enums
+
+These come at the end of the class definition, after all method declarations of the outer class.
+
+Same rules as above apply to the contents of inner classes.
+
+It's unlikely there will be so many inner classes/enums within a single outer class to require instructions as to how they must be ordered relative to each, but try to stick to the spirit of the above guidelines.
+
 ## Single-line conditionals
 
 May be used instead of a code block for simple `if` statements. Complex statements should not be forced onto a single line where expanding them in a code block would improve readability.

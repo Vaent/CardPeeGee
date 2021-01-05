@@ -8,12 +8,15 @@ public class GameState
     private static readonly GameState instance = new GameState();
 
     private Encounter currentEncounter;
+    private Phase currentPhase;
     private Deck deck;
     private bool locked;
     private Player player;
     private StagingArea stagingArea;
 
     private GameState() { }
+
+// class methods have public visibility
 
     public static void Next()
     {
@@ -23,21 +26,16 @@ public class GameState
 
         if (!instance.IsPlayerAlive())
         {
-            instance.player = null;
-            instance.deck.DealCards(1);
-            // CreatePlayer();
+            instance.StartGame();
         }
-        else if (instance.IsEncounterActive())
+        else if (instance.currentPhase == Phase.InEncounter)
         {
             instance.currentEncounter.Advance();
         }
-        else
+        else if (instance.currentPhase == Phase.NewDay)
         {
-            // TODO: move this to a NewCards() branch
             Debug.Log("New Encounter");
             instance.deck.DealCards(instance.stagingArea, 3);
-            instance.currentEncounter = Encounter.From(instance.stagingArea.Cards);
-            Debug.Log("Started a " + instance.currentEncounter + " Encounter");
         }
     }
 
@@ -58,13 +56,7 @@ public class GameState
         }
     }
 
-// private methods
-
-    private bool IsEncounterActive()
-    {
-        // placeholder logic
-        return currentEncounter != null;
-    }
+// instance methods are only visible to the class/instance
 
     private bool IsPlayerAlive()
     {
@@ -73,8 +65,50 @@ public class GameState
 
     private void NewCards(CardZone cardZone, List<Card> cards)
     {
-        if (cardZone.Equals(stagingArea) && player == null)
+        switch (currentPhase)
         {
+            case Phase.PlayerCreation:
+                NewCardsPlayerCreation(cardZone, cards);
+                break;
+            case Phase.NewDay:
+                NewCardsNewDay(cardZone, cards);
+                break;
+            case Phase.InEncounter:
+                NewCardsInEncounter(cardZone, cards);
+                break;
+            case Phase.InTown:
+                NewCardsInTown(cardZone, cards);
+                break;
+        }
+    }
+
+    private void NewCardsInEncounter(CardZone cardZone, List<Card> cards)
+    {
+        // placeholder
+    }
+
+    private void NewCardsInTown(CardZone cardZone, List<Card> cards)
+    {
+        // placeholder
+    }
+
+    private void NewCardsNewDay(CardZone cardZone, List<Card> cards)
+    {
+        instance.currentEncounter = Encounter.From(instance.stagingArea.Cards);
+        Debug.Log("Started a " + instance.currentEncounter + " Encounter");
+        currentPhase = Phase.InEncounter;
+        locked = false;
+    }
+
+    private void NewCardsPlayerCreation(CardZone cardZone, List<Card> cards)
+    {
+        Debug.Log("NCPC::" + cardZone + "::" + string.Join(" | ", cards));
+        if (player == null)
+        {
+            if (!cardZone.Equals(stagingArea))
+            {
+                throw new System.Exception("Cards moved incorrectly before new player creation");
+            }
             if (stagingArea.Cards.Count != 1)
             {
                 throw new System.Exception("Incorrect number of cards dealt for new player creation: " + stagingArea.Cards);
@@ -84,14 +118,35 @@ public class GameState
         }
         else if (cardZone.Equals(player.CharacterCard))
         {
+            // character card received, deal cards for HP
             deck.DealCards(3);
         }
         else if (cardZone.Equals(stagingArea) && !player.IsAlive())
         {
+            // player exists but not alive => HP time
             player.Heal(15 + CardUtil.SumValues(cards));
             deck.Accept(stagingArea.Cards);
+            // the below should happen after hand creation when that is implemented
+            currentPhase = Phase.NewDay;
             locked = false;
         }
         // TODO: deal the Player's starting hand
+    }
+
+    private void StartGame()
+    {
+        currentPhase = Phase.PlayerCreation;
+        player = null;
+        deck.DealCards(1);
+    }
+
+// GameState.Phase is managed internally through the currentPhase field
+
+    private enum Phase
+    {
+        PlayerCreation,
+        NewDay,
+        InEncounter,
+        InTown
     }
 }

@@ -9,14 +9,7 @@ public class StagingArea : CardZone
     void Start()
     {
         GameState.Register(this);
-        transformPosition = GetComponent<Transform>().position;
-    }
-
-    protected override void ProcessNewCards(List<Card> cards)
-    {
-        Debug.Log("StagingArea received the following cards: " + string.Join(" | ", cards));
-        Debug.Log("StagingArea now contains the following cards: " + string.Join(" | ", Cards));
-        StartCoroutine(CardMovementCoroutine(cards));
+        transformPosition = this.transform.position;
     }
 
     private IEnumerator CardMovementCoroutine(List<Card> cards)
@@ -27,7 +20,7 @@ public class StagingArea : CardZone
             int index = this.Cards.IndexOf(card);
             Vector2 positionAdjustment = Vector2.right * index * 1.1f;
             // TODO: further adjustment when there are too many cards to fit on screen
-            CardMover.MovementTracker tracker = new CardMover.MovementTracker();
+            CardMover.MovementTracker tracker = cardsInMotion[card];
             card.MoveToFaceUp(transformPosition + positionAdjustment, tracker);
             while (!tracker.completed)
             {
@@ -35,8 +28,12 @@ public class StagingArea : CardZone
             }
             Debug.Log("StagingArea recorded movement complete for " + card);
         }
+    }
 
-        // placeholder until tracking is expanded in base class
-        GameState.NotifyCardsReceived(this, cards);
+    protected override void ProcessNewCards(List<Card> cards)
+    {
+        Debug.Log("StagingArea received the following cards: " + string.Join(" | ", cards));
+        Debug.Log("StagingArea now contains the following cards: " + string.Join(" | ", Cards));
+        StartCoroutine(CardMovementCoroutine(cards));
     }
 }

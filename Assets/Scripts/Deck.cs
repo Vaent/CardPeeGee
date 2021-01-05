@@ -8,11 +8,7 @@ public class Deck : CardZone
 
     void Start()
     {
-        Sprite[] cardFaces = Resources.LoadAll<Sprite>("Graphics/Sprites/Card Faces/Standard");
-        foreach (Sprite sprite in cardFaces)
-        {
-            new Card(sprite, this);
-        }
+        CardUtil.NewPack(this);
         GameState.Register(this);
     }
 
@@ -40,13 +36,20 @@ public class Deck : CardZone
         return drawnCards;
     }
 
+    new protected IEnumerator ListenForMovement(List<Card> cards)
+    {
+        // cards are silently returned to the deck
+        cardsInMotion.Clear();
+        return null;
+    }
+
     protected override void ProcessNewCards(List<Card> cards)
     {
         Debug.Log("Cards were returned to the Deck: " + string.Join(" | ", cards));
         Debug.Log("Deck now contains the following: " + string.Join(" | ", Cards));
         cards.ForEach(card =>
         {
-            card.MoveToFaceDown(GetComponent<Transform>().position);
+            card.MoveToFaceDown(this.transform.position);
             card.Hide();
         });
     }

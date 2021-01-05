@@ -47,20 +47,8 @@ public class Player
         protected override void ProcessNewCards(List<Card> cards)
         {
             if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards);
-            StartCoroutine(CardMovementCoroutine(cards[0]));
-        }
-
-        private IEnumerator CardMovementCoroutine(Card card)
-        {
-            CardMover.MovementTracker tracker = new CardMover.MovementTracker();
-            card.MoveToFaceUp(characterCardPosition, tracker);
-            while (!tracker.completed)
-            {
-                yield return null;
-            }
-
-            // placeholder until tracking is expanded in base class
-            GameState.NotifyCardsReceived(this, Cards);
+            CardMover.MovementTracker tracker = cardsInMotion[cards[0]];
+            cards[0].MoveToFaceUp(characterCardPosition, tracker);
         }
     }
 

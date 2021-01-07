@@ -5,6 +5,18 @@ public class CardUtil
 {
     private static readonly Sprite[] cardFaces = Resources.LoadAll<Sprite>("Graphics/Sprites/Card Faces/Standard");
 
+    public static int Compare(Card a, Card b)
+    {
+        if (a.Suit == b.Suit)
+        {
+            return a.Value - b.Value;
+        }
+        else
+        {
+            return a.Suit - b.Suit;
+        }
+    }
+
     public static int CountValues(List<Card> cards, Suit suit)
     {
         if (cards == null || cards.Count == 0) return 0;
@@ -20,6 +32,11 @@ public class CardUtil
             pack.Add(new Card(sprite, startingLocation));
         }
         startingLocation.Accept(pack);
+    }
+
+    public static void Sort(List<Card> cards)
+    {
+        cards.Sort(Compare);
     }
 
     public static int SumValues(List<Card> cards)

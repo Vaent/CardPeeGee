@@ -1,3 +1,4 @@
+using ExtensionMethods;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class Player
     private int hp;
 
     public CardZone CharacterCard => characterCard;
+    public CardZone Hand => hand;
 
     public Player(Card characterCard)
     {
@@ -46,7 +48,7 @@ public class Player
 
         protected override void ProcessNewCards(List<Card> cards)
         {
-            if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards);
+            if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
             CardMover.MovementTracker tracker = cardsInMotion[cards[0]];
             cards[0].MoveToFaceUp(characterCardPosition, tracker);
         }
@@ -54,10 +56,35 @@ public class Player
 
     class HandZone : CardZone
     {
+        private static Vector2 handPosition = new Vector2(0, -3.8f);
+        private static HandObject leftHand;
+        private static HandObject rightHand;
+
+        void Start()
+        {
+            leftHand = GameObject.Find("LeftHand").GetComponent<HandObject>();
+            rightHand = GameObject.Find("RightHand").GetComponent<HandObject>();
+        }
+
         protected override void ProcessNewCards(List<Card> cards)
         {
-            // TODO: determine the order of all cards now in the Hand
-            // TODO: reposition all cards' sprites ; new cards move to the Hand
+            Debug.Log("Hand received " + cards.Print());
+            var allCards = Cards;
+            CardUtil.Sort(allCards);
+            Debug.Log("Hand now contains " + allCards.Print());
+
+            Vector2 leftPosition = handPosition + Vector2.left * 0.55f * allCards.Count;
+            Vector2 rightPosition = handPosition + Vector2.right * 0.55f * allCards.Count;
+            leftHand.Reposition(leftPosition);
+            rightHand.Reposition(rightPosition);
+            // TODO: refine positioning when there are too many cards for the default width
+            for (var i = 0; i < allCards.Count; i++)
+            {
+                Card card = allCards[i];
+                Vector2 positionAdjustment = Vector2.right * (i + 0.5f) * 1.1f;
+                CardMover.MovementTracker tracker = cardsInMotion[card];
+                card.MoveToFaceUp(leftPosition + positionAdjustment, tracker);
+            }
         }
     }
 }

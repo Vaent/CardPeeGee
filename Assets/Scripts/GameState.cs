@@ -103,7 +103,6 @@ public class GameState
 
     private void NewCardsPlayerCreation(CardZone cardZone, List<Card> cards)
     {
-        Debug.Log("NCPC::" + cardZone + "::" + cards.Print());
         if (player == null)
         {
             if (!cardZone.Equals(stagingArea))
@@ -127,11 +126,17 @@ public class GameState
             // player exists but not alive => HP time
             player.Heal(15 + CardUtil.SumValues(cards));
             deck.Accept(stagingArea.Cards);
-            // the below should happen after hand creation when that is implemented
+            deck.DealCards(5);
+        }
+        else if (cardZone.Equals(stagingArea))
+        {
+            player.AddToHand(cards);
+        }
+        else if (cardZone.Equals(player.Hand))
+        {
             currentPhase = Phase.NewDay;
             locked = false;
         }
-        // TODO: deal the Player's starting hand
     }
 
     private void StartGame()

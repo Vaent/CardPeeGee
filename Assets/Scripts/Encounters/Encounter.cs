@@ -1,3 +1,4 @@
+using ExtensionMethods;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,7 @@ public abstract class Encounter
 
     protected Encounter(List<Card> cards)
     {
-        Debug.Log("Creating encounter from " + string.Join(" | ", cards));
+        Debug.Log("Creating encounter from " + cards.Print());
         agitator = cards[0];
         cards.RemoveAt(0);
         props = cards;

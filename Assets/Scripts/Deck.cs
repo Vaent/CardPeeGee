@@ -1,3 +1,4 @@
+using ExtensionMethods;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,8 +46,8 @@ public class Deck : CardZone
 
     protected override void ProcessNewCards(List<Card> cards)
     {
-        Debug.Log("Cards were returned to the Deck: " + string.Join(" | ", cards));
-        Debug.Log("Deck now contains the following: " + string.Join(" | ", Cards));
+        Debug.Log("Cards were returned to the Deck: " + cards.Print());
+        Debug.Log("Deck now contains the following: " + Cards.Print());
         cards.ForEach(card =>
         {
             card.MoveToFaceDown(this.transform.position);

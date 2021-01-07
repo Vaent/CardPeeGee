@@ -1,3 +1,4 @@
+using ExtensionMethods;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,8 +33,8 @@ public class StagingArea : CardZone
 
     protected override void ProcessNewCards(List<Card> cards)
     {
-        Debug.Log("StagingArea received the following cards: " + string.Join(" | ", cards));
-        Debug.Log("StagingArea now contains the following cards: " + string.Join(" | ", Cards));
+        Debug.Log("StagingArea received the following cards: " + cards.Print());
+        Debug.Log("StagingArea now contains the following cards: " + Cards.Print());
         StartCoroutine(CardMovementCoroutine(cards));
     }
 }

@@ -1,3 +1,4 @@
+using ExtensionMethods;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -102,7 +103,7 @@ public class GameState
 
     private void NewCardsPlayerCreation(CardZone cardZone, List<Card> cards)
     {
-        Debug.Log("NCPC::" + cardZone + "::" + string.Join(" | ", cards));
+        Debug.Log("NCPC::" + cardZone + "::" + cards.Print());
         if (player == null)
         {
             if (!cardZone.Equals(stagingArea))

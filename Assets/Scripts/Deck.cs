@@ -9,8 +9,8 @@ public class Deck : CardZone
 
     void Start()
     {
-        CardUtil.NewPack(this);
         GameState.Register(this);
+        CardUtil.NewPack(this);
     }
 
     void OnMouseDown()
@@ -29,19 +29,20 @@ public class Deck : CardZone
         target.Accept(DrawCards(count));
     }
 
-    // this method will select `count` cards from the top of the deck and return them to the caller
+    // this method will select `count` cards randomly from the deck and return them to the caller
     // the cards remain in the deck until registered to another CardZone
     public List<Card> DrawCards(int count)
     {
-        List<Card> drawnCards = Cards.GetRange(0, count);
+        List<Card> drawnCards = new List<Card>();
+        List<Card> cardsInDeck = Cards;
+        var rand = new System.Random();
+        for (var i = 0; i < count; i++)
+        {
+            var randomIndex = rand.Next(cardsInDeck.Count);
+            drawnCards.Add(cardsInDeck[randomIndex]);
+            cardsInDeck.RemoveAt(randomIndex);
+        }
         return drawnCards;
-    }
-
-    new protected IEnumerator ListenForMovement(List<Card> cards)
-    {
-        // cards are silently returned to the deck
-        cardsInMotion.Clear();
-        return null;
     }
 
     protected override void ProcessNewCards(List<Card> cards)
@@ -50,13 +51,8 @@ public class Deck : CardZone
         Debug.Log("Deck now contains the following: " + Cards.Print());
         cards.ForEach(card =>
         {
-            card.MoveToFaceDown(this.transform.position);
-            card.Hide();
+            CardMover.MovementTracker tracker = cardsInMotion[card];
+            card.MoveToFaceDown(this.transform.position, tracker);
         });
-    }
-
-    public void Shuffle()
-    {
-        // TODO: randomise the order of cardsInDeck
     }
 }

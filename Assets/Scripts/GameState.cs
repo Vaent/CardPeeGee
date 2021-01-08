@@ -105,6 +105,10 @@ public class GameState
     {
         if (player == null)
         {
+            if (cardZone.Equals(deck))
+            {
+                return;
+            }
             if (!cardZone.Equals(stagingArea))
             {
                 throw new System.Exception("Cards moved incorrectly before new player creation");
@@ -126,6 +130,9 @@ public class GameState
             // player exists but not alive => HP time
             player.Heal(15 + CardUtil.SumValues(cards));
             deck.Accept(stagingArea.Cards);
+        }
+        else if (cardZone.Equals(deck))
+        {
             deck.DealCards(5);
         }
         else if (cardZone.Equals(stagingArea))

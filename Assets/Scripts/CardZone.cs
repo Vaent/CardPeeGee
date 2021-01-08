@@ -51,7 +51,9 @@ public abstract class CardZone : MonoBehaviour
 
     public void Unregister(Card card)
     {
-        if (cards.Contains(card) && card.CurrentLocation != this)
+        if (card.CurrentLocation == this) return;
+        
+        if (cards.Contains(card))
         {
             cards.Remove(card);
         }

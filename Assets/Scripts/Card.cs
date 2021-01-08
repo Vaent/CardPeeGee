@@ -26,6 +26,7 @@ public class Card
 
     // accessors
     public CardZone CurrentLocation => currentLocation;
+    public string Name => name;
     // these use converted values if set, otherwise base values
     public Suit Suit => convertedSuit ?? suit;
     public int Value => convertedValue ?? value;
@@ -77,8 +78,13 @@ public class Card
 
     public void MoveToFaceDown(Vector2 newPosition)
     {
+        MoveToFaceDown(newPosition, null);
+    }
+
+    public void MoveToFaceDown(Vector2 newPosition, CardMover.MovementTracker tracker)
+    {
         cardObject.SetActive(true);
-        cardMover.GoTo(newPosition, cardRenderer.sprite == face);
+        cardMover.GoTo(newPosition, (cardRenderer.sprite == face), tracker);
     }
 
     public void MoveToFaceUp(Vector2 newPosition)

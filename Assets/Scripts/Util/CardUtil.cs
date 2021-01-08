@@ -9,7 +9,14 @@ public class CardUtil
     {
         if (a.Suit == b.Suit)
         {
-            return a.Value - b.Value;
+            if (a.Value == 10 && b.Value == 10)
+            {
+                return GetPriorityOfTenValuedCard(a) - GetPriorityOfTenValuedCard(b);
+            }
+            else
+            {
+                return a.Value - b.Value;
+            }
         }
         else
         {
@@ -22,6 +29,18 @@ public class CardUtil
         if (cards == null || cards.Count == 0) return 0;
         var filteredList = cards.FindAll(card => (card.Suit == suit));
         return filteredList.Count;
+    }
+
+    public static int GetPriorityOfTenValuedCard(Card card)
+    {
+        switch (card.Name)
+        {
+            case "10": return 1;
+            case "Jack": return 2;
+            case "Queen": return 3;
+            case "King": return 4;
+            default: return 0;
+        }
     }
 
     public static void NewPack(CardZone startingLocation)

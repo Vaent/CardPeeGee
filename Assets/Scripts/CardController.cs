@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardMover : MonoBehaviour
+/* Generic class for managing a card's GameObject.
+The Card class complements this class by implementing game logic. */
+public class CardController : MonoBehaviour
 {
     private Card cardScript;
     private float speedModifier = 1;
@@ -27,12 +29,18 @@ public class CardMover : MonoBehaviour
         }
     }
 
+    void OnMouseDown()
+    {
+        Debug.Log("Clicked " + cardScript);
+        cardScript.DoClicked();
+    }
+
     public void GoTo(Vector2 targetPosition, bool rotate)
     {
         GoTo(targetPosition, rotate, null);
     }
 
-    public void GoTo(Vector2 targetPosition, bool rotate, CardMover.MovementTracker tracker)
+    public void GoTo(Vector2 targetPosition, bool rotate, CardController.MovementTracker tracker)
     {
         if (this.rotate) rotate = !rotate;
         StartCoroutine(MoveCoroutine(targetPosition, rotate, tracker));
@@ -44,7 +52,7 @@ public class CardMover : MonoBehaviour
         rotate = false;
     }
 
-    private IEnumerator MoveCoroutine(Vector2 targetPosition, bool rotate, CardMover.MovementTracker tracker)
+    private IEnumerator MoveCoroutine(Vector2 targetPosition, bool rotate, CardController.MovementTracker tracker)
     {
         // Debug.Log("Checking for null targetPosition... " + this.targetPosition);
         while (this.targetPosition != null) yield return null;
@@ -61,6 +69,16 @@ public class CardMover : MonoBehaviour
     public void RegisterController(Card cardScript)
     {
         this.cardScript = cardScript;
+    }
+
+    public void Resize(float newScale)
+    {
+        transform.localScale = Vector3.one * newScale;
+    }
+
+    public void SetHeight(float newHeight)
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, newHeight);
     }
 
     public class MovementTracker

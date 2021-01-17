@@ -8,7 +8,7 @@ using UnityEngine;
 public abstract class CardZone : MonoBehaviour
 {
     private List<Card> cards = new List<Card>();
-    protected Dictionary<Card, CardMover.MovementTracker> cardsInMotion = new Dictionary<Card, CardMover.MovementTracker>();
+    protected Dictionary<Card, CardController.MovementTracker> cardsInMotion = new Dictionary<Card, CardController.MovementTracker>();
 
     public List<Card> Cards => new List<Card>(cards);
 
@@ -18,7 +18,7 @@ public abstract class CardZone : MonoBehaviour
         cards.ForEach(card =>
         {
             card.RegisterTo(this);
-            cardsInMotion.Add(card, new CardMover.MovementTracker());
+            cardsInMotion.Add(card, new CardController.MovementTracker());
         });
         ProcessNewCards(cards);
         StartCoroutine(ListenForMovement(cards));
@@ -45,14 +45,21 @@ public abstract class CardZone : MonoBehaviour
         }
     }
 
-    // this method allows for custom behaviour after new cards have been registered
-    // typically it will trigger an animation to 'move' the cards, and may perform further logic
+    /* CardZones will need to specify card selection behaviour
+    e.g. when a card in the player's hand is selected,
+    Play/Activate options become available.
+    Implementations are allowed to be empty (no action taken). */
+    public abstract void NotifySelectionByUser(Card selectedCard);
+
+    /* This method allows for custom behaviour after new cards have been registered.
+    Typically it will trigger an animation to 'move' the cards,
+    and may perform further logic. */
     protected abstract void ProcessNewCards(List<Card> cards);
 
     public void Unregister(Card card)
     {
         if (card.CurrentLocation == this) return;
-        
+
         if (cards.Contains(card))
         {
             cards.Remove(card);

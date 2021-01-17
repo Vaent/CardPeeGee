@@ -46,10 +46,12 @@ public class Player
     {
         private static Vector2 characterCardPosition = new Vector2(-1, 1);
 
+        public override void NotifySelectionByUser(Card selectedCard) { }
+
         protected override void ProcessNewCards(List<Card> cards)
         {
             if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
-            CardMover.MovementTracker tracker = cardsInMotion[cards[0]];
+            CardController.MovementTracker tracker = cardsInMotion[cards[0]];
             cards[0].MoveToFaceUp(characterCardPosition, tracker);
         }
     }
@@ -59,11 +61,33 @@ public class Player
         private static Vector2 handPosition = new Vector2(0, -3.8f);
         private static HandObject leftHand;
         private static HandObject rightHand;
+        private Card selectedCard;
 
         void Start()
         {
             leftHand = GameObject.Find("LeftHand").GetComponent<HandObject>();
             rightHand = GameObject.Find("RightHand").GetComponent<HandObject>();
+        }
+
+        public override void NotifySelectionByUser(Card selectedCard)
+        {
+            Debug.Log("Clicked on " + selectedCard + " from hand");
+            if (this.selectedCard != null)
+            {
+                this.selectedCard.ResetDisplayProperties();
+            }
+
+            if (selectedCard.Equals(this.selectedCard))
+            {
+                // reselection => deselection
+                this.selectedCard = null;
+            }
+            else
+            {
+                this.selectedCard = selectedCard;
+                selectedCard.RaiseTo(1);
+                selectedCard.Resize(1.5f);
+            }
         }
 
         protected override void ProcessNewCards(List<Card> cards)
@@ -82,7 +106,7 @@ public class Player
             {
                 Card card = allCards[i];
                 Vector2 positionAdjustment = Vector2.right * (i + 0.5f) * 1.1f;
-                CardMover.MovementTracker tracker = cardsInMotion[card];
+                CardController.MovementTracker tracker = cardsInMotion[card];
                 card.MoveToFaceUp(leftPosition + positionAdjustment, tracker);
             }
         }

@@ -45,13 +45,15 @@ public class Deck : CardZone
         return drawnCards;
     }
 
+    public override void NotifySelectionByUser(Card selectedCard) { }
+
     protected override void ProcessNewCards(List<Card> cards)
     {
         Debug.Log("Cards were returned to the Deck: " + cards.Print());
         Debug.Log("Deck now contains the following: " + Cards.Print());
         cards.ForEach(card =>
         {
-            CardMover.MovementTracker tracker = cardsInMotion[card];
+            CardController.MovementTracker tracker = cardsInMotion[card];
             card.MoveToFaceDown(this.transform.position, tracker);
         });
     }

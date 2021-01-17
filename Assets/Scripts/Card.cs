@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Class which acts as the virtual representation of a card,
+housing its individual characteristics, game logic relating to cards etc.
+The CardController class complements this class by handling the
+"physical" GameObject which is displayed. */
 public class Card
 {
     private const int ConversionPenalty = 2;
@@ -16,7 +20,7 @@ public class Card
     private Suit? convertedSuit;
     private int? convertedValue;
     // initial assigned values cannot be changed
-    private readonly CardMover cardMover;
+    private readonly CardController cardController;
     private readonly GameObject cardObject;
     private readonly SpriteRenderer cardRenderer;
     private readonly Sprite face;
@@ -39,8 +43,8 @@ public class Card
         this.value = int.Parse(filenameParts[1]);
         this.name = (filenameParts.Length > 2) ? filenameParts[2] : filenameParts[1];
         cardObject = MonoBehaviour.Instantiate(abstractCard);
-        cardMover = cardObject.GetComponent<CardMover>();
-        cardMover.RegisterController(this);
+        cardController = cardObject.GetComponent<CardController>();
+        cardController.RegisterController(this);
         cardRenderer = cardObject.GetComponent<SpriteRenderer>();
 
         this.currentLocation = startingLocation;
@@ -59,6 +63,11 @@ public class Card
         Convert(value - ConversionPenalty);
     }
 
+    public void DoClicked()
+    {
+        currentLocation.NotifySelectionByUser(this);
+    }
+
     public void Flip()
     {
         cardRenderer.sprite = (cardRenderer.sprite == face ? back : face);
@@ -67,13 +76,13 @@ public class Card
     public void Hide()
     {
         cardObject.SetActive(false);
-        cardMover.KillMovement();
+        cardController.KillMovement();
     }
 
     public void MoveTo(Vector2 newPosition)
     {
         cardObject.SetActive(true);
-        cardMover.GoTo(newPosition, false);
+        cardController.GoTo(newPosition, false);
     }
 
     public void MoveToFaceDown(Vector2 newPosition)
@@ -81,10 +90,10 @@ public class Card
         MoveToFaceDown(newPosition, null);
     }
 
-    public void MoveToFaceDown(Vector2 newPosition, CardMover.MovementTracker tracker)
+    public void MoveToFaceDown(Vector2 newPosition, CardController.MovementTracker tracker)
     {
         cardObject.SetActive(true);
-        cardMover.GoTo(newPosition, (cardRenderer.sprite == face), tracker);
+        cardController.GoTo(newPosition, (cardRenderer.sprite == face), tracker);
     }
 
     public void MoveToFaceUp(Vector2 newPosition)
@@ -92,10 +101,10 @@ public class Card
         MoveToFaceUp(newPosition, null);
     }
 
-    public void MoveToFaceUp(Vector2 newPosition, CardMover.MovementTracker tracker)
+    public void MoveToFaceUp(Vector2 newPosition, CardController.MovementTracker tracker)
     {
         cardObject.SetActive(true);
-        cardMover.GoTo(newPosition, (cardRenderer.sprite != face), tracker);
+        cardController.GoTo(newPosition, (cardRenderer.sprite != face), tracker);
     }
 
     public void RegisterTo(CardZone newLocation)
@@ -107,10 +116,29 @@ public class Card
         previousLocation.Unregister(this);
     }
 
-    public void ResetProperties()
+    public void ResetCardProperties()
     {
         convertedSuit = null;
         convertedValue = null;
+    }
+
+    public void ResetDisplayProperties()
+    {
+        RaiseTo(0);
+        Resize(1);
+    }
+
+    /* Call this function to make the card proportionally larger or smaller
+    than the default size (not the card's current size) */
+    public void Resize(float newScale)
+    {
+        cardController.Resize(newScale);
+    }
+
+    public void RaiseTo(float newHeight)
+    {
+        // N.B. camera is positioned on the negative z-axis, pointed toward zero
+        cardController.SetHeight(newHeight * -1);
     }
 
     public override string ToString()

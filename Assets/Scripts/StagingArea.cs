@@ -22,7 +22,7 @@ public class StagingArea : CardZone
             float spacingFactor = (cards.Count < 8) ? 1.1f : (7.7f / cards.Count);
             Vector2 positionAdjustment = Vector2.right * index * spacingFactor;
             // TODO: further adjustment when there are too many cards to fit on screen
-            CardMover.MovementTracker tracker = cardsInMotion[card];
+            CardController.MovementTracker tracker = cardsInMotion[card];
             card.MoveToFaceUp(transformPosition + positionAdjustment, tracker);
             while (!tracker.completed)
             {
@@ -31,6 +31,8 @@ public class StagingArea : CardZone
             Debug.Log("StagingArea recorded movement complete for " + card);
         }
     }
+
+    public override void NotifySelectionByUser(Card selectedCard) { }
 
     protected override void ProcessNewCards(List<Card> cards)
     {

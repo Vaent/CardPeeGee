@@ -24,7 +24,7 @@ public class GameState
     {
         if (instance.locked) return;
         instance.locked = true;
-        // IMPORTANT: remember to unlock at the end of NewCards() branches!
+        // IMPORTANT: remember to unlock GameState when ready for new input
 
         if (!instance.IsPlayerAlive())
         {

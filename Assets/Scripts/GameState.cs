@@ -11,6 +11,7 @@ public class GameState
     private Encounter currentEncounter;
     private Phase currentPhase;
     private Deck deck;
+    private TextMesh eventText3;
     private bool locked;
     private Player player;
     private StagingArea stagingArea;
@@ -57,6 +58,19 @@ public class GameState
         }
     }
 
+    public static void Register(Player player)
+    {
+        if (instance.IsWaitingForNewPlayer())
+        {
+            PlayerCreator.Close();
+            instance.PlayerCreated(player);
+        }
+        else
+        {
+            throw new System.Exception("Illegal call to Register(Player)");
+        }
+    }
+
 // instance methods are only visible to the class/instance
 
     private bool IsPlayerAlive()
@@ -64,12 +78,17 @@ public class GameState
         return (player != null) && player.IsAlive();
     }
 
+    private bool IsWaitingForNewPlayer()
+    {
+        return player == null && currentPhase == Phase.PlayerCreation;
+    }
+
     private void NewCards(CardZone cardZone, List<Card> cards)
     {
         switch (currentPhase)
         {
             case Phase.PlayerCreation:
-                NewCardsPlayerCreation(cardZone, cards);
+                PlayerCreator.NotifyCardsReceived(cardZone, cards);
                 break;
             case Phase.NewDay:
                 NewCardsNewDay(cardZone, cards);
@@ -101,56 +120,24 @@ public class GameState
         locked = false;
     }
 
-    private void NewCardsPlayerCreation(CardZone cardZone, List<Card> cards)
+    private void PlayerCreated(Player player)
     {
-        if (player == null)
-        {
-            if (cardZone.Equals(deck))
-            {
-                return;
-            }
-            if (!cardZone.Equals(stagingArea))
-            {
-                throw new System.Exception("Cards moved incorrectly before new player creation");
-            }
-            if (stagingArea.Cards.Count != 1)
-            {
-                throw new System.Exception("Incorrect number of cards dealt for new player creation: " + stagingArea.Cards);
-            }
-            player = new Player(cards[0]);
-            // TODO: keep dealing single cards until a suitable Character card is found
-        }
-        else if (cardZone.Equals(player.CharacterCard))
-        {
-            // character card received, deal cards for HP
-            deck.DealCards(3);
-        }
-        else if (cardZone.Equals(stagingArea) && !player.IsAlive())
-        {
-            // player exists but not alive => HP time
-            player.Heal(15 + CardUtil.SumValues(cards));
-            deck.Accept(stagingArea.Cards);
-        }
-        else if (cardZone.Equals(deck))
-        {
-            deck.DealCards(5);
-        }
-        else if (cardZone.Equals(stagingArea))
-        {
-            player.AddToHand(cards);
-        }
-        else if (cardZone.Equals(player.Hand))
-        {
-            currentPhase = Phase.NewDay;
-            locked = false;
-        }
+        this.player = player;
+        this.eventText3.text = "";
+        this.currentPhase = Phase.NewDay;
+        this.locked = false;
     }
 
     private void StartGame()
     {
         currentPhase = Phase.PlayerCreation;
         player = null;
-        deck.DealCards(1);
+        if (eventText3 == null)
+        {
+            GameObject et3 = GameObject.Find("eventtext3");
+            eventText3 = et3.GetComponent<TextMesh>();
+        }
+        PlayerCreator.Initialise(deck, stagingArea, eventText3);
     }
 
 // GameState.Phase is managed internally through the currentPhase field

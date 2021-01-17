@@ -19,7 +19,8 @@ public class StagingArea : CardZone
         {
             Card card = cards[i];
             int index = this.Cards.IndexOf(card);
-            Vector2 positionAdjustment = Vector2.right * index * 1.1f;
+            float spacingFactor = (cards.Count < 8) ? 1.1f : (7.7f / cards.Count);
+            Vector2 positionAdjustment = Vector2.right * index * spacingFactor;
             // TODO: further adjustment when there are too many cards to fit on screen
             CardMover.MovementTracker tracker = cardsInMotion[card];
             card.MoveToFaceUp(transformPosition + positionAdjustment, tracker);
@@ -35,6 +36,6 @@ public class StagingArea : CardZone
     {
         Debug.Log("StagingArea received the following cards: " + cards.Print());
         Debug.Log("StagingArea now contains the following cards: " + Cards.Print());
-        StartCoroutine(CardMovementCoroutine(cards));
+        StartCoroutine(CardMovementCoroutine(Cards));
     }
 }

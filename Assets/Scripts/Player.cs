@@ -1,6 +1,7 @@
 using ExtensionMethods;
 ﻿using System.Collections;
 using System.Collections.Generic;
+using static System.Math;
 using UnityEngine;
 
 public class Player
@@ -44,21 +45,21 @@ public class Player
 
     class CharacterCardZone : CardZone
     {
-        private static Vector2 characterCardPosition = new Vector2(-1, 1);
+        private static Vector3 characterCardPosition = new Vector3(-1, 1, 0);
 
         public override void NotifySelectionByUser(Card selectedCard) { }
 
-        protected override void ProcessNewCards(List<Card> cards)
+        protected override void ProcessNewCards(List<Card> newCards)
         {
             if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
-            CardController.MovementTracker tracker = cardsInMotion[cards[0]];
-            cards[0].MoveToFaceUp(characterCardPosition, tracker);
+            CardController.MovementTracker tracker = cardsInMotion[newCards[0]];
+            newCards[0].MoveToFaceUp(characterCardPosition, tracker);
         }
     }
 
     class HandZone : CardZone
     {
-        private static Vector2 handPosition = new Vector2(0, -3.8f);
+        private static Vector3 handPosition = new Vector3(0, -3.8f, 0);
         private static HandObject leftHand;
         private static HandObject rightHand;
         private Card selectedCard;
@@ -69,43 +70,47 @@ public class Player
             rightHand = GameObject.Find("RightHand").GetComponent<HandObject>();
         }
 
-        public override void NotifySelectionByUser(Card selectedCard)
+        public override void NotifySelectionByUser(Card newSelectedCard)
         {
-            Debug.Log("Clicked on " + selectedCard + " from hand");
+            Debug.Log("Clicked on " + newSelectedCard + " from hand");
             if (this.selectedCard != null)
             {
-                this.selectedCard.ResetDisplayProperties();
+                var allCards = Cards;
+                CardUtil.Sort(allCards);
+                var i = allCards.IndexOf(this.selectedCard);
+                this.selectedCard.RaiseTo(i * 0.01f);
+                this.selectedCard.Resize(1);
             }
 
-            if (selectedCard.Equals(this.selectedCard))
+            if (newSelectedCard.Equals(this.selectedCard))
             {
                 // reselection => deselection
                 this.selectedCard = null;
             }
             else
             {
-                this.selectedCard = selectedCard;
-                selectedCard.RaiseTo(1);
-                selectedCard.Resize(1.5f);
+                this.selectedCard = newSelectedCard;
+                newSelectedCard.RaiseTo(1);
+                newSelectedCard.Resize(1.5f);
             }
         }
 
-        protected override void ProcessNewCards(List<Card> cards)
+        protected override void ProcessNewCards(List<Card> newCards)
         {
-            Debug.Log("Hand received " + cards.Print());
+            Debug.Log("Hand received " + newCards.Print());
             var allCards = Cards;
             CardUtil.Sort(allCards);
             Debug.Log("Hand now contains " + allCards.Print());
 
-            Vector2 leftPosition = handPosition + Vector2.left * 0.55f * allCards.Count;
-            Vector2 rightPosition = handPosition + Vector2.right * 0.55f * allCards.Count;
+            float spacingFactor = (allCards.Count < 7) ? 1.1f : (6.6f / (allCards.Count));
+            Vector3 leftPosition = handPosition + Vector3.left * 0.55f * Min(6, allCards.Count);
+            Vector3 rightPosition = handPosition + Vector3.right * 0.55f * Min(6, allCards.Count);
             leftHand.Reposition(leftPosition);
             rightHand.Reposition(rightPosition);
-            // TODO: refine positioning when there are too many cards for the default width
             for (var i = 0; i < allCards.Count; i++)
             {
                 Card card = allCards[i];
-                Vector2 positionAdjustment = Vector2.right * (i + 0.5f) * 1.1f;
+                Vector3 positionAdjustment = new Vector3((i + 0.5f) * spacingFactor, 0, i * -0.01f);
                 CardController.MovementTracker tracker = cardsInMotion[card];
                 card.MoveToFaceUp(leftPosition + positionAdjustment, tracker);
             }

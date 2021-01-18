@@ -98,11 +98,22 @@ public class Card
 
     public void MoveToFaceUp(Vector2 newPosition)
     {
-        MoveToFaceUp(newPosition, null);
+        MoveToFaceUp((Vector3)newPosition, null);
     }
 
     public void MoveToFaceUp(Vector2 newPosition, CardController.MovementTracker tracker)
     {
+        MoveToFaceUp((Vector3)newPosition, tracker);
+    }
+
+    public void MoveToFaceUp(Vector3 newPosition)
+    {
+        MoveToFaceUp(newPosition, null);
+    }
+
+    public void MoveToFaceUp(Vector3 newPosition, CardController.MovementTracker tracker)
+    {
+        RaiseTo(newPosition.z);
         cardObject.SetActive(true);
         cardController.GoTo(newPosition, (cardRenderer.sprite != face), tracker);
     }

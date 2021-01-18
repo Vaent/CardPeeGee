@@ -9,14 +9,14 @@ public class CardController : MonoBehaviour
     private Card cardScript;
     private float speedModifier = 1;
     private bool rotate = false;
-    private Vector2? targetPosition = null;
+    private Vector3? targetPosition = null;
 
     void Update()
     {
         if (targetPosition != null)
         {
-            transform.position = Vector2.MoveTowards(transform.position, (Vector2)targetPosition, Time.deltaTime * speedModifier);
-            if (targetPosition.Equals((Vector2)transform.position))
+            transform.position = Vector3.MoveTowards(transform.position, (Vector3)targetPosition, Time.deltaTime * speedModifier);
+            if (targetPosition.Equals(transform.position))
             {
                 targetPosition = null;
                 if (rotate == true)
@@ -35,12 +35,12 @@ public class CardController : MonoBehaviour
         cardScript.DoClicked();
     }
 
-    public void GoTo(Vector2 targetPosition, bool rotate)
+    public void GoTo(Vector3 targetPosition, bool rotate)
     {
         GoTo(targetPosition, rotate, null);
     }
 
-    public void GoTo(Vector2 targetPosition, bool rotate, CardController.MovementTracker tracker)
+    public void GoTo(Vector3 targetPosition, bool rotate, CardController.MovementTracker tracker)
     {
         if (this.rotate) rotate = !rotate;
         StartCoroutine(MoveCoroutine(targetPosition, rotate, tracker));
@@ -52,13 +52,13 @@ public class CardController : MonoBehaviour
         rotate = false;
     }
 
-    private IEnumerator MoveCoroutine(Vector2 targetPosition, bool rotate, CardController.MovementTracker tracker)
+    private IEnumerator MoveCoroutine(Vector3 targetPosition, bool rotate, CardController.MovementTracker tracker)
     {
         // Debug.Log("Checking for null targetPosition... " + this.targetPosition);
         while (this.targetPosition != null) yield return null;
         // Debug.Log("Ready to start new movement");
 
-        this.speedModifier = Vector2.Distance(transform.position, targetPosition) * 2;
+        this.speedModifier = Vector3.Distance(transform.position, targetPosition) * 2;
         this.targetPosition = targetPosition;
         this.rotate = rotate;
         while (!targetPosition.Equals(transform.position)) yield return null;

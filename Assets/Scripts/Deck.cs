@@ -47,13 +47,14 @@ public class Deck : CardZone
 
     public override void NotifySelectionByUser(Card selectedCard) { }
 
-    protected override void ProcessNewCards(List<Card> cards)
+    protected override void ProcessNewCards(List<Card> newCards)
     {
-        Debug.Log("Cards were returned to the Deck: " + cards.Print());
+        Debug.Log("Cards were returned to the Deck: " + newCards.Print());
         Debug.Log("Deck now contains the following: " + Cards.Print());
-        cards.ForEach(card =>
+        newCards.ForEach(card =>
         {
             CardController.MovementTracker tracker = cardsInMotion[card];
+            card.ResetDisplayProperties();
             card.MoveToFaceDown(this.transform.position, tracker);
         });
     }

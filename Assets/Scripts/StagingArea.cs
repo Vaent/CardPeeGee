@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StagingArea : CardZone
 {
-    private Vector2 transformPosition;
+    private Vector3 transformPosition;
 
     void Start()
     {
@@ -13,15 +13,14 @@ public class StagingArea : CardZone
         transformPosition = this.transform.position;
     }
 
-    private IEnumerator CardMovementCoroutine(List<Card> cards)
+    private IEnumerator CardMovementCoroutine(List<Card> cardsToMove)
     {
-        for (var i = 0; i < cards.Count; i++)
+        for (var i = 0; i < cardsToMove.Count; i++)
         {
-            Card card = cards[i];
-            int index = this.Cards.IndexOf(card);
-            float spacingFactor = (cards.Count < 8) ? 1.1f : (7.7f / cards.Count);
-            Vector2 positionAdjustment = Vector2.right * index * spacingFactor;
-            // TODO: further adjustment when there are too many cards to fit on screen
+            Card card = cardsToMove[i];
+            int index = Cards.IndexOf(card);
+            float spacingFactor = (cardsToMove.Count < 8) ? 1.1f : (7.7f / cardsToMove.Count);
+            Vector3 positionAdjustment = new Vector3(index * spacingFactor, 0, index * -0.01f);
             CardController.MovementTracker tracker = cardsInMotion[card];
             card.MoveToFaceUp(transformPosition + positionAdjustment, tracker);
             while (!tracker.completed)
@@ -34,9 +33,9 @@ public class StagingArea : CardZone
 
     public override void NotifySelectionByUser(Card selectedCard) { }
 
-    protected override void ProcessNewCards(List<Card> cards)
+    protected override void ProcessNewCards(List<Card> newCards)
     {
-        Debug.Log("StagingArea received the following cards: " + cards.Print());
+        Debug.Log("StagingArea received the following cards: " + newCards.Print());
         Debug.Log("StagingArea now contains the following cards: " + Cards.Print());
         StartCoroutine(CardMovementCoroutine(Cards));
     }

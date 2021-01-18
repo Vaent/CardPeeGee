@@ -12,16 +12,16 @@ public abstract class CardZone : MonoBehaviour
 
     public List<Card> Cards => new List<Card>(cards);
 
-    public void Accept(List<Card> cards)
+    public void Accept(List<Card> newCards)
     {
-        this.cards.AddRange(cards);
-        cards.ForEach(card =>
+        this.cards.AddRange(newCards);
+        newCards.ForEach(card =>
         {
             card.RegisterTo(this);
             cardsInMotion.Add(card, new CardController.MovementTracker());
         });
-        ProcessNewCards(cards);
-        StartCoroutine(ListenForMovement(cards));
+        ProcessNewCards(newCards);
+        StartCoroutine(ListenForMovement(newCards));
     }
 
     protected bool IsInMotion(Card card)
@@ -30,18 +30,18 @@ public abstract class CardZone : MonoBehaviour
             && !(cardsInMotion[card].completed);
     }
 
-    protected IEnumerator ListenForMovement(List<Card> cards)
+    protected IEnumerator ListenForMovement(List<Card> movingCards)
     {
-        while (cards.Exists(card => IsInMotion(card)))
+        while (movingCards.Exists(card => IsInMotion(card)))
         {
             yield return null;
         }
         // validate ownership in case a card was diverted while moving
-        cards.RemoveAll(card => !this.cards.Contains(card));
-        if (cards.Count > 0)
+        movingCards.RemoveAll(card => !this.cards.Contains(card));
+        if (movingCards.Count > 0)
         {
-            Debug.Log(this + " finished moving " + cards.Print());
-            GameState.NotifyCardsReceived(this, cards);
+            Debug.Log(this + " finished moving " + movingCards.Print());
+            GameState.NotifyCardsReceived(this, movingCards);
         }
     }
 
@@ -54,7 +54,7 @@ public abstract class CardZone : MonoBehaviour
     /* This method allows for custom behaviour after new cards have been registered.
     Typically it will trigger an animation to 'move' the cards,
     and may perform further logic. */
-    protected abstract void ProcessNewCards(List<Card> cards);
+    protected abstract void ProcessNewCards(List<Card> newCards);
 
     public void Unregister(Card card)
     {

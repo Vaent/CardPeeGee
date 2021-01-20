@@ -44,23 +44,37 @@ public class PlayerCreator
         }
     }
 
-// instance methods are only visible to the class/instance
+// callbacks on the instance are public
+
+public void CharacterCardCallback(Card card)
+{
+    player = new Player(card);
+    currentPhase = Phase.GetHP;
+    if (stagingArea.Cards.Count > 0)
+    {
+        deck.Accept(stagingArea.Cards);
+    }
+    else
+    {
+        movedRejectedCandidates = true;
+    }
+}
+
+public void HPCallback(int hp)
+{
+    player.Heal(hp);
+    currentPhase = Phase.GetHand;
+    deck.Accept(stagingArea.Cards);
+}
+
+// normal instance methods are only visible to the class/instance
 
     private void CheckCharacterCard(Card candidate)
     {
         if (candidate.Name.Equals("Queen") || candidate.Name.Equals("King"))
         {
-            player = new Player(candidate);
             textMesh.text = "\n\n\n\n\nYou are the " + candidate.Name + " of " + candidate.Suit + "s";
-            currentPhase = Phase.GetHP;
-            if (stagingArea.Cards.Count > 0)
-            {
-                deck.Accept(stagingArea.Cards);
-            }
-            else
-            {
-                movedRejectedCandidates = true;
-            }
+            Timer.DelayThenInvoke(2, this.CharacterCardCallback, candidate);
         }
         else
         {
@@ -84,9 +98,7 @@ public class PlayerCreator
             if (++i < cards.Count) textMesh.text += " + ";
         }
         textMesh.text += ")";
-        player.Heal(hp);
-        currentPhase = Phase.GetHand;
-        deck.Accept(stagingArea.Cards);
+        Timer.DelayThenInvoke(2, this.HPCallback, hp);
     }
 
     private void NewCards(CardZone cardZone, List<Card> cards)

@@ -4,10 +4,7 @@
 
 ### Required
 
-- Manage layering of cards which could overlap e.g. in staging area
-  - Proposal: set the Transform's z-position equal to each card's index in the appropriate list. If the cards are displayed in a different order to how they are stored (as is the case for the player's hand) make sure indices are taken from the sorted list, not the CardZone base list.
-- Allow virtual classes (e.g. GameState) to suspend execution without extending MonoBehaviour just for the sake of accessing IEnumerator functionality.
-  - Proposal: set up a utility class which extends MonoBehaviour, with functions which accept a callback and invoke it after a given delay.
+*All caught up*
 
 ### Desired
 

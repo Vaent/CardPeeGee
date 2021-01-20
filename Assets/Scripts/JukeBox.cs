@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* Singleton which manages background music */
 public class JukeBox : MonoBehaviour
 {
+    private static JukeBox instance;
+
     // component references
     public AudioListener listener;
     public AudioSource speaker;
@@ -24,6 +27,7 @@ public class JukeBox : MonoBehaviour
 
     void Start()
     {
+        instance = this;
         PlayAmbient();
     }
 
@@ -52,6 +56,11 @@ public class JukeBox : MonoBehaviour
         }
     }
 
+    public static void KillTheMusic()
+    {
+        instance.speaker.Stop();
+    }
+
     // This overload of Play is used for playing a single clip on loop
     private void Play(AudioClip clip)
     {
@@ -72,28 +81,28 @@ public class JukeBox : MonoBehaviour
         CalculateNextClipIndex(-1);
     }
 
-    public void PlayAmbient()
+    public static void PlayAmbient()
     {
-        Play(ambientIntro, ambient);
+        instance.Play(instance.ambientIntro, instance.ambient);
     }
 
-    public void PlayCombat()
+    public static void PlayCombat()
     {
-        Play(combatIntro, combat);
+        instance.Play(instance.combatIntro, instance.combat);
     }
 
-    public void PlayHealer()
+    public static void PlayHealer()
     {
-        Play(healer);
+        instance.Play(instance.healer);
     }
 
-    public void PlayTrap()
+    public static void PlayTrap()
     {
-        Play(trap);
+        instance.Play(instance.trap);
     }
 
-    public void PlayTreasure()
+    public static void PlayTreasure()
     {
-        Play(treasure);
+        instance.Play(instance.treasure);
     }
 }

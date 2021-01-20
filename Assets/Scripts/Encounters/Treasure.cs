@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Treasure : Encounter
 {
-    public Treasure(List<Card> cards) : base(cards) { }
+    public Treasure(List<Card> cards) : base(cards)
+    {
+        JukeBox.PlayTreasure();
+    }
 
     public override void Advance()
     {

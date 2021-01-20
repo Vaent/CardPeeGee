@@ -11,19 +11,15 @@ public class Card
     private const int ConversionPenalty = 2;
 
     private static readonly GameObject abstractCard = Resources.Load<GameObject>("Models/Abstract Card");
-    private static readonly Sprite back = Resources.Load<Sprite>("Graphics/Sprites/Card Back");
 
     // state variables
     private CardZone currentLocation;
     // convertedXxx will apply when e.g. a Jack is used to temporarily change the suit of a played card
-    private Sprite convertedFace;
     private Suit? convertedSuit;
     private int? convertedValue;
     // initial assigned values cannot be changed
     private readonly CardController cardController;
     private readonly GameObject cardObject;
-    private readonly SpriteRenderer cardRenderer;
-    private readonly Sprite face;
     private readonly string name;
     private readonly Suit suit;
     private readonly int value;
@@ -37,15 +33,13 @@ public class Card
 
     public Card(Sprite face, CardZone startingLocation)
     {
-        this.face = face;
         string[] filenameParts = face.name.Split(' ');
         this.suit = (Suit)Suit.Parse(typeof(Suit), filenameParts[0]);
         this.value = int.Parse(filenameParts[1]);
         this.name = (filenameParts.Length > 2) ? filenameParts[2] : filenameParts[1];
-        cardObject = MonoBehaviour.Instantiate(abstractCard);
+        GameObject cardObject = MonoBehaviour.Instantiate(abstractCard);
         cardController = cardObject.GetComponent<CardController>();
-        cardController.RegisterScript(this);
-        cardRenderer = cardObject.GetComponent<SpriteRenderer>();
+        cardController.Register(this, face);
 
         this.currentLocation = startingLocation;
     }
@@ -68,54 +62,25 @@ public class Card
         currentLocation.NotifySelectionByUser(this);
     }
 
-    public void Flip()
-    {
-        cardRenderer.sprite = (cardRenderer.sprite == face ? back : face);
-    }
-
     public void Hide()
     {
-        cardObject.SetActive(false);
-        cardController.KillMovement();
+        cardController.Kill();
     }
 
-    public void MoveTo(Vector2 newPosition)
+    public void MoveTo(Vector3 newPosition)
     {
-        cardObject.SetActive(true);
-        cardController.GoTo(newPosition, false);
+        cardController.GoTo(newPosition);
     }
 
-    public void MoveToFaceDown(Vector2 newPosition)
+    public void MoveTo(Vector3 newPosition, bool endFaceUp)
     {
-        MoveToFaceDown(newPosition, null);
+        MoveTo(newPosition, null, endFaceUp);
     }
 
-    public void MoveToFaceDown(Vector2 newPosition, CardController.MovementTracker tracker)
+    public void MoveTo(Vector3 newPosition, CardController.MovementTracker tracker, bool endFaceUp)
     {
-        cardObject.SetActive(true);
-        cardController.GoTo(newPosition, (cardRenderer.sprite == face), tracker);
-    }
-
-    public void MoveToFaceUp(Vector2 newPosition)
-    {
-        MoveToFaceUp((Vector3)newPosition, null);
-    }
-
-    public void MoveToFaceUp(Vector2 newPosition, CardController.MovementTracker tracker)
-    {
-        MoveToFaceUp((Vector3)newPosition, tracker);
-    }
-
-    public void MoveToFaceUp(Vector3 newPosition)
-    {
-        MoveToFaceUp(newPosition, null);
-    }
-
-    public void MoveToFaceUp(Vector3 newPosition, CardController.MovementTracker tracker)
-    {
-        RaiseTo(newPosition.z);
-        cardObject.SetActive(true);
-        cardController.GoTo(newPosition, (cardRenderer.sprite != face), tracker);
+        SetHeight(newPosition.z);
+        cardController.GoTo(newPosition, tracker, endFaceUp);
     }
 
     public void RegisterTo(CardZone newLocation)
@@ -135,7 +100,7 @@ public class Card
 
     public void ResetDisplayProperties()
     {
-        RaiseTo(0);
+        SetHeight(0);
         Resize(1);
     }
 
@@ -146,10 +111,9 @@ public class Card
         cardController.Resize(newScale);
     }
 
-    public void RaiseTo(float newHeight)
+    public void SetHeight(float newHeight)
     {
-        // N.B. camera is positioned on the negative z-axis, pointed toward zero
-        cardController.SetHeight(newHeight * -1);
+        cardController.SetHeight(newHeight);
     }
 
     public override string ToString()
@@ -178,17 +142,5 @@ public class Card
         {
             return displayName + suit + "s [" + Suit + "s] :: " + currentLocation;
         }
-    }
-
-    public void TurnFaceDown()
-    {
-        cardRenderer.sprite = back;
-    }
-
-    public void TurnFaceUp()
-    {
-        cardRenderer.sprite = face;
-        // TODO: if card has been converted, use convertedFace instead of face
-        // NB the above will likely never apply here so is not a priority
     }
 }

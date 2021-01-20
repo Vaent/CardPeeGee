@@ -95,6 +95,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deb02969c6292de4f9296d42e8f000f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  back: {fileID: 21300000, guid: 0cdb9333683555a42829204cdfc6c017, type: 3}
+  cardRenderer: {fileID: 1073236347018184777}
 --- !u!61 &-8369034384519889666
 BoxCollider2D:
   m_ObjectHideFlags: 0

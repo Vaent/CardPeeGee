@@ -64,7 +64,7 @@ public class Deck : CardZone
         {
             CardController.MovementTracker tracker = cardsInMotion[card];
             card.ResetDisplayProperties();
-            card.MoveToFaceDown(this.transform.position, tracker);
+            card.MoveTo(this.transform.position, tracker, false);
         });
     }
 }

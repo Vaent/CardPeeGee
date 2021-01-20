@@ -22,7 +22,7 @@ public class StagingArea : CardZone
             float spacingFactor = (cardsToMove.Count < 8) ? 1.1f : (7.7f / cardsToMove.Count);
             Vector3 positionAdjustment = new Vector3(index * spacingFactor, 0, index * -0.01f);
             CardController.MovementTracker tracker = cardsInMotion[card];
-            card.MoveToFaceUp(transformPosition + positionAdjustment, tracker);
+            card.MoveTo(transformPosition + positionAdjustment, tracker, true);
             while (!tracker.completed)
             {
                 yield return null;

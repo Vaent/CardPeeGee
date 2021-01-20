@@ -73,7 +73,7 @@ public class Player
         {
             if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
             CardController.MovementTracker tracker = cardsInMotion[newCards[0]];
-            newCards[0].MoveToFaceUp(characterCardPosition, tracker);
+            newCards[0].MoveTo(characterCardPosition, tracker, true);
         }
     }
 
@@ -98,7 +98,7 @@ public class Player
                 var allCards = Cards;
                 CardUtil.Sort(allCards);
                 var i = allCards.IndexOf(this.selectedCard);
-                this.selectedCard.RaiseTo(i * 0.01f);
+                this.selectedCard.SetHeight(i * 0.01f);
                 this.selectedCard.Resize(1);
             }
 
@@ -110,7 +110,7 @@ public class Player
             else
             {
                 this.selectedCard = newSelectedCard;
-                newSelectedCard.RaiseTo(1);
+                newSelectedCard.SetHeight(1);
                 newSelectedCard.Resize(1.5f);
             }
         }
@@ -132,7 +132,7 @@ public class Player
                 Card card = allCards[i];
                 Vector3 positionAdjustment = new Vector3((i + 0.5f) * spacingFactor, 0, i * -0.01f);
                 CardController.MovementTracker tracker = cardsInMotion[card];
-                card.MoveToFaceUp(leftPosition + positionAdjustment, tracker);
+                card.MoveTo(leftPosition + positionAdjustment, tracker, true);
             }
         }
     }

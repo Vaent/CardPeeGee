@@ -8,6 +8,7 @@ public class Battle : Encounter
 
     public Battle(List<Card> cards) : base(cards)
     {
+        JukeBox.PlayCombat();
         enemies = new List<Monster>();
         enemies.Add(new Monster(agitator, props));
     }
@@ -15,6 +16,7 @@ public class Battle : Encounter
     // alternative constructor for battling "guards" on a Healer
     public Battle(List<Monster> enemies)
     {
+        JukeBox.PlayCombat();
         this.enemies = enemies;
     }
 

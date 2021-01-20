@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Healer : Encounter
 {
-    public Healer(List<Card> cards) : base(cards) { }
+    public Healer(List<Card> cards) : base(cards)
+    {
+        JukeBox.PlayHealer();
+    }
 
     public override void Advance()
     {

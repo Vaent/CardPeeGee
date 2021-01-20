@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Trap : Encounter
 {
-    public Trap(List<Card> cards) : base(cards) { }
+    public Trap(List<Card> cards) : base(cards)
+    {
+        JukeBox.PlayTrap();
+    }
 
     public override void Advance()
     {

@@ -66,7 +66,7 @@ public class CardController : MonoBehaviour
         if (tracker != null) tracker.completed = true;
     }
 
-    public void RegisterController(Card cardScript)
+    public void RegisterScript(Card cardScript)
     {
         this.cardScript = cardScript;
     }

@@ -31,7 +31,7 @@ public class Card
     // accessors
     public CardZone CurrentLocation => currentLocation;
     public string Name => name;
-    // these use converted values if set, otherwise base values
+    // the following use converted values if set, otherwise base values
     public Suit Suit => convertedSuit ?? suit;
     public int Value => convertedValue ?? value;
 
@@ -44,7 +44,7 @@ public class Card
         this.name = (filenameParts.Length > 2) ? filenameParts[2] : filenameParts[1];
         cardObject = MonoBehaviour.Instantiate(abstractCard);
         cardController = cardObject.GetComponent<CardController>();
-        cardController.RegisterController(this);
+        cardController.RegisterScript(this);
         cardRenderer = cardObject.GetComponent<SpriteRenderer>();
 
         this.currentLocation = startingLocation;

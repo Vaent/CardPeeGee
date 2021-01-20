@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class Deck : CardZone
 {
+    // component references
     public StagingArea stagingArea;
+
+    // state variables
+    private bool isLoading;
 
     void Start()
     {
+        this.isLoading = true;
         GameState.Register(this);
         CardUtil.NewPack(this);
+        this.isLoading = false;
+        Debug.Log("Deck contains the following after loading: " + Cards.Print());
     }
 
     void OnMouseDown()
@@ -49,6 +56,8 @@ public class Deck : CardZone
 
     protected override void ProcessNewCards(List<Card> newCards)
     {
+        if (this.isLoading) return;
+
         Debug.Log("Cards were returned to the Deck: " + newCards.Print());
         Debug.Log("Deck now contains the following: " + Cards.Print());
         newCards.ForEach(card =>

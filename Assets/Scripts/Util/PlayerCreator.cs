@@ -9,17 +9,19 @@ public class PlayerCreator
 
     private Phase currentPhase;
     private Deck deck;
+    private TextMesh hpDisplay;
+    private TextMesh messageDisplay;
     private bool movedCharacterCard;
     private bool movedRejectedCandidates;
     private Player player;
     private StagingArea stagingArea;
-    private TextMesh textMesh;
 
-    private PlayerCreator(Deck deck, StagingArea stagingArea, TextMesh textMesh) {
+    private PlayerCreator(Deck deck, StagingArea stagingArea, TextMesh messageDisplay, TextMesh hpDisplay) {
         this.currentPhase = Phase.GetCharacterCard;
         this.deck = deck;
         this.stagingArea = stagingArea;
-        this.textMesh = textMesh;
+        this.messageDisplay = messageDisplay;
+        this.hpDisplay = hpDisplay;
     }
 
 // class methods have public visibility
@@ -29,10 +31,10 @@ public class PlayerCreator
         instance = null;
     }
 
-    public static void Initialise(Deck deck, StagingArea stagingArea, TextMesh textMesh)
+    public static void Initialise(Deck deck, StagingArea stagingArea, TextMesh messageDisplay, TextMesh hpDisplay)
     {
         if (instance != null) Debug.LogWarning("Discarding existing (incomplete) progress");
-        instance = new PlayerCreator(deck, stagingArea, textMesh);
+        instance = new PlayerCreator(deck, stagingArea, messageDisplay, hpDisplay);
         instance.GetCharacterCard();
     }
 
@@ -48,7 +50,7 @@ public class PlayerCreator
 
 public void CharacterCardCallback(Card card)
 {
-    player = new Player(card);
+    player = new Player(card, hpDisplay);
     currentPhase = Phase.GetHP;
     if (stagingArea.Cards.Count > 0)
     {
@@ -60,9 +62,8 @@ public void CharacterCardCallback(Card card)
     }
 }
 
-public void HPCallback(int hp)
+public void HPCallback()
 {
-    player.Heal(hp);
     currentPhase = Phase.GetHand;
     deck.Accept(stagingArea.Cards);
 }
@@ -73,7 +74,7 @@ public void HPCallback(int hp)
     {
         if (candidate.Name.Equals("Queen") || candidate.Name.Equals("King"))
         {
-            textMesh.text = "\n\n\n\n\nYou are the " + candidate.Name + " of " + candidate.Suit + "s";
+            messageDisplay.text = "\n\n\n\n\nYou are the " + candidate.Name + " of " + candidate.Suit + "s";
             Timer.DelayThenInvoke(2, this.CharacterCardCallback, candidate);
         }
         else
@@ -84,21 +85,22 @@ public void HPCallback(int hp)
 
     private void GetCharacterCard()
     {
-        textMesh.text = "\n\n\n\n\nFinding a Character card...";
+        messageDisplay.text = "\n\n\n\n\nFinding a Character card...";
         deck.DealCards(1);
     }
 
     private void GetHP(List<Card> cards)
     {
         int hp = 15 + CardUtil.SumValues(cards);
-        textMesh.text = "\n\n\n\n\nYou have " + hp + " HP (15 + ";
+        messageDisplay.text = "\n\n\n\n\nYou have " + hp + " HP (15 + ";
         for (var i = 0; i < cards.Count; )
         {
-            textMesh.text += cards[i].Value;
-            if (++i < cards.Count) textMesh.text += " + ";
+            messageDisplay.text += cards[i].Value;
+            if (++i < cards.Count) messageDisplay.text += " + ";
         }
-        textMesh.text += ")";
-        Timer.DelayThenInvoke(2, this.HPCallback, hp);
+        messageDisplay.text += ")";
+        player.Heal(hp);
+        Timer.DelayThenInvoke(2, this.HPCallback);
     }
 
     private void NewCards(CardZone cardZone, List<Card> cards)
@@ -126,7 +128,7 @@ public void HPCallback(int hp)
     {
         if (cardZone.Equals(deck))
         {
-            textMesh.text = "\n\n\n\n\nDealing your starting hand...";
+            messageDisplay.text = "\n\n\n\n\nDealing your starting hand...";
             deck.DealCards(5);
         }
         else if (cardZone.Equals(stagingArea))
@@ -158,7 +160,7 @@ public void HPCallback(int hp)
             }
             else
             {
-                textMesh.text = "\n\n\n\n\nDealing cards for initial HP...";
+                messageDisplay.text = "\n\n\n\n\nDealing cards for initial HP...";
                 deck.DealCards(3);
             }
         }

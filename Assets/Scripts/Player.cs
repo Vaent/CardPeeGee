@@ -9,14 +9,16 @@ public class Player
     private readonly CharacterCardZone characterCard = new GameObject().AddComponent<CharacterCardZone>();
     private readonly HandZone hand = new GameObject().AddComponent<HandZone>();
     private int hp;
+    private TextMesh hpDisplay;
 
     public CardZone CharacterCard => characterCard;
     public CardZone Hand => hand;
 
-    public Player(Card characterCard)
+    public Player(Card characterCard, TextMesh hpDisplay)
     {
         Debug.Log("Creating new Player from " + characterCard);
         this.characterCard.Accept(new List<Card>{characterCard});
+        this.hpDisplay = hpDisplay;
     }
 
     public void AddToHand(List<Card> cards)
@@ -26,14 +28,14 @@ public class Player
 
     public void Damage(int amount)
     {
-        hp -= amount;
+        UpdateHP(hp - amount);
         // TODO: check for death
     }
 
     public void Heal(int amount)
     {
         Debug.Log("Healing Player... initial HP " + hp + ", heal amount " + amount);
-        hp += amount;
+        UpdateHP(hp + amount);
         Debug.Log("Player has " + hp + " HP after healing");
         // TODO: check for victory
     }
@@ -41,6 +43,24 @@ public class Player
     public bool IsAlive()
     {
         return hp > 0;
+    }
+
+    public void UpdateHP(int newValue)
+    {
+        if (newValue == hp)
+        {
+            return;
+        }
+        else if (newValue > hp)
+        {
+            hp++;
+        }
+        else if (newValue < hp)
+        {
+            hp--;
+        }
+        hpDisplay.text = "HP: " + hp;
+        if (hp != newValue) Timer.DelayThenInvoke(0.05f, this.UpdateHP, newValue);
     }
 
     class CharacterCardZone : CardZone

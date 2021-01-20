@@ -137,7 +137,8 @@ public class GameState
             GameObject et3 = GameObject.Find("eventtext3");
             eventText3 = et3.GetComponent<TextMesh>();
         }
-        PlayerCreator.Initialise(deck, stagingArea, eventText3);
+        var hpDisplay = GameObject.Find("hptext").GetComponent<TextMesh>();
+        PlayerCreator.Initialise(deck, stagingArea, eventText3, hpDisplay);
     }
 
 // GameState.Phase is managed internally through the currentPhase field

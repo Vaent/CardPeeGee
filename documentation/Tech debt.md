@@ -23,6 +23,9 @@
   - May still be constrained to landscape format but should at least accommodate different screen resolutions (SD/HD/FHD etc) and ideally different aspect ratios (between 4:3 and 16:9, and ideally beyond).
   - A nice-to-have extension would be flexible placement of game elements allowing user configuration, which may help support portrait formats.
 - Manual/active shuffling of cards to replace random selection from deck.
+- Allow cards to be retrieved after they are Played and before committing them.
+  - This was requested by players of the original game and should be fairly straightforward to implement, but is not part of MVP.
+  - Need to consider handling of Active cards which are Played and then retrieved; logically these should be returned to Active rather than to the player's hand.
 - User-defined key bindings.
 - Test/optimise operation on touch screens.
 - Extract text messages into supplementary files rather than having them baked into the code.

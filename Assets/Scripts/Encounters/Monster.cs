@@ -24,8 +24,26 @@ public class Monster
         hp -= amount;
     }
 
+    public static List<Monster> FindAllIn(List<Card> possibleMonsters)
+    {
+        List<Monster> monsters = new List<Monster>();
+        possibleMonsters.ForEach(card =>
+        {
+            if (card.Suit == Suit.Club)
+            {
+                monsters.Add(new Monster(card, new List<Card>()));
+            }
+        });
+        return monsters;
+    }
+
     public bool IsAlive()
     {
         return hp > 0;
+    }
+
+    public override string ToString()
+    {
+        return ("Monster[ATK" + attack + ":DL" + deal + ":HP" + hp + "]");
     }
 }

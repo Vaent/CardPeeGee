@@ -12,7 +12,6 @@ public class Battle : Encounter
         JukeBox.PlayCombat();
         enemies = new List<Monster>();
         enemies.Add(new Monster(agitator, props));
-        Debug.Log("Beginning a battle against " + enemies.Print());
     }
 
     // alternative constructor for battling "guards" on a Healer
@@ -21,7 +20,6 @@ public class Battle : Encounter
         JukeBox.PlayCombat();
         // copy input list to ensure enemies can't be mutated from outside
         this.enemies = new List<Monster>(enemies);
-        Debug.Log("Battle created versus " + enemies.Print());
     }
 
     public override void Advance()
@@ -31,5 +29,12 @@ public class Battle : Encounter
         // TODO: calculate the winner(s) and deal damage
         // TODO: return cards to the deck
         // TODO: end the encounter if player or all enemies are dead
+    }
+
+    public override void BeginImpl()
+    {
+        Debug.Log("Beginning a battle against " + enemies.Print());
+        // TODO: prompt to activate/play cards then click the deck
+        GameState.Unlock();
     }
 }

@@ -18,10 +18,16 @@ public class Trap : Encounter
             + CardUtil.SumValues(props, Suit.Spade)
             + (int)Ceiling((float)CardUtil.SumValues(props, Suit.Diamond) / 2);
         Debug.Log("Trap difficulty: " + trapDifficulty + ", damage: " + baseDamage);
-        // TODO: calculate player's evasion score
-        // TODO: calculate and apply amended damage
     }
 
     // Traps are resolved automatically - Advance() should never be called
     public override void Advance(){ }
+
+    public override void BeginImpl()
+    {
+        Debug.Log("Trap has been triggered");
+        // TODO: calculate player's evasion score
+        // TODO: calculate and apply amended damage
+        // TODO: cleanup, end the encounter
+    }
 }

@@ -17,23 +17,10 @@ public class Healer : Encounter
         JukeBox.PlayHealer();
         healingAmount = agitator.Value
             + (int)Ceiling((float)CardUtil.SumValues(props) / 2);
-        Debug.Log("Healer will heal " + healingAmount + "HP");
         potions = props.FindAll(card => (card.Suit == Suit.Heart));
-        if (potions.Count > 0)
-        {
-            Debug.Log("Healer will provide potions: " + potions.Print());
-        }
         feeToPay = CardUtil.SumValues(props, Suit.Diamond);
-        if (feeToPay > 0)
-        {
-            Debug.Log("Healer charges a fee of " + feeToPay);
-        }
         List<Monster> jailors = Monster.FindAllIn(props);
-        if (jailors.Count > 0)
-        {
-            Debug.Log("Need to fight " + jailors.Print() + " to free the healer");
-            battleToResolve = new Battle(jailors);
-        }
+        if (jailors.Count > 0) battleToResolve = new Battle(jailors);
     }
 
     public override void Advance()
@@ -41,5 +28,38 @@ public class Healer : Encounter
         // TODO: resolve battle if applicable
         // TODO: resolve fee if applicable and no battle
         // TODO: deliver healing (and potions) to player if no battle/fee
+    }
+
+    public override void BeginImpl()
+    {
+        if (battleToResolve != null)
+        {
+            Debug.Log("Need to fight jailor(s) to free the healer");
+        }
+        if (feeToPay > 0)
+        {
+            Debug.Log("Healer charges a fee of " + feeToPay);
+        }
+        var healerEffects = "Healer will heal " + healingAmount + "HP";
+        if (potions.Count > 0)
+        {
+            healerEffects += (" and provide potions: " + potions.Print());
+        }
+        Debug.Log(healerEffects);
+
+        if (IsHealingBlocked())
+        {
+            // TODO: prompt input for battle/fee as required
+            GameState.Unlock();
+        }
+        else
+        {
+            // TODO: deliver healing (and potions) to player
+        }
+    }
+
+    private bool IsHealingBlocked()
+    {
+        return (battleToResolve != null) || (feeToPay > 0);
     }
 }

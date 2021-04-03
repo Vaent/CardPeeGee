@@ -6,9 +6,8 @@ using UnityEngine;
 public abstract class Encounter
 {
     protected readonly Card agitator;
+    protected Player player;
     protected readonly List<Card> props;
-
-    public abstract void Advance();
 
     // no-args constructor is only for cases where agitator/props are not used by the inheriting class
     // notable example: a Battle created for a Healer which has club props
@@ -22,6 +21,7 @@ public abstract class Encounter
         props = cards;
     }
 
+    // GameState obtains Encounter instances from this factory method
     public static Encounter From(List<Card> cards)
     {
         switch (cards[0].Suit)
@@ -38,5 +38,20 @@ public abstract class Encounter
                 // provided to satisfy the compiler - this branch should be unreachable
                 throw new System.Exception("Card suit could not be determined");
         }
+    }
+
+    public abstract void Advance();
+
+    public void Begin()
+    {
+        if (player == null) throw new System.Exception("Attempted to Begin encounter with no Player");
+        BeginImpl();
+    }
+
+    public abstract void BeginImpl();
+
+    public void HappensTo(Player player)
+    {
+        this.player = player;
     }
 }

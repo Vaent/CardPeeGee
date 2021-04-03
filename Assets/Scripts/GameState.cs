@@ -71,6 +71,11 @@ public class GameState
         }
     }
 
+    public static void Unlock()
+    {
+        instance.locked = false;
+    }
+
 // instance methods are only visible to the class/instance
 
     private bool IsPlayerAlive()
@@ -114,10 +119,14 @@ public class GameState
 
     private void NewCardsNewDay(CardZone cardZone, List<Card> cards)
     {
-        instance.currentEncounter = Encounter.From(instance.stagingArea.Cards);
-        Debug.Log("Started a " + instance.currentEncounter + " Encounter");
-        currentPhase = Phase.InEncounter;
-        locked = false;
+        if (stagingArea.Equals(cardZone))
+        {
+            currentEncounter = Encounter.From(stagingArea.Cards);
+            currentEncounter.HappensTo(player);
+            Debug.Log("Starting a " + currentEncounter + " Encounter");
+            currentPhase = Phase.InEncounter;
+            currentEncounter.Begin();
+        }
     }
 
     private void PlayerCreated(Player player)

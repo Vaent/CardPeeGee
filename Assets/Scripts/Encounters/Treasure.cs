@@ -11,14 +11,6 @@ public class Treasure : Encounter
     {
         JukeBox.PlayTreasure();
         trapsOnChest = props.FindAll(card => (card.Suit == Suit.Spade));
-        if (trapsOnChest.Count == 0)
-        {
-            DeliverTreasure();
-        }
-        else
-        {
-            Debug.Log("The chest is trapped: " + trapsOnChest.Print());
-        }
     }
 
     public override void Advance()
@@ -30,9 +22,25 @@ public class Treasure : Encounter
         // when there is more than one trap on the chest.
     }
 
+    public override void BeginImpl()
+    {
+        Debug.Log("Found a treasure");
+        if (trapsOnChest.Count == 0)
+        {
+            DeliverTreasure();
+        }
+        else
+        {
+            Debug.Log("The chest is trapped: " + trapsOnChest.Print());
+            // TODO: prompt to attempt disarm or abandon the treasure
+            GameState.Unlock();
+        }
+    }
+
     private void DeliverTreasure()
     {
         Debug.Log("The treasure is claimed");
         // TODO: transfer agitator & props to the player's hand
+        // TODO: end encounter
     }
 }

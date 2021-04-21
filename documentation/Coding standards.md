@@ -14,6 +14,8 @@ Microsoft's C# conventions should be followed by default, unless they contradict
 
 If required for any fields, these should be listed alphabetically in a block following the field declaration block(s), before any constructors or other methods. Consideration should be given to whether a custom method is more appropriate than an accessor; for example, `Card.Convert(int newValue)` might behave like a simple setter, but calling a `Convert` method makes the caller's intention clearer than directly setting a `convertedValue` property and reduces coupling to the `Card` class.
 
+Auto-implemented properties can be used to reduce code clutter in classes with several accessible fields. Typically this will be in the form `public int MyInt { get; private set; }`.
+
 ## Constructors
 
 If required, these are listed after fields/accessors and before methods. Overloads are ordered as for methods (see below).

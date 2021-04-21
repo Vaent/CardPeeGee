@@ -11,3 +11,15 @@ Additionally, different areas of the game are being decoupled from the overarchi
 As of 17/12/2020, Cards will have knowledge of the CardZone which is currently responsible for them. This is to prevent Cards being lost if a CardZone removes them from its own list of dependents without correctly handing them over to the next CardZone. Default behaviour will also be added to the base CardZone definition to ensure robust and consistent transference of Cards, while still allowing different CardZones to do their own thing with the Cards once they arrive.
 
 Addendum 04/01/2021: CardZones will by default notify the GameState whenever they Accept(cards) **and have finished moving the cards**, assuming any movement takes place. This is to keep the CardZone logic focused on registering and moving cards, and have GameState as an observer which doesn't need to monitor that process but has an interest in the eventual outcome.
+
+## Using cards in the Player's hand
+
+Originally the options to Activate/Play/Convert/Discard cards hooked directly into `Deal.js` which managed the state of all cards everywhere. Now that game elements are being made more modular, this approach is not viable.
+
+The existing clickables will be retained and grouped together as a panel for ease of management (previously each clickable was handled independently).
+
+The panel is 'owned' by the Player class, and will be told which clickables should be active or inactive based on the current context whenever a card is selected from the Player's hand or active cards.
+
+The panel will not provide any feedback to the Player when an option is chosen. All possible options involve transferring the Card to a new CardZone, and since that process will `Unregister` the Card from the CardZone in which the Player was holding it, a listener can be inserted at that point as a method override which will verify that the card being moved is the selected card and will also tidy up the panel & remaining cards.
+
+Initial implementation is likely to have all clickables in fixed positions relative to the panel, unlike the original game where only the relevant clickables were displayed with the layout changing based on what was visible. The latter is probably a desirable goal, especially if the effort to implement it is low compared to implementing a new visual format.

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /* Class which acts as the virtual representation of a card,
@@ -19,7 +17,6 @@ public class Card
     private int? convertedValue;
     // initial assigned values cannot be changed
     private readonly CardController cardController;
-    private readonly GameObject cardObject;
     private readonly string name;
     private readonly Suit suit;
     private readonly int value;
@@ -50,10 +47,10 @@ public class Card
         // TODO: calculate and display the convertedFace sprite
     }
 
-    // converting the card's suit also decreases its effective value by 2
     public void Convert(Suit newSuit)
     {
         convertedSuit = newSuit;
+        // converting the card's suit also decreases its effective value
         Convert(value - ConversionPenalty);
     }
 
@@ -81,6 +78,11 @@ public class Card
     {
         SetHeight(newPosition.z);
         cardController.GoTo(newPosition, tracker, endFaceUp);
+    }
+
+    public Vector3 Position()
+    {
+        return cardController.transform.position;
     }
 
     public void RegisterTo(CardZone newLocation)

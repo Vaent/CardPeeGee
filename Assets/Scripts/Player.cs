@@ -1,6 +1,5 @@
 using ExtensionMethods;
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using static System.Math;
 using UnityEngine;
 
@@ -168,10 +167,10 @@ public class Player
                 newSelectedCard.Resize(1.5f);
                 selectedCardOptions.PrepareFor(newSelectedCard)
                     .IncludeActivate()
-                    //.IncludePlay()
+                    .IncludePlay()
                     .IncludePlayAsClub()
                     .IncludePlayAsDiamond()
-                    //.IncludePlayAsHeart()
+                    .IncludePlayAsHeart()
                     .IncludePlayAsSpade()
                     .Display();
             }
@@ -180,10 +179,14 @@ public class Player
         protected override void ProcessNewCards(List<Card> newCards)
         {
             Debug.Log("Hand received " + newCards.Print());
+            AdjustPositions();
+        }
+
+        private void AdjustPositions()
+        {
             var allCards = Cards;
             CardUtil.Sort(allCards);
             Debug.Log("Hand now contains " + allCards.Print());
-
             float spacingFactor = (allCards.Count < 7) ? 1.1f : (6.6f / (allCards.Count));
             Vector3 leftPosition = handPosition + Vector3.left * 0.55f * Min(6, allCards.Count);
             Vector3 rightPosition = handPosition + Vector3.right * 0.55f * Min(6, allCards.Count);
@@ -196,6 +199,14 @@ public class Player
                 CardController.MovementTracker tracker = cardsInMotion[card];
                 card.MoveTo(leftPosition + positionAdjustment, tracker, true);
             }
+        }
+
+        public override void Unregister(Card card)
+        {
+            if (!card.Equals(selectedCard)) throw new System.Exception("Attempted to remove a nonselected card from player's hand");
+            selectedCard = null;
+            base.Unregister(card);
+            AdjustPositions();
         }
     }
 }

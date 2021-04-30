@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DiscardCard : SelectedCardOption
 {
-    protected override void OnMouseDown()
-    {
-        // TODO: move card to Deck
-    }
+    protected override Color NewColor => Color.white;
+    // TODO: get a reference to the Deck and use this for DiscardCard.TargetZone
+    protected override CardZone TargetZone => throw new System.NotImplementedException();
 }

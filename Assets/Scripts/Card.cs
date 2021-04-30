@@ -41,6 +41,11 @@ public class Card
         this.currentLocation = startingLocation;
     }
 
+    public void ApplyColor(Color color)
+    {
+        cardController.ApplyColor(color);
+    }
+
     public void Convert(int newValue)
     {
         convertedValue = newValue;

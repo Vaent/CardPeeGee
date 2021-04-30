@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /* Generic class for managing a card's GameObject.
@@ -62,6 +61,11 @@ public class CardController : MonoBehaviour
     {
         gameObject.SetActive(true);
         StartCoroutine(MoveCoroutine(targetPosition, tracker, endFaceUp));
+    }
+
+    public void ApplyColor(Color color)
+    {
+        cardRenderer.color = color;
     }
 
     public void Kill()

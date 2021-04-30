@@ -56,7 +56,9 @@ public abstract class CardZone : MonoBehaviour
     and may perform further logic. */
     protected abstract void ProcessNewCards(List<Card> newCards);
 
-    public void Unregister(Card card)
+    // Unregister(card) is virtual to allow additional checks and cleanup specific to implementations
+    // overrides to this method should always include a call to `base.Unregister(card)`
+    public virtual void Unregister(Card card)
     {
         if (card.CurrentLocation == this) return;
 

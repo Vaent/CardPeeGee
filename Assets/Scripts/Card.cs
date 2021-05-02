@@ -109,6 +109,7 @@ public class Card
     {
         SetHeight(0);
         Resize(1);
+        ApplyColor(Color.white);
     }
 
     /* Call this function to make the card proportionally larger or smaller

@@ -25,12 +25,30 @@ public class SelectedCardOptionsPanel : MonoBehaviour
         gameObject.transform.position = SelectedCard.Position() + positionOffset;
 
 		activate.gameObject.SetActive(ri.Activate);
-		discard.gameObject.SetActive(ri.Discard);
+		discard.gameObject.SetActive(false);
 		play.gameObject.SetActive(ri.Play);
 		playAsClub.gameObject.SetActive(ri.PlayAsClub);
 		playAsDiamond.gameObject.SetActive(ri.PlayAsDiamond);
 		playAsHeart.gameObject.SetActive(ri.PlayAsHeart);
 		playAsSpade.gameObject.SetActive(ri.PlayAsSpade);
+
+		gameObject.SetActive(true);
+	}
+
+	public void ConfigureAndDisplayDiscardOption(Card selectedCard)
+	{
+		gameObject.SetActive(false);
+
+		SelectedCard = selectedCard;
+		gameObject.transform.position = SelectedCard.Position() + positionOffset;
+
+		activate.gameObject.SetActive(false);
+		discard.gameObject.SetActive(true);
+		play.gameObject.SetActive(false);
+		playAsClub.gameObject.SetActive(false);
+		playAsDiamond.gameObject.SetActive(false);
+		playAsHeart.gameObject.SetActive(false);
+		playAsSpade.gameObject.SetActive(false);
 
 		gameObject.SetActive(true);
 	}
@@ -58,7 +76,6 @@ public class SelectedCardOptionsPanel : MonoBehaviour
 		private SelectedCardOptionsPanel panel;
 
 		public bool Activate { get; private set; }
-		public bool Discard { get; private set; }
 		public bool Play { get; private set; }
 		public bool PlayAsClub { get; private set; }
 		public bool PlayAsDiamond { get; private set; }
@@ -80,12 +97,6 @@ public class SelectedCardOptionsPanel : MonoBehaviour
 		public ReInitialiser IncludeActivate()
         {
 			Activate = true;
-			return this;
-		}
-
-		public ReInitialiser IncludeDiscard()
-		{
-			Discard = true;
 			return this;
 		}
 

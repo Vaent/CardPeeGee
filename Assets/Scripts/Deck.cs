@@ -1,5 +1,4 @@
 using ExtensionMethods;
-﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -63,6 +62,7 @@ public class Deck : CardZone
         newCards.ForEach(card =>
         {
             CardController.MovementTracker tracker = cardsInMotion[card];
+            card.ResetCardProperties();
             card.ResetDisplayProperties();
             card.MoveTo(this.transform.position + Vector3.forward, tracker, false);
         });

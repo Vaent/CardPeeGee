@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class SelectedCardOption : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public abstract class SelectedCardOption : MonoBehaviour
         Card selectedCard = panel.SelectedCard;
         selectedCard.Resize(1);
         selectedCard.ApplyColor(NewColor);
-        TargetZone.Accept(new List<Card>() { selectedCard });
+        TargetZone.Accept(selectedCard);
         panel.Hide();
     }
 }

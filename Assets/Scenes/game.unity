@@ -3288,6 +3288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bafde2024cd6a314fbe6448629d6c7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deck: {fileID: 1977669081}
   panel: {fileID: 762302773}
 --- !u!65 &816215765
 BoxCollider:

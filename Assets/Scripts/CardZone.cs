@@ -12,6 +12,11 @@ public abstract class CardZone : MonoBehaviour
 
     public List<Card> Cards => new List<Card>(cards);
 
+    public void Accept(Card newCard)
+    {
+        Accept(new List<Card>(){ newCard });
+    }
+
     public void Accept(List<Card> newCards)
     {
         this.cards.AddRange(newCards);

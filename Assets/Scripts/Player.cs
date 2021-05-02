@@ -173,6 +173,7 @@ public class Player
                     .IncludePlayAsHeart()
                     .IncludePlayAsSpade()
                     .Display();
+                //selectedCardOptions.ConfigureAndDisplayDiscardOption(newSelectedCard);
             }
         }
 

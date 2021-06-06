@@ -1,4 +1,5 @@
 using ExtensionMethods;
+using System;
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,6 +30,16 @@ public abstract class CardZone : MonoBehaviour
         StartCoroutine(ListenForMovement(newCards));
     }
 
+    public bool Contains(Card card)
+    {
+        return cards.Contains(card);
+    }
+
+    public bool Exists(Predicate<Card> predicate)
+    {
+        return cards.Exists(predicate);
+    }
+
     protected bool IsInMotion(Card card)
     {
         return cardsInMotion.ContainsKey(card)
@@ -49,12 +60,6 @@ public abstract class CardZone : MonoBehaviour
             GameState.NotifyCardsReceived(this, movingCards);
         }
     }
-
-    /* CardZones will need to specify card selection behaviour
-    e.g. when a card in the player's hand is selected,
-    Play/Activate options become available.
-    Implementations are allowed to be empty (no action taken). */
-    public abstract void NotifySelectionByUser(Card selectedCard);
 
     /* This method allows for custom behaviour after new cards have been registered.
     Typically it will trigger an animation to 'move' the cards,

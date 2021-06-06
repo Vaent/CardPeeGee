@@ -31,8 +31,6 @@ public class StagingArea : CardZone
         }
     }
 
-    public override void NotifySelectionByUser(Card selectedCard) { }
-
     protected override void ProcessNewCards(List<Card> newCards)
     {
         Debug.Log("StagingArea received the following cards: " + newCards.Print());

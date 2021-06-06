@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class SelectedCardOptionsPanel : MonoBehaviour
 {
@@ -103,6 +104,15 @@ public class SelectedCardOptionsPanel : MonoBehaviour
 		public ReInitialiser IncludePlay()
 		{
 			Play = true;
+			return this;
+		}
+
+		public ReInitialiser IncludePlayAs(params Suit[] convertableSuits)
+        {
+			if (Array.Exists(convertableSuits, suit => suit == Suit.Club)) PlayAsClub = true;
+			if (Array.Exists(convertableSuits, suit => suit == Suit.Diamond)) PlayAsDiamond = true;
+			if (Array.Exists(convertableSuits, suit => suit == Suit.Heart)) PlayAsHeart = true;
+			if (Array.Exists(convertableSuits, suit => suit == Suit.Spade)) PlayAsSpade = true;
 			return this;
 		}
 

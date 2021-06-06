@@ -1,11 +1,12 @@
 using ExtensionMethods;
-﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Battle : Encounter
 {
+    private bool battleHasStarted;
     private List<Monster> enemies;
+    private bool isHealerBattle;
 
     public Battle(List<Card> cards) : base(cards)
     {
@@ -18,6 +19,7 @@ public class Battle : Encounter
     public Battle(List<Monster> enemies)
     {
         JukeBox.PlayCombat();
+        isHealerBattle = true;
         // copy input list to ensure enemies can't be mutated from outside
         this.enemies = new List<Monster>(enemies);
     }
@@ -25,6 +27,8 @@ public class Battle : Encounter
     public override void Advance()
     {
         Debug.Log("Invoked Battle.Advance()");
+        if (!battleHasStarted) battleHasStarted = true;
+        // TODO: check for played cards and apply effects
         // TODO: deal cards for the player and each enemy
         // TODO: calculate the winner(s) and deal damage
         // TODO: return cards to the deck
@@ -36,5 +40,11 @@ public class Battle : Encounter
         Debug.Log("Beginning a battle against " + enemies.Print());
         // TODO: prompt to activate/play cards then click the deck
         GameState.Unlock();
+    }
+
+    public override void CardSelected(Card card)
+    {
+        if ((battleHasStarted && !isHealerBattle) || !PlayerCanUse(card, Suit.Club, Suit.Spade)) return;
+        player.ConfigureSelectedCardOptions(card, Suit.Club, Suit.Spade);
     }
 }

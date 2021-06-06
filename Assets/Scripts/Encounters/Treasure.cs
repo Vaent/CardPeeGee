@@ -37,6 +37,18 @@ public class Treasure : Encounter
         }
     }
 
+    public override void CardSelected(Card card)
+    {
+        if (trapsOnChest.Contains(card))
+        {
+            // TODO: run a disarm attempt for the selected trap card
+        }
+        else if (PlayerCanUse(card, Suit.Spade))
+        {
+            player.ConfigureSelectedCardOptions(card, Suit.Spade);
+        }
+    }
+
     private void DeliverTreasure()
     {
         Debug.Log("The treasure is claimed");

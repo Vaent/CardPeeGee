@@ -61,7 +61,7 @@ public class Card
 
     public void DoClicked()
     {
-        currentLocation.NotifySelectionByUser(this);
+        GameState.NotifyCardSelected(this);
     }
 
     public void Hide()

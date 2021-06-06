@@ -51,8 +51,6 @@ public class Deck : CardZone
         return drawnCards;
     }
 
-    public override void NotifySelectionByUser(Card selectedCard) { }
-
     protected override void ProcessNewCards(List<Card> newCards)
     {
         if (this.isLoading) return;

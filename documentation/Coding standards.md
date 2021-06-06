@@ -2,6 +2,14 @@
 
 Microsoft's C# conventions should be followed by default, unless they contradict the project standards below. See https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions.
 
+## Constants
+
+A static `Constant` class has been placed in the Util directory with the intention that any global constants (anything with general relevance beyond a single class/context) should be housed there to avoid repetition and for ease of locating them. This class should contain nothing but `public const` fields which should be named using UPPER_SNAKE_CASE and listed alphabetically.
+
+Classes which reference global constants may include a `using static Constant` directive to avoid qualifying access.
+
+Any constants with more limited scope may be declared locally with reduced visibility and PascalCase names.
+
 ## Field declarations
 
 - If static fields are required they may be placed at the top of the class declaration, separate from instance variables.

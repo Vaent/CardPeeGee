@@ -1,12 +1,14 @@
+using static Constant;
 using ExtensionMethods;
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using static System.Math;
 using UnityEngine;
 
 public class Player
 {
-    private static GameObject selectedCardOptionsPanel = GameObject.Find("Selected Card Options");
-    private static SelectedCardOptionsPanel selectedCardOptions = selectedCardOptionsPanel.GetComponent<SelectedCardOptionsPanel>();
+    private static GameObject selectedCardOptions = GameObject.Find("Selected Card Options");
+    private static SelectedCardOptionsPanel selectedCardOptionsPanel = selectedCardOptions.GetComponent<SelectedCardOptionsPanel>();
 
     // readonly references representing static game elements
     private readonly CardsActivatedZone cardsActivated = new GameObject().AddComponent<CardsActivatedZone>();
@@ -16,6 +18,7 @@ public class Player
     private readonly TextMesh hpDisplay;
 
     private int hp;
+    private Card selectedCard;
 
     public CardZone CardsActivated => cardsActivated;
     public CardZone CardsPlayed => cardsPlayed;
@@ -25,9 +28,11 @@ public class Player
     public Player(Card characterCard, TextMesh hpDisplay)
     {
         Debug.Log("Creating new Player from " + characterCard);
-        this.characterCard.Accept(new List<Card>{characterCard});
+        this.characterCard.Accept(characterCard);
         this.hpDisplay = hpDisplay;
-        selectedCardOptions.SetUp(this);
+        hand.Register(this);
+        cardsActivated.Register(this);
+        selectedCardOptionsPanel.SetUp(this);
     }
 
     public void AddToHand(List<Card> cards)
@@ -35,10 +40,69 @@ public class Player
         hand.Accept(cards);
     }
 
+    public bool CanActivate(Card card)
+    {
+        return (ACE.Equals(card.Name) || JACK.Equals(card.Name))
+            && !card.CurrentLocation.Equals(CardsActivated);
+    }
+
+    public void ConfigureSelectedCardDiscard(Card selectedCard)
+    {
+        selectedCardOptionsPanel.ConfigureAndDisplayDiscardOption(selectedCard);
+    }
+
+    public void ConfigureSelectedCardOptions(Card newSelectedCard, params Suit[] playableSuits)
+    {
+        Debug.Log(newSelectedCard + " has been selected in " + newSelectedCard.CurrentLocation);
+
+        if (selectedCard != null)
+        {
+            SelectableCards selectedCardLocation = (SelectableCards)selectedCard.CurrentLocation;
+            selectedCardLocation.Deselect(selectedCard);
+        }
+
+        if (newSelectedCard.Equals(selectedCard))
+        {
+            // reselection => deselection
+            selectedCard = null;
+        }
+        // TODO: if newSelectedCard is an active Jack backing a card which was already converted, block selection
+        else
+        {
+            selectedCard = newSelectedCard;
+            newSelectedCard.SetHeight(1);
+            newSelectedCard.Resize(1.5f);
+            SelectedCardOptionsPanel.ReInitialiser ri = selectedCardOptionsPanel.PrepareFor(newSelectedCard);
+            if (CanActivate(newSelectedCard)) ri.IncludeActivate();
+            if (Array.Exists(playableSuits, suit => newSelectedCard.Suit == suit)) ri.IncludePlay();
+            if (Array.Exists(playableSuits, suit => newSelectedCard.Suit != suit))
+            {
+                if (cardsActivated.Exists(card => JACK.Equals(card.Name) && card.Suit == newSelectedCard.Suit))
+                {
+                    ri.IncludePlayAs(Array.FindAll(playableSuits, suit => newSelectedCard.Suit != suit));
+                }
+                else
+                {
+                    Suit[] convertableSuits = Array.FindAll(playableSuits, suit =>
+                        suit != newSelectedCard.Suit
+                        && cardsActivated.Exists(card => JACK.Equals(card.Name) && card.Suit == suit));
+                    if (convertableSuits.Length > 0) ri.IncludePlayAs(convertableSuits);
+                }
+            }
+            ri.Display();
+        }
+    }
+
     public void Damage(int amount)
     {
         UpdateHP(hp - amount);
         // TODO: check for death
+    }
+
+    private void Deselect(Card card)
+    {
+        if (!card.Equals(selectedCard)) throw new Exception("Attempted to deselect a card which is not selected");
+        selectedCard = null;
     }
 
     public void Heal(int amount)
@@ -52,6 +116,11 @@ public class Player
     public bool IsAlive()
     {
         return hp > 0;
+    }
+
+    public bool IsHolding(Card card)
+    {
+        return hand.Contains(card) || cardsActivated.Contains(card);
     }
 
     public void UpdateHP(int newValue)
@@ -72,13 +141,37 @@ public class Player
         if (hp != newValue) Timer.DelayThenInvoke(0.05f, this.UpdateHP, newValue);
     }
 
-    class CardsActivatedZone : CardZone
+    abstract class SelectableCards : CardZone
+    {
+        protected Player player;
+
+        public void Register(Player player)
+        {
+            this.player = player;
+        }
+
+        public void Deselect(Card card)
+        {
+            var allCards = Cards;
+            CardUtil.Sort(allCards);
+            var i = allCards.IndexOf(card);
+            card.SetHeight(i * 0.01f);
+            card.Resize(1);
+            selectedCardOptionsPanel.Hide();
+        }
+    }
+
+    class CardsActivatedZone : SelectableCards
     {
         private static readonly Vector3 leftPosition = new Vector3(-3.87f, -1.75f, 0);
 
-        public override void NotifySelectionByUser(Card selectedCard) { }
-
         protected override void ProcessNewCards(List<Card> newCards)
+        {
+            AdjustPositions();
+            // TODO: if an Ace is activated during an encounter, check whether it affects any played cards
+        }
+
+        private void AdjustPositions()
         {
             var allCards = Cards;
             CardUtil.Sort(allCards);
@@ -91,13 +184,18 @@ public class Player
                 card.MoveTo(leftPosition + positionAdjustment, tracker, true);
             }
         }
+
+        public override void Unregister(Card card)
+        {
+            player.Deselect(card);
+            base.Unregister(card);
+            AdjustPositions();
+        }
     }
 
     class CardsPlayedZone : CardZone
     {
         private static readonly Vector3 leftPosition = new Vector3(-3.87f, 3.85f, 0);
-
-        public override void NotifySelectionByUser(Card selectedCard) { }
 
         protected override void ProcessNewCards(List<Card> newCards)
         {
@@ -118,63 +216,24 @@ public class Player
     {
         private static Vector3 characterCardPosition = new Vector3(-1, 1, 0);
 
-        public override void NotifySelectionByUser(Card selectedCard) { }
-
         protected override void ProcessNewCards(List<Card> newCards)
         {
-            if (Cards.Count != 1) throw new System.Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
+            if (Cards.Count != 1) throw new Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
             CardController.MovementTracker tracker = cardsInMotion[newCards[0]];
             newCards[0].MoveTo(characterCardPosition, tracker, true);
         }
     }
 
-    class HandZone : CardZone
+    class HandZone : SelectableCards
     {
         private static readonly Vector3 handPosition = new Vector3(0, -3.8f, 0);
         private static HandObject leftHand;
         private static HandObject rightHand;
-        private Card selectedCard;
-        //private readonly SelectedCardOptionsPanel selectedCardOptions;
 
         void Start()
         {
             leftHand = GameObject.Find("LeftHand").GetComponent<HandObject>();
             rightHand = GameObject.Find("RightHand").GetComponent<HandObject>();
-        }
-
-        public override void NotifySelectionByUser(Card newSelectedCard)
-        {
-            Debug.Log("Clicked on " + newSelectedCard + " from hand");
-            if (this.selectedCard != null)
-            {
-                var allCards = Cards;
-                CardUtil.Sort(allCards);
-                var i = allCards.IndexOf(this.selectedCard);
-                this.selectedCard.SetHeight(i * 0.01f);
-                this.selectedCard.Resize(1);
-                selectedCardOptions.Hide();
-            }
-
-            if (newSelectedCard.Equals(this.selectedCard))
-            {
-                // reselection => deselection
-                this.selectedCard = null;
-            }
-            else
-            {
-                this.selectedCard = newSelectedCard;
-                newSelectedCard.SetHeight(1);
-                newSelectedCard.Resize(1.5f);
-                selectedCardOptions.PrepareFor(newSelectedCard)
-                    .IncludeActivate()
-                    .IncludePlay()
-                    .IncludePlayAsClub()
-                    .IncludePlayAsDiamond()
-                    .IncludePlayAsHeart()
-                    .IncludePlayAsSpade()
-                    .Display();
-                //selectedCardOptions.ConfigureAndDisplayDiscardOption(newSelectedCard);
-            }
         }
 
         protected override void ProcessNewCards(List<Card> newCards)
@@ -204,8 +263,7 @@ public class Player
 
         public override void Unregister(Card card)
         {
-            if (!card.Equals(selectedCard)) throw new System.Exception("Attempted to remove a nonselected card from player's hand");
-            selectedCard = null;
+            player.Deselect(card);
             base.Unregister(card);
             AdjustPositions();
         }

@@ -1,5 +1,6 @@
 using ExtensionMethods;
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,6 +42,11 @@ public class GameState
         }
     }
 
+    public static void NotifyCardSelected(Card card)
+    {
+        if (instance.locked == false) instance.CardSelected(card);
+    }
+
     public static void NotifyCardsReceived(CardZone cardZone, List<Card> cards)
     {
         instance.NewCards(cardZone, cards);
@@ -76,7 +82,18 @@ public class GameState
         instance.locked = false;
     }
 
-// instance methods are only visible to the class/instance
+    // instance methods are only visible to the class/instance
+
+    private void CardSelected(Card card)
+    {
+        switch (currentPhase)
+        {
+            case Phase.InEncounter:
+                currentEncounter.CardSelected(card);
+                break;
+            // TODO: add case for Phase.InTown
+        }
+    }
 
     private bool IsPlayerAlive()
     {

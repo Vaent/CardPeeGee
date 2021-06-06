@@ -30,4 +30,7 @@ public class Trap : Encounter
         // TODO: calculate and apply amended damage
         // TODO: cleanup, end the encounter
     }
+
+    // Traps are resolved automatically - there is no opportunity to play cards in Vanilla CardPeeGee
+    public override void CardSelected(Card card) { }
 }

@@ -1,5 +1,6 @@
+using static Constant;
 using ExtensionMethods;
-﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,8 +51,32 @@ public abstract class Encounter
 
     public abstract void BeginImpl();
 
+    public abstract void CardSelected(Card card);
+
     public void HappensTo(Player player)
     {
         this.player = player;
+    }
+
+    protected bool PlayerCanConvert(Card card, params Suit[] targetSuits)
+    {
+        return player.CardsActivated.Exists(activeCard =>
+            activeCard != card
+            && JACK.Equals(activeCard.Name)
+            && ((activeCard.Suit == card.Suit) || Array.Exists(targetSuits, suit => activeCard.Suit == suit)));
+    }
+
+    protected bool PlayerCanUse(Card card, params Suit[] playableSuits)
+    {
+        return PlayerCanUse(card, true, playableSuits);
+    }
+
+    protected bool PlayerCanUse(Card card, bool allowActivate, params Suit[] playableSuits)
+    {
+        if (!player.IsHolding(card)) return false;
+
+        return Array.Exists(playableSuits, suit => card.Suit == suit)
+            || (allowActivate && player.CanActivate(card))
+            || PlayerCanConvert(card, playableSuits);
     }
 }

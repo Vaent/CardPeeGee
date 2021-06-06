@@ -48,6 +48,7 @@ public class Player
 
     public void ConfigureSelectedCardDiscard(Card selectedCard)
     {
+        // TODO: share logic from ConfigureOptions method to record new selection, resize/raise/lower cards etc
         selectedCardOptionsPanel.ConfigureAndDisplayDiscardOption(selectedCard);
     }
 
@@ -66,7 +67,10 @@ public class Player
             // reselection => deselection
             selectedCard = null;
         }
-        // TODO: if newSelectedCard is an active Jack backing a card which was already converted, block selection
+        else if (ConvertedCardRequires(newSelectedCard))
+        {
+            // TODO: display a message advising the card cannot be played because it was used to convert another card
+        }
         else
         {
             selectedCard = newSelectedCard;
@@ -91,6 +95,19 @@ public class Player
             }
             ri.Display();
         }
+    }
+
+    private bool ConvertedCardRequires(Card newSelectedCard)
+    {
+        return JACK.Equals(newSelectedCard.Name)
+            && CardsActivated.Equals(newSelectedCard.CurrentLocation)
+            && CardsPlayed.Exists(card =>
+                card.IsConvertedSuit()
+                && (card.Suit == newSelectedCard.Suit || card.NaturalSuit == newSelectedCard.Suit)
+                && !CardsActivated.Exists(activeCard =>
+                    JACK.Equals(activeCard.Name)
+                    && (card.Suit == activeCard.Suit || card.NaturalSuit == activeCard.Suit)
+                    && !activeCard.Equals(newSelectedCard)));
     }
 
     public void Damage(int amount)

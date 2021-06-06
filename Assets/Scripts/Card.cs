@@ -24,6 +24,8 @@ public class Card
     // accessors
     public CardZone CurrentLocation => currentLocation;
     public string Name => name;
+    public Suit NaturalSuit => suit;
+    public int NaturalValue => value;
     // the following use converted values if set, otherwise base values
     public Suit Suit => convertedSuit ?? suit;
     public int Value => convertedValue ?? value;
@@ -67,6 +69,11 @@ public class Card
     public void Hide()
     {
         cardController.Kill();
+    }
+
+    public bool IsConvertedSuit()
+    {
+        return convertedSuit != null;
     }
 
     public void MoveTo(Vector3 newPosition)

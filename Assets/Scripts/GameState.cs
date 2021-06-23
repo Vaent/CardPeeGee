@@ -126,7 +126,7 @@ public class GameState
 
     private void NewCardsInEncounter(CardZone cardZone, List<Card> cards)
     {
-        // placeholder
+        currentEncounter.CardsArrivedAt(cardZone, cards);
     }
 
     private void NewCardsInTown(CardZone cardZone, List<Card> cards)

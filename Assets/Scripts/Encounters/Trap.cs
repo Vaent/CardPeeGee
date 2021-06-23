@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using static System.Math;
 using UnityEngine;
 
@@ -26,11 +25,17 @@ public class Trap : Encounter
     public override void BeginImpl()
     {
         Debug.Log("Trap has been triggered");
-        // TODO: calculate player's evasion score
-        // TODO: calculate and apply amended damage
-        // TODO: cleanup, end the encounter
+        // TODO: deal score cards
     }
 
     // Traps are resolved automatically - there is no opportunity to play cards in Vanilla CardPeeGee
     public override void CardSelected(Card card) { }
+
+    public override void CardsArrivedAt(CardZone cardZone, List<Card> cards)
+    {
+        // TODO: verify cardZone = StagingArea
+        // TODO: calculate scores
+        // TODO: display result/deal damage if applicable
+        // TODO: tear down
+    }
 }

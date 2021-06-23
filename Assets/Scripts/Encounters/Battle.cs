@@ -30,9 +30,7 @@ public class Battle : Encounter
         if (!battleHasStarted) battleHasStarted = true;
         // TODO: check for played cards and apply effects
         // TODO: deal cards for the player and each enemy
-        // TODO: calculate the winner(s) and deal damage
-        // TODO: return cards to the deck
-        // TODO: end the encounter if player or all enemies are dead
+        // (N.B. deals are staggered in the original - can implement this with tracking and recursion in CardsArrivedAt)
     }
 
     public override void BeginImpl()
@@ -46,5 +44,19 @@ public class Battle : Encounter
     {
         if ((battleHasStarted && !isHealerBattle) || !PlayerCanUse(card, Suit.Club, Suit.Spade)) return;
         player.ConfigureSelectedCardOptions(card, Suit.Club, Suit.Spade);
+    }
+
+    public override void CardsArrivedAt(CardZone cardZone, List<Card> cards)
+    {
+        if (cardZone is StagingArea)
+        {
+            // TODO: calculate scores, deal damage if applicable
+            // TODO: end the encounter if all enemies are dead
+            // TODO: return cards to the deck and unlock GameState if encounter is still active
+        }
+        else if (cardZone is Deck)
+        {
+            GameState.Unlock();
+        }
     }
 }

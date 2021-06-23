@@ -1,11 +1,11 @@
 using ExtensionMethods;
-﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Treasure : Encounter
 {
     private List<Card> trapsOnChest;
+    private Card trapSelectedForDisarm;
 
     public Treasure(List<Card> cards) : base(cards)
     {
@@ -15,11 +15,7 @@ public class Treasure : Encounter
 
     public override void Advance()
     {
-        // TODO: determine scores for the player and selected trap,
-        // deal damage or remove the trap if appropriate,
-        // deliver treasure if no traps remain.
-        // N.B. need a way to identify which trap was selected
-        // when there is more than one trap on the chest.
+        // TODO: deal score cards
     }
 
     public override void BeginImpl()
@@ -41,11 +37,28 @@ public class Treasure : Encounter
     {
         if (trapsOnChest.Contains(card))
         {
-            // TODO: run a disarm attempt for the selected trap card
+            trapSelectedForDisarm = card;
+            // TODO: deal score cards
         }
         else if (PlayerCanUse(card, Suit.Spade))
         {
             player.ConfigureSelectedCardOptions(card, Suit.Spade);
+        }
+    }
+
+    public override void CardsArrivedAt(CardZone cardZone, List<Card> cards)
+    {
+        if (cardZone is StagingArea)
+        {
+            // TODO: calculate scores
+            // TODO: deal damage/remove trap if applicable
+            // if (trapsOnChest.Count == 0) DeliverTreasure();
+            // TODO: return cards to the deck and unlock GameState if encounter is still active
+            trapSelectedForDisarm = null;
+        }
+        else if (cardZone is Deck)
+        {
+            GameState.Unlock();
         }
     }
 

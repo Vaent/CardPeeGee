@@ -37,7 +37,7 @@ public abstract class Encounter
                 return new Trap(cards);
             default:
                 // provided to satisfy the compiler - this branch should be unreachable
-                throw new System.Exception("Card suit could not be determined");
+                throw new Exception("Card suit could not be determined");
         }
     }
 
@@ -45,13 +45,15 @@ public abstract class Encounter
 
     public void Begin()
     {
-        if (player == null) throw new System.Exception("Attempted to Begin encounter with no Player");
+        if (player == null) throw new Exception("Attempted to Begin encounter with no Player");
         BeginImpl();
     }
 
     public abstract void BeginImpl();
 
     public abstract void CardSelected(Card card);
+
+    public abstract void CardsArrivedAt(CardZone cardZone, List<Card> cards);
 
     public void HappensTo(Player player)
     {

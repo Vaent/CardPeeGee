@@ -1,7 +1,5 @@
 using ExtensionMethods;
-﻿using System.Collections;
 using System.Collections.Generic;
-using static System.Convert;
 using static System.Math;
 using UnityEngine;
 
@@ -25,9 +23,15 @@ public class Healer : Encounter
 
     public override void Advance()
     {
-        // TODO: resolve battle if applicable
-        // TODO: resolve fee if applicable and no battle
-        // TODO: deliver healing (and potions) to player if no battle/fee
+        if (battleToResolve != null)
+        {
+            battleToResolve.Advance();
+        }
+        else
+        {
+            // while paying a fee, GameState is unlocked but the encounter cannot be advanced directly
+            Debug.Log("Healer.Advance() called with no effect");
+        }
     }
 
     public override void BeginImpl()
@@ -72,6 +76,24 @@ public class Healer : Encounter
             // convert options should be included ONLY if active Aces would increase the card's effective value
             // this will require an extension/alternative to the default implementation which allows all conversions if possible
             player.ConfigureSelectedCardOptions(card, Suit.Club, Suit.Diamond, Suit.Heart, Suit.Spade);
+        }
+    }
+
+    public override void CardsArrivedAt(CardZone cardZone, List<Card> cards)
+    {
+        if (battleToResolve != null)
+        {
+            battleToResolve.CardsArrivedAt(cardZone, cards);
+        }
+        else if (player.CardsActivated.Equals(cardZone) || player.CardsPlayed.Equals(cardZone))
+        {
+            // TODO: calculate how much of the fee has been paid, update display
+            // TODO: deliver healing (and potions) to player if fee has been fully paid
+            // TODO: unlock GameState if fee has not been fully paid
+        }
+        else if (cardZone is Deck)
+        {
+            GameState.Unlock();
         }
     }
 

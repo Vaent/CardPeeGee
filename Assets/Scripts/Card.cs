@@ -133,7 +133,12 @@ public class Card
 
     public override string ToString()
     {
-        return name + "_" + Suit;
+        return name + "_" + suit;
+    }
+
+    public string ToStringForDisplay()
+    {
+        return name + " of " + suit + "s";
     }
 
     public string ToStringVerbose()

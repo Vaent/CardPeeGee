@@ -1,6 +1,3 @@
-using ExtensionMethods;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +9,6 @@ public class GameState
     private Encounter currentEncounter;
     private Phase currentPhase;
     private Deck deck;
-    private TextMesh eventText3;
     private bool locked;
     private Player player;
     private StagingArea stagingArea;
@@ -149,7 +145,6 @@ public class GameState
     private void PlayerCreated(Player player)
     {
         this.player = player;
-        this.eventText3.text = "";
         this.currentPhase = Phase.NewDay;
         this.locked = false;
     }
@@ -158,13 +153,8 @@ public class GameState
     {
         currentPhase = Phase.PlayerCreation;
         player = null;
-        if (eventText3 == null)
-        {
-            GameObject et3 = GameObject.Find("eventtext3");
-            eventText3 = et3.GetComponent<TextMesh>();
-        }
-        var hpDisplay = GameObject.Find("hptext").GetComponent<TextMesh>();
-        PlayerCreator.Initialise(deck, stagingArea, eventText3, hpDisplay);
+        GameObject.Find("eventtext3").GetComponent<TextMesh>().text = "";
+        PlayerCreator.Initialise(deck, stagingArea);
     }
 
 // GameState.Phase is managed internally through the currentPhase field

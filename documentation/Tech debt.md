@@ -8,10 +8,7 @@
 
 ### Desired
 
-- Improve text display system (e.g. messages showing progress of player creation).
-  - Add a utility to manage text placement (get rid of `"\n\n\n\n..."`).
-  - See if we can find a better way to update text than directly setting a TextMesh.text value i.e. abstract the TextMesh away from the class which wants to display a message but doesn't really care how it's done.
-  - Proposal: introduce a separate text display manager which can potentially create and drop TextMesh instances as required rather than relying on preset objects.
+- Improve referencing in the Text utility.
 - Reduce the use of magic numbers e.g. number of cards in starting hand.
   - Ultimately most of these parameters should be redefinable to support extensions to the base game.
 

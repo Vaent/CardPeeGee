@@ -18,12 +18,12 @@ A decision was made to replace this setup with something more robust rather than
 
 - A static `Text` class provides a common 'point of entry' for message display functionality.
 - `Text` maintains a reference to a basic TextMesh prefab.
-- Nested classes within `Text` provide specialised content grouped by event/purpose.
-  - Initially these mirror the 'event' classes which will call on the relevant content; this convention is likely to persist.
-- TextMesh instances are created from the prefab as required for each message, and are destroyed when the event is completed.
-- All nested classes extend an abstract `BaseText` class which defines the common functionality.
+  - TextMesh instances are created from the prefab as required, and destroyed when the relevant context ends.
+- `Text` defines a nested `Options` class which can be used to configure certain properties of the TextMesh.
+- Other nested classes within `Text` provide specialised content grouped by event/purpose.
+  - Initially these mirror the classes which will call on the relevant content; this convention is likely to persist.
+- An abstract `BaseText` class defines the functionality of these specialised classes.
 - Implementations of `BaseText` therefore only need to define message content and lightweight formatting details.
-  - Overloads can be added when a need is identified e.g. to display a message at a different position than its default.
 - `BaseText` and its implementations are structured as 'pseudo-singletons' with all interactions through static members (constructors are public to satisfy the generic definition only).
 
 Example: the `PlayerCreator` utility displays progress updates as cards are dealt. The default text of each message is stored in `Text.PlayerCreator` and associated to a publicly visible reference. To display the `HPCalculated` message, `PlayerCreator` makes a call to `Text.PlayerCreator.Display()` passing in the reference and additional arguments for the format string.
@@ -34,7 +34,7 @@ Named references are defined in a enum but methods provided by the abstract base
 
 Callers must look up the message text in the relevant implementation and determine what arguments (if any) the format string expects. This is cumbersome and likely to be error-prone as bad calls will only be detected at runtime. Messages should be associated with details of expected objects for interpolation; at minimum the number of objects should be known and a description provided.
 
-Introducing a custom `TextReference` class to replace the enum could solve both the above concerns and future design work is likely to consider how this can best be implemented.
+Introducing a custom `TextReference` class/struct to replace the enum could solve both of the above concerns and future design work is likely to consider how this can best be implemented.
 
 ## Exceptions to the use of Text classes
 

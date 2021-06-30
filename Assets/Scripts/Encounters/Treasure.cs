@@ -1,11 +1,16 @@
 using ExtensionMethods;
 using System.Collections.Generic;
+using static Text.Treasure.TextReference;
 using UnityEngine;
 
 public class Treasure : Encounter
 {
+    private static readonly Color themeColor = Color.yellow;
+
     private List<Card> trapsOnChest;
     private Card trapSelectedForDisarm;
+
+    protected override Color ThemeColor => themeColor;
 
     public Treasure(List<Card> cards) : base(cards)
     {
@@ -18,9 +23,10 @@ public class Treasure : Encounter
         // TODO: deal score cards
     }
 
-    public override void BeginImpl()
+    protected override void BeginImpl()
     {
         Debug.Log("Found a treasure");
+        Text.Treasure.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
         if (trapsOnChest.Count == 0)
         {
             DeliverTreasure();

@@ -1,12 +1,17 @@
 using ExtensionMethods;
 using System.Collections.Generic;
+using static Text.Battle.TextReference;
 using UnityEngine;
 
 public class Battle : Encounter
 {
+    private static readonly Color themeColor = Color.green;
+
     private bool battleHasStarted;
     private List<Monster> enemies;
     private bool isHealerBattle;
+
+    protected override Color ThemeColor => themeColor;
 
     public Battle(List<Card> cards) : base(cards)
     {
@@ -33,9 +38,10 @@ public class Battle : Encounter
         // (N.B. deals are staggered in the original - can implement this with tracking and recursion in CardsArrivedAt)
     }
 
-    public override void BeginImpl()
+    protected override void BeginImpl()
     {
         Debug.Log("Beginning a battle against " + enemies.Print());
+        Text.Battle.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
         // TODO: prompt to activate/play cards then click the deck
         GameState.Unlock();
     }

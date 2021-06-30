@@ -3,9 +3,64 @@ using UnityEngine;
 
 public static class Text
 {
+    private static readonly Vector2 defaultPositionAnnounceEncounter = new Vector2(7.5f, 2.5f);
     private static readonly Vector2 defaultPositionBelowDealtCards = new Vector2(0.7f, 0.5f);
     private static readonly Vector2 defaultPositionBelowDealtCardsPostScript = new Vector2(0.7f, 0.0f);
     private static readonly GameObject prefabTextMesh = Resources.Load<GameObject>("Prefab Text Mesh");
+
+    public class Options
+    {
+        public TextAlignment? TextAlignment { get; private set; }
+        public TextAnchor? TextAnchor { get; private set; }
+        public Color TextColor { get; private set; }
+        public byte TextSize { get; private set; }
+        public FontStyle? TextStyle { get; private set; }
+
+        public Options Align(TextAlignment alignment)
+        {
+            TextAlignment = alignment;
+            return this;
+        }
+
+        public Options Anchor(TextAnchor anchor)
+        {
+            TextAnchor = anchor;
+            return this;
+        }
+
+        public Options Color(Color color)
+        {
+            TextColor = color;
+            return this;
+        }
+
+        public Options Size(byte size)
+        {
+            TextSize = size;
+            return this;
+        }
+
+        public Options Size(TextSize size)
+        {
+            TextSize = (byte)size;
+            return this;
+        }
+
+        public Options Style(FontStyle style)
+        {
+            TextStyle = style;
+            return this;
+        }
+    }
+
+    public enum TextSize
+    {
+        Large = 50,
+        Small = 35,
+        Standard = 40
+    }
+
+    // BaseText and its implementations are defined below
 
     public abstract class BaseText<T> where T : BaseText<T>, new()
     {
@@ -17,16 +72,43 @@ public static class Text
 
         public static void Display(int reference, params object[] formatStringParams)
         {
+            DisplayFormatted(null, reference, formatStringParams);
+        }
+
+        public static void DisplayFormatted(Options options, int reference, params object[] formatStringParams)
+        {
             TextMesh textMesh = instance.GetTextMeshFor(reference);
             textMesh.transform.Translate(instance.DefaultPositions[reference]);
             textMesh.text = string.Format(instance.TextValues[reference], formatStringParams);
+            if (options != null) Format(textMesh, options);
             textMesh.gameObject.SetActive(true);
         }
 
-        public static void DisplayTemporary(int reference, float seconds, params object[] formatStringParams)
+        private static void Format(TextMesh textMesh, Options options)
         {
-            Display(reference, formatStringParams);
-            Timer.DelayThenInvoke(seconds, Hide, reference);
+            if (options.TextAlignment != null)
+            {
+                textMesh.alignment = (TextAlignment)options.TextAlignment;
+                if (options.TextAnchor == null)
+                {
+                    switch (textMesh.alignment)
+                    {
+                        case TextAlignment.Center:
+                            textMesh.anchor = TextAnchor.UpperCenter;
+                            break;
+                        case TextAlignment.Left:
+                            textMesh.anchor = TextAnchor.UpperLeft;
+                            break;
+                        case TextAlignment.Right:
+                            textMesh.anchor = TextAnchor.UpperRight;
+                            break;
+                    }
+                }
+            }
+            if (options.TextAnchor != null) textMesh.anchor = (TextAnchor)options.TextAnchor;
+            if (options.TextColor != null) textMesh.color = options.TextColor;
+            if (options.TextSize > 0) textMesh.fontSize = options.TextSize;
+            if (options.TextStyle > 0) textMesh.fontStyle = (FontStyle)options.TextStyle;
         }
 
         private TextMesh GetTextMeshFor(int reference)
@@ -52,7 +134,7 @@ public static class Text
             }
             catch (KeyNotFoundException)
             {
-                Debug.LogWarningFormat("Attempted to Hide({0}) but no mesh found", reference);
+                Debug.LogWarning($"Attempted to Hide({reference}) but no mesh found");
             }
         }
 
@@ -68,10 +150,32 @@ public static class Text
 
     public sealed class Battle : BaseText<Battle>
     {
+        public Battle()
+        {
+            TextValues.Add((int)TextReference.Announce, "a MONSTER\nattacks you");
+
+            DefaultPositions.Add((int)TextReference.Announce, defaultPositionAnnounceEncounter);
+        }
+
+        public enum TextReference
+        {
+            Announce
+        }
     }
 
     public sealed class Healer : BaseText<Healer>
     {
+        public Healer()
+        {
+            TextValues.Add((int)TextReference.Announce, "you meet a\nHEALER");
+
+            DefaultPositions.Add((int)TextReference.Announce, defaultPositionAnnounceEncounter);
+        }
+
+        public enum TextReference
+        {
+            Announce
+        }
     }
 
     public sealed class PlayerCreator : BaseText<PlayerCreator>
@@ -103,9 +207,31 @@ public static class Text
 
     public sealed class Trap : BaseText<Trap>
     {
+        public Trap()
+        {
+            TextValues.Add((int)TextReference.Announce, "it's a\nTRAP!");
+
+            DefaultPositions.Add((int)TextReference.Announce, defaultPositionAnnounceEncounter);
+        }
+
+        public enum TextReference
+        {
+            Announce
+        }
     }
 
     public sealed class Treasure : BaseText<Treasure>
     {
+        public Treasure()
+        {
+            TextValues.Add((int)TextReference.Announce, "you find a\nTREASURE\nCHEST");
+
+            DefaultPositions.Add((int)TextReference.Announce, defaultPositionAnnounceEncounter);
+        }
+
+        public enum TextReference
+        {
+            Announce
+        }
     }
 }

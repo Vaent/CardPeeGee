@@ -5,6 +5,7 @@
 ### Required
 
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
+- Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
 
 ### Desired
 

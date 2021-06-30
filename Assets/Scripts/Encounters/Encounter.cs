@@ -10,6 +10,8 @@ public abstract class Encounter
     protected Player player;
     protected readonly List<Card> props;
 
+    protected abstract Color ThemeColor { get; }
+
     // no-args constructor is only for cases where agitator/props are not used by the inheriting class
     // notable example: a Battle created for a Healer which has club props
     protected Encounter() { }
@@ -43,13 +45,22 @@ public abstract class Encounter
 
     public abstract void Advance();
 
+    protected Text.Options AnnounceTextOptions()
+    {
+        return new Text.Options()
+            .Align(TextAlignment.Center)
+            .Color(ThemeColor)
+            .Size(Text.TextSize.Large)
+            .Style(FontStyle.Bold);
+    }
+
     public void Begin()
     {
         if (player == null) throw new Exception("Attempted to Begin encounter with no Player");
         BeginImpl();
     }
 
-    public abstract void BeginImpl();
+    protected abstract void BeginImpl();
 
     public abstract void CardSelected(Card card);
 

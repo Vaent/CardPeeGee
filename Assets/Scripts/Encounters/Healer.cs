@@ -1,14 +1,19 @@
 using ExtensionMethods;
 using System.Collections.Generic;
 using static System.Math;
+using static Text.Healer.TextReference;
 using UnityEngine;
 
 public class Healer : Encounter
 {
+    private static readonly Color themeColor = Color.cyan;
+
     private Battle battleToResolve;
     private int feeToPay;
     private int healingAmount;
     private List<Card> potions;
+
+    protected override Color ThemeColor => themeColor;
 
     public Healer(List<Card> cards) : base(cards)
     {
@@ -34,8 +39,9 @@ public class Healer : Encounter
         }
     }
 
-    public override void BeginImpl()
+    protected override void BeginImpl()
     {
+        Text.Healer.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
         if (battleToResolve != null)
         {
             Debug.Log("Need to fight jailor(s) to free the healer");

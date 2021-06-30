@@ -1,11 +1,16 @@
 ﻿using System.Collections.Generic;
 using static System.Math;
+using static Text.Trap.TextReference;
 using UnityEngine;
 
 public class Trap : Encounter
 {
+    private static readonly Color themeColor = new Color(0.75f, 0.75f, 0.75f);
+
     private int baseDamage;
     private int trapDifficulty;
+
+    protected override Color ThemeColor => themeColor;
 
     public Trap(List<Card> cards) : base(cards)
     {
@@ -22,9 +27,10 @@ public class Trap : Encounter
     // Traps are resolved automatically - Advance() should never be called
     public override void Advance(){ }
 
-    public override void BeginImpl()
+    protected override void BeginImpl()
     {
         Debug.Log("Trap has been triggered");
+        Text.Trap.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
         // TODO: deal score cards
     }
 

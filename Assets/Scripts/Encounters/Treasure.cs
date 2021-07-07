@@ -26,7 +26,7 @@ public class Treasure : Encounter
     protected override void BeginImpl()
     {
         Debug.Log("Found a treasure");
-        Text.Treasure.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
+        Text.Treasure.DisplayFormatted(StrongTextOptions(), (int)Announce);
         if (trapsOnChest.Count == 0)
         {
             DeliverTreasure();

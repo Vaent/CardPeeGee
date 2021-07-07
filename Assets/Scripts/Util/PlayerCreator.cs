@@ -73,7 +73,7 @@ public class PlayerCreator
     {
         if (candidate.Name.Equals("Queen") || candidate.Name.Equals("King"))
         {
-            Text.PlayerCreator.Display((int)CharacterIdentified, candidate.ToStringForDisplay());
+            Text.PlayerCreator.DisplayAsExtension((int)CharacterIdentified, (int)CharacterSearch, candidate.ToStringForDisplay());
             Timer.DelayThenInvoke(2, CharacterCardCallback, candidate);
         }
         else
@@ -92,7 +92,7 @@ public class PlayerCreator
     {
         int hp = 15 + CardUtil.SumValues(cards);
         List<int> cardValues = cards.ConvertAll(card => card.Value);
-        Text.PlayerCreator.Display((int)HPCalculated, hp, string.Join(" + ", cardValues));
+        Text.PlayerCreator.DisplayAsExtension((int)HPCalculated, (int)HPSearch, hp, string.Join(" + ", cardValues));
         player.Heal(hp);
         Timer.DelayThenInvoke(2, HPCallback);
     }

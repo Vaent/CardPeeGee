@@ -41,7 +41,7 @@ public class Healer : Encounter
 
     protected override void BeginImpl()
     {
-        Text.Healer.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
+        Text.Healer.DisplayFormatted(StrongTextOptions(), (int)Announce);
         if (battleToResolve != null)
         {
             Debug.Log("Need to fight jailor(s) to free the healer");

@@ -41,7 +41,7 @@ public class Battle : Encounter
     protected override void BeginImpl()
     {
         Debug.Log("Beginning a battle against " + enemies.Print());
-        Text.Battle.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
+        Text.Battle.DisplayFormatted(StrongTextOptions(), (int)Announce);
         // TODO: prompt to activate/play cards then click the deck
         GameState.Unlock();
     }

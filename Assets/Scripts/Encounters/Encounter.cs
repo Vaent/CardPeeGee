@@ -45,7 +45,7 @@ public abstract class Encounter
 
     public abstract void Advance();
 
-    protected Text.Options AnnounceTextOptions()
+    protected Text.Options StrongTextOptions()
     {
         return new Text.Options()
             .Align(TextAlignment.Center)

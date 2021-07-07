@@ -6,15 +6,34 @@ public static class Text
     private static readonly Vector2 defaultPositionAnnounceEncounter = new Vector2(7.5f, 2.5f);
     private static readonly Vector2 defaultPositionBelowDealtCards = new Vector2(0.7f, 0.5f);
     private static readonly Vector2 defaultPositionBelowDealtCardsPostScript = new Vector2(0.7f, 0.0f);
-    private static readonly GameObject prefabTextMesh = Resources.Load<GameObject>("Prefab Text Mesh");
+    private static readonly TextMesh prefabTextMesh = Resources.Load<TextMesh>("Prefab Text Mesh");
 
     public class Options
     {
         public TextAlignment? TextAlignment { get; private set; }
         public TextAnchor? TextAnchor { get; private set; }
-        public Color TextColor { get; private set; }
+        public Color? TextColor { get; private set; }
+        public Vector2? TextPosition { get; private set; }
         public byte TextSize { get; private set; }
         public FontStyle? TextStyle { get; private set; }
+
+        public Options() { }
+
+        public Options(TextMesh source)
+        {
+            if (source == null)
+            {
+                Debug.LogWarning("Invalid source provided for Options; an empty Options instance will be supplied");
+            }
+            else
+            {
+                if (!prefabTextMesh.alignment.Equals(source.alignment)) Align(source.alignment);
+                if (!prefabTextMesh.anchor.Equals(source.anchor)) Anchor(source.anchor);
+                if (!prefabTextMesh.color.Equals(source.color)) Color(source.color);
+                if (!prefabTextMesh.fontSize.Equals(source.fontSize)) Size((byte)source.fontSize);
+                if (!prefabTextMesh.fontStyle.Equals(source.fontStyle)) Style(source.fontStyle);
+            }
+        }
 
         public Options Align(TextAlignment alignment)
         {
@@ -31,6 +50,12 @@ public static class Text
         public Options Color(Color color)
         {
             TextColor = color;
+            return this;
+        }
+
+        public Options Position(Vector2 position)
+        {
+            TextPosition = position;
             return this;
         }
 
@@ -75,6 +100,24 @@ public static class Text
             DisplayFormatted(null, reference, formatStringParams);
         }
 
+        public static void DisplayAsExtension(int newReference, int referenceBeingExtended, params object[] formatStringParams)
+        {
+            if (instance.TextMeshes.ContainsKey(referenceBeingExtended))
+            {
+                TextMesh textMesh = instance.TextMeshes[referenceBeingExtended];
+                Vector2 extensionPosition = textMesh.transform.position;
+                extensionPosition.y -= textMesh.GetComponent<MeshRenderer>().bounds.size.y;
+                // TODO: infer x/y extension from textMesh alignment & anchor, add x alternative to y logic above
+                Options options = new Options(textMesh).Position(extensionPosition);
+                DisplayFormatted(options, newReference, formatStringParams);
+            }
+            else
+            {
+                Debug.LogError("Attempted to extend text which has not been displayed");
+                Display(newReference, formatStringParams);
+            }
+        }
+
         public static void DisplayFormatted(Options options, int reference, params object[] formatStringParams)
         {
             TextMesh textMesh = instance.GetTextMeshFor(reference);
@@ -106,7 +149,8 @@ public static class Text
                 }
             }
             if (options.TextAnchor != null) textMesh.anchor = (TextAnchor)options.TextAnchor;
-            if (options.TextColor != null) textMesh.color = options.TextColor;
+            if (options.TextColor != null) textMesh.color = (Color)options.TextColor;
+            if (options.TextPosition != null) textMesh.transform.position = (Vector2)options.TextPosition;
             if (options.TextSize > 0) textMesh.fontSize = options.TextSize;
             if (options.TextStyle > 0) textMesh.fontStyle = (FontStyle)options.TextStyle;
         }
@@ -210,13 +254,19 @@ public static class Text
         public Trap()
         {
             TextValues.Add((int)TextReference.Announce, "it's a\nTRAP!");
+            TextValues.Add((int)TextReference.Stats, "Difficulty: {0}\nDamage: {1}");
+            TextValues.Add((int)TextReference.AttemptEvade, "You try to\navoid it...");
 
             DefaultPositions.Add((int)TextReference.Announce, defaultPositionAnnounceEncounter);
+            DefaultPositions.Add((int)TextReference.Stats, new Vector2(7.5f, 0));
+            DefaultPositions.Add((int)TextReference.AttemptEvade, defaultPositionAnnounceEncounter);
         }
 
         public enum TextReference
         {
-            Announce
+            Announce,
+            Stats,
+            AttemptEvade
         }
     }
 

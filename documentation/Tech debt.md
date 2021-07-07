@@ -6,9 +6,13 @@
 
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
+- Rationalise debugs/reduce spam
 
 ### Desired
 
+- Add dev tools to facilitate manual testing
+  - Rapid startup/character creation
+  - Specify what cards to deal (for new encounter, scoring etc)
 - Improve referencing in the Text utility.
 - Reduce the use of magic numbers e.g. number of cards in starting hand.
   - Ultimately most of these parameters should be redefinable to support extensions to the base game.

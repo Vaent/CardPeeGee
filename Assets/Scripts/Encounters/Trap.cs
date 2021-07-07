@@ -7,6 +7,7 @@ public class Trap : Encounter
 {
     private static readonly Color themeColor = new Color(0.75f, 0.75f, 0.75f);
 
+    private bool active;
     private int baseDamage;
     private int trapDifficulty;
 
@@ -21,7 +22,6 @@ public class Trap : Encounter
         trapDifficulty = agitator.Value
             + CardUtil.SumValues(props, Suit.Spade)
             + (int)Ceiling((float)CardUtil.SumValues(props, Suit.Diamond) / 2);
-        Debug.Log("Trap difficulty: " + trapDifficulty + ", damage: " + baseDamage);
     }
 
     // Traps are resolved automatically - Advance() should never be called
@@ -29,9 +29,20 @@ public class Trap : Encounter
 
     protected override void BeginImpl()
     {
+        Debug.Log("Trap difficulty: " + trapDifficulty + ", damage: " + baseDamage);
         Debug.Log("Trap has been triggered");
-        Text.Trap.DisplayFormatted(AnnounceTextOptions(), (int)Announce);
-        // TODO: deal score cards
+        Text.Trap.DisplayFormatted(StrongTextOptions(), (int)Announce);
+        Text.Trap.DisplayFormatted(StrongTextOptions(), (int)Stats, trapDifficulty, baseDamage);
+        active = true;
+        Timer.DelayThenInvoke(1f, CalculateScores);
+    }
+
+    public void CalculateScores()
+    {
+        if (!active) throw new System.Exception("Invoked Trap.CalculateScores() out of turn");
+
+        Text.Trap.DisplayAsExtension((int)AttemptEvade, (int)Announce);
+        // TODO: calculate scores
     }
 
     // Traps are resolved automatically - there is no opportunity to play cards in Vanilla CardPeeGee

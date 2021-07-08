@@ -2,14 +2,12 @@
 using UnityEngine;
 
 public delegate void Callback();
-public delegate void CallbackCard(Card card);
-public delegate void CallbackInt(int i);
+public delegate void Callback<T>(T t);
 
 /* Singleton which provides "delay" functionality to classes which
 do not themselves extend MonoBehaviour.
 This script is attached to the EventSystem GameObject in Unity
-and should not be attached to any other objects.
-Additional delegate overloads may be added as required. */
+and should not be attached to any other objects. */
 public class Timer : MonoBehaviour
 {
     private static Timer instance;
@@ -24,14 +22,9 @@ public class Timer : MonoBehaviour
         instance.StartCoroutine(instance.DelInv(delaySeconds, callback));
     }
 
-    public static void DelayThenInvoke(float delaySeconds, CallbackCard callback, Card card)
+    public static void DelayThenInvoke<T>(float delaySeconds, Callback<T> callback, T t)
     {
-        instance.StartCoroutine(instance.DelInv(delaySeconds, callback, card));
-    }
-
-    public static void DelayThenInvoke(float delaySeconds, CallbackInt callback, int i)
-    {
-        instance.StartCoroutine(instance.DelInv(delaySeconds, callback, i));
+        instance.StartCoroutine(instance.DelInv(delaySeconds, callback, t));
     }
 
     private IEnumerator Delay(float seconds)
@@ -47,15 +40,9 @@ public class Timer : MonoBehaviour
         callback();
     }
 
-    private IEnumerator DelInv(float seconds, CallbackCard callback, Card card)
+    private IEnumerator DelInv<T>(float seconds, Callback<T> callback, T t)
     {
         yield return Delay(seconds);
-        callback(card);
-    }
-
-    private IEnumerator DelInv(float seconds, CallbackInt callback, int i)
-    {
-        yield return Delay(seconds);
-        callback(i);
+        callback(t);
     }
 }

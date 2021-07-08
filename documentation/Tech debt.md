@@ -11,7 +11,6 @@
 ### Desired
 
 - Add dev tools to facilitate manual testing
-  - Rapid startup/character creation
   - Specify what cards to deal (for new encounter, scoring etc)
 - Improve referencing in the Text utility.
 - Reduce the use of magic numbers e.g. number of cards in starting hand.

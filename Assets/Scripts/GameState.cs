@@ -34,7 +34,7 @@ public class GameState
         else if (instance.currentPhase == Phase.NewDay)
         {
             Debug.Log("New Encounter");
-            instance.deck.DealCards(instance.stagingArea, 3);
+            instance.deck.DealCards(3);
         }
     }
 
@@ -78,7 +78,7 @@ public class GameState
         instance.locked = false;
     }
 
-    // instance methods are only visible to the class/instance
+// instance methods are only visible to the class/instance
 
     private void CardSelected(Card card)
     {
@@ -166,4 +166,24 @@ public class GameState
         InEncounter,
         InTown
     }
+
+#if UNITY_EDITOR
+    public static void QuickStart()
+    {
+        if (!instance.IsPlayerAlive())
+        {
+            GameObject.Find("eventtext3").GetComponent<TextMesh>().text = "";
+            Player player = new Player(instance.deck.DrawCards(1)[0], GameObject.Find("hptext").GetComponent<TextMesh>());
+            player.Heal(30);
+            // delay so that Player.HandZone.Start() can be concluded before trying to add cards to the hand
+            Timer.DelayThenInvoke(0.01f, QuickStartCallback, player);
+        }
+    }
+
+    public static void QuickStartCallback(Player player)
+    {
+        player.AddToHand(instance.deck.DrawCards(5));
+        instance.PlayerCreated(player);
+    }
+#endif
 }

@@ -48,6 +48,28 @@ public class GameState
         instance.NewCards(cardZone, cards);
     }
 
+#if UNITY_EDITOR
+    #region Quick Start extension
+    public static void QuickStart()
+    {
+        if (!instance.IsPlayerAlive())
+        {
+            GameObject.Find("eventtext3").GetComponent<TextMesh>().text = "";
+            Player player = new Player(instance.deck.DrawCards(1)[0], GameObject.Find("hptext").GetComponent<TextMesh>());
+            player.Heal(30);
+            // delay so that Player.HandZone.Start() can be concluded before trying to add cards to the hand
+            Timer.DelayThenInvoke(0.01f, QuickStartCallback, player);
+        }
+    }
+
+    public static void QuickStartCallback(Player player)
+    {
+        player.AddToHand(instance.deck.DrawCards(5));
+        instance.PlayerCreated(player);
+    }
+    #endregion
+#endif
+
     public static void Register(CardZone cardZone)
     {
         if (cardZone is Deck)
@@ -166,24 +188,4 @@ public class GameState
         InEncounter,
         InTown
     }
-
-#if UNITY_EDITOR
-    public static void QuickStart()
-    {
-        if (!instance.IsPlayerAlive())
-        {
-            GameObject.Find("eventtext3").GetComponent<TextMesh>().text = "";
-            Player player = new Player(instance.deck.DrawCards(1)[0], GameObject.Find("hptext").GetComponent<TextMesh>());
-            player.Heal(30);
-            // delay so that Player.HandZone.Start() can be concluded before trying to add cards to the hand
-            Timer.DelayThenInvoke(0.01f, QuickStartCallback, player);
-        }
-    }
-
-    public static void QuickStartCallback(Player player)
-    {
-        player.AddToHand(instance.deck.DrawCards(5));
-        instance.PlayerCreated(player);
-    }
-#endif
 }

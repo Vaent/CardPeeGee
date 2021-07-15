@@ -1,5 +1,14 @@
 # Tech debt
 
+## Bugs
+
+- was able to select a Played card, clicking on it again to deselect threw an exception:
+```
+InvalidCastException: Specified cast is not valid.
+Player.ConfigureSelectedCardOptions (Card newSelectedCard, Suit[] playableSuits) (at Assets/Scripts/Player.cs:61)
+```
+Context of the above bug was: Healer encounter with fee, Activated Ace_Spade, Played 04_Spade, Played Ace_Spade, select Ace_Spade in Played cards area.
+
 ## In scope
 
 ### Required
@@ -10,8 +19,6 @@
 
 ### Desired
 
-- Add dev tools to facilitate manual testing
-  - Specify what cards to deal (for new encounter, scoring etc)
 - Improve referencing in the Text utility.
 - Reduce the use of magic numbers e.g. number of cards in starting hand.
   - Ultimately most of these parameters should be redefinable to support extensions to the base game.

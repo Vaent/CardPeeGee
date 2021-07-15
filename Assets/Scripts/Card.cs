@@ -1,3 +1,4 @@
+using static Constant;
 using UnityEngine;
 
 /* Class which acts as the virtual representation of a card,
@@ -26,6 +27,10 @@ public class Card
     public string Name => name;
     public Suit NaturalSuit => suit;
     public int NaturalValue => value;
+#if UNITY_EDITOR
+    public int StackedCardOrder => cardController.stackedCardOrder;
+#endif
+
     // the following use converted values if set, otherwise base values
     public Suit Suit => convertedSuit ?? suit;
     public int Value => convertedValue ?? value;
@@ -37,6 +42,7 @@ public class Card
         this.value = int.Parse(filenameParts[1]);
         this.name = (filenameParts.Length > 2) ? filenameParts[2] : filenameParts[1];
         GameObject cardObject = MonoBehaviour.Instantiate(abstractCard);
+        cardObject.name = this.ToString();
         cardController = cardObject.GetComponent<CardController>();
         cardController.Register(this, face);
 
@@ -46,6 +52,11 @@ public class Card
     public void ApplyColor(Color color)
     {
         cardController.ApplyColor(color);
+    }
+
+    public bool CompareTag(string tag)
+    {
+        return cardController.CompareTag(tag);
     }
 
     public void Convert(int newValue)
@@ -163,4 +174,15 @@ public class Card
             return displayName + suit + "s [" + Suit + "s] :: " + currentLocation;
         }
     }
+
+#if UNITY_EDITOR
+    public void Unstack()
+    {
+        if (cardController.CompareTag(STACK_DECK))
+        {
+            cardController.tag = UNTAGGED;
+            cardController.stackedCardOrder = 0;
+        }
+    }
+#endif
 }

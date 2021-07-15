@@ -8,6 +8,9 @@ public class CardController : MonoBehaviour
     // component references
     public Sprite back;
     public SpriteRenderer cardRenderer;
+#if UNITY_EDITOR
+    public int stackedCardOrder;
+#endif
 
     // state variables
     private Card cardScript;

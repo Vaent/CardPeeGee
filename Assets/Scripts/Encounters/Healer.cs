@@ -75,7 +75,7 @@ public class Healer : Encounter
         {
             battleToResolve.CardSelected(card);
         }
-        else if (feeToPay > 0)
+        else if ((feeToPay > 0) && player.IsHolding(card))
         {
             // TODO: configure and display the SelectedCardOptionsPanel
             // all suits can be played against a healer's fee (no need to check validity)

@@ -2,12 +2,7 @@
 
 ## Bugs
 
-- was able to select a Played card, clicking on it again to deselect threw an exception:
-```
-InvalidCastException: Specified cast is not valid.
-Player.ConfigureSelectedCardOptions (Card newSelectedCard, Suit[] playableSuits) (at Assets/Scripts/Player.cs:61)
-```
-Context of the above bug was: Healer encounter with fee, Activated Ace_Spade, Played 04_Spade, Played Ace_Spade, select Ace_Spade in Played cards area.
+*All caught up*
 
 ## In scope
 

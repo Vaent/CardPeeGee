@@ -14,10 +14,10 @@ public class Healer : Encounter
     private List<Card> potions;
 
     protected override Color ThemeColor => themeColor;
+    protected override JukeBox.Track ThemeMusic => (battleToResolve == null) ? JukeBox.Track.Healer : JukeBox.Track.Battle;
 
     public Healer(List<Card> cards) : base(cards)
     {
-        JukeBox.PlayHealer();
         healingAmount = agitator.Value
             + (int)Ceiling((float)CardUtil.SumValues(props) / 2);
         potions = props.FindAll(card => (card.Suit == Suit.Heart));

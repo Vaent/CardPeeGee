@@ -12,10 +12,10 @@ public class Battle : Encounter
     private bool isHealerBattle;
 
     protected override Color ThemeColor => themeColor;
+    protected override JukeBox.Track ThemeMusic => JukeBox.Track.Battle;
 
     public Battle(List<Card> cards) : base(cards)
     {
-        JukeBox.PlayCombat();
         enemies = new List<Monster>();
         enemies.Add(new Monster(agitator, props));
     }
@@ -23,7 +23,6 @@ public class Battle : Encounter
     // alternative constructor for battling "guards" on a Healer
     public Battle(List<Monster> enemies)
     {
-        JukeBox.PlayCombat();
         isHealerBattle = true;
         // copy input list to ensure enemies can't be mutated from outside
         this.enemies = new List<Monster>(enemies);

@@ -13,8 +13,8 @@ public class JukeBox : MonoBehaviour
     // music clips
     public AudioClip[] ambient;
     public AudioClip ambientIntro;
-    public AudioClip[] combat;
-    public AudioClip combatIntro;
+    public AudioClip[] battle;
+    public AudioClip battleIntro;
     public AudioClip healer;
     public AudioClip trap;
     public AudioClip treasure;
@@ -28,7 +28,7 @@ public class JukeBox : MonoBehaviour
     void Start()
     {
         instance = this;
-        PlayAmbient();
+        Play(Track.Ambient);
     }
 
     void Update()
@@ -44,9 +44,22 @@ public class JukeBox : MonoBehaviour
     // Use this method to avoid randomly selecting the same clip repeatedly
     private void CalculateNextClipIndex(int currentIndex)
     {
-        if (availableClips.Length <= 1)
+        if ((availableClips is null) || (availableClips.Length == 0))
         {
-            nextClipIndex = 0;
+            Debug.LogError("JukeBox cannot select a random clip as no clips are available");
+        }
+        else if (availableClips.Length == 1)
+        {
+            if (currentIndex == 0)
+            {
+                Debug.Log("JukeBox switching to loop mode as only one clip is available for selection");
+                speaker.loop = true;
+                playRandomOnCompletion = false;
+            }
+            else
+            {
+                nextClipIndex = 0;
+            }
         }
         else
         {
@@ -54,6 +67,32 @@ public class JukeBox : MonoBehaviour
                 nextClipIndex = random.Next(availableClips.Length);
             } while (nextClipIndex == currentIndex);
         }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        if (speaker.isPlaying)
+        {
+            while (speaker.volume > 0)
+            {
+                speaker.volume -= 0.02f;
+                yield return new WaitForFixedUpdate();
+            }
+            KillTheMusic();
+            speaker.volume = 1;
+        }
+    }
+
+    private IEnumerator FadeOutThenPlay(AudioClip clip)
+    {
+        yield return FadeOut();
+        Play(clip);
+    }
+
+    private IEnumerator FadeOutThenPlay(AudioClip intro, AudioClip[] mainClips)
+    {
+        yield return FadeOut();
+        Play(intro, mainClips);
     }
 
     public static void KillTheMusic()
@@ -68,6 +107,7 @@ public class JukeBox : MonoBehaviour
         speaker.loop = true;
         speaker.clip = clip;
         speaker.Play();
+        availableClips = null;
     }
 
     // This overload of Play is used for randomised multi-clip tracks
@@ -81,28 +121,34 @@ public class JukeBox : MonoBehaviour
         CalculateNextClipIndex(-1);
     }
 
-    public static void PlayAmbient()
+    public static void Play(Track track)
     {
-        instance.Play(instance.ambientIntro, instance.ambient);
+        switch (track)
+        {
+            case Track.Ambient:
+                instance.StartCoroutine(instance.FadeOutThenPlay(instance.ambientIntro, instance.ambient));
+                break;
+            case Track.Battle:
+                instance.StartCoroutine(instance.FadeOutThenPlay(instance.battleIntro, instance.battle));
+                break;
+            case Track.Healer:
+                instance.StartCoroutine(instance.FadeOutThenPlay(instance.healer));
+                break;
+            case Track.Trap:
+                instance.StartCoroutine(instance.FadeOutThenPlay(instance.trap));
+                break;
+            case Track.Treasure:
+                instance.StartCoroutine(instance.FadeOutThenPlay(instance.treasure));
+                break;
+        }
     }
 
-    public static void PlayCombat()
+    public enum Track
     {
-        instance.Play(instance.combatIntro, instance.combat);
-    }
-
-    public static void PlayHealer()
-    {
-        instance.Play(instance.healer);
-    }
-
-    public static void PlayTrap()
-    {
-        instance.Play(instance.trap);
-    }
-
-    public static void PlayTreasure()
-    {
-        instance.Play(instance.treasure);
+        Ambient,
+        Battle,
+        Healer,
+        Trap,
+        Treasure
     }
 }

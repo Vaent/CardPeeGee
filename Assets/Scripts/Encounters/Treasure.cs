@@ -11,10 +11,10 @@ public class Treasure : Encounter
     private Card trapSelectedForDisarm;
 
     protected override Color ThemeColor => themeColor;
+    protected override JukeBox.Track ThemeMusic => JukeBox.Track.Treasure;
 
     public Treasure(List<Card> cards) : base(cards)
     {
-        JukeBox.PlayTreasure();
         trapsOnChest = props.FindAll(card => (card.Suit == Suit.Spade));
     }
 

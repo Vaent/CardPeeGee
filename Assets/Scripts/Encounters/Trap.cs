@@ -12,10 +12,10 @@ public class Trap : Encounter
     private int trapDifficulty;
 
     protected override Color ThemeColor => themeColor;
+    protected override JukeBox.Track ThemeMusic => JukeBox.Track.Trap;
 
     public Trap(List<Card> cards) : base(cards)
     {
-        JukeBox.PlayTrap();
         baseDamage = agitator.Value
             + CardUtil.SumValues(props, Suit.Club)
             + (int)Ceiling((float)CardUtil.SumValues(props, Suit.Heart) / 2);
@@ -29,15 +29,14 @@ public class Trap : Encounter
 
     protected override void BeginImpl()
     {
-        Debug.Log("Trap difficulty: " + trapDifficulty + ", damage: " + baseDamage);
-        Debug.Log("Trap has been triggered");
+        Debug.Log($"Trap [difficulty: {trapDifficulty}, damage: {baseDamage}] has been triggered");
         Text.Trap.DisplayFormatted(StrongTextOptions(), (int)Announce);
         Text.Trap.DisplayFormatted(StrongTextOptions(), (int)Stats, trapDifficulty, baseDamage);
         active = true;
         Timer.DelayThenInvoke(1f, CalculateScores);
     }
 
-    public void CalculateScores()
+    private void CalculateScores()
     {
         if (!active) throw new System.Exception("Invoked Trap.CalculateScores() out of turn");
 

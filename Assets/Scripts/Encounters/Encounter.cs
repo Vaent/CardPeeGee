@@ -11,6 +11,7 @@ public abstract class Encounter
     protected readonly List<Card> props;
 
     protected abstract Color ThemeColor { get; }
+    protected abstract JukeBox.Track ThemeMusic { get; }
 
     // no-args constructor is only for cases where agitator/props are not used by the inheriting class
     // notable example: a Battle created for a Healer which has club props
@@ -57,6 +58,7 @@ public abstract class Encounter
     public void Begin()
     {
         if (player == null) throw new Exception("Attempted to Begin encounter with no Player");
+        JukeBox.Play(ThemeMusic);
         BeginImpl();
     }
 

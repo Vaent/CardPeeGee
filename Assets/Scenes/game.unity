@@ -1820,14 +1820,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0135c44d36529224aa7160cd94fe5b61, type: 3}
   - {fileID: 8300000, guid: 5cedc9dc9e02a084fb53e20d6f449573, type: 3}
   ambientIntro: {fileID: 8300000, guid: f33fb8af416b3824999071e38b306f73, type: 3}
-  combat:
+  battle:
   - {fileID: 8300000, guid: 585fc8ca6dbe1c646b3c21fe55c5c940, type: 3}
   - {fileID: 8300000, guid: c3673cc1fecd14341b4946c6b9f1a3e5, type: 3}
   - {fileID: 8300000, guid: 3e2f6b657ec32044f954dec5e712c60b, type: 3}
   - {fileID: 8300000, guid: 71c15336033c5544293c14c4a8aca6e5, type: 3}
   - {fileID: 8300000, guid: d817a3033c686204fa1ae9a952cd6474, type: 3}
   - {fileID: 8300000, guid: 6595ce61e8068c04da493f3ddbd87e2a, type: 3}
-  combatIntro: {fileID: 8300000, guid: 112c5c433177c454d8c4141bb8f22668, type: 3}
+  battleIntro: {fileID: 8300000, guid: 112c5c433177c454d8c4141bb8f22668, type: 3}
   healer: {fileID: 8300000, guid: 2bd2f5eb454e5c441a47e3b8a8134ca4, type: 3}
   trap: {fileID: 8300000, guid: 4f89f72fa7350d94991082c8420c03fd, type: 3}
   treasure: {fileID: 8300000, guid: 090d36f556694094fb40dc91d27fff25, type: 3}

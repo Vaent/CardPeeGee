@@ -17,6 +17,18 @@ public class GameState
 
 // class methods have public visibility
 
+    public static void EndEncounter(Encounter encounter)
+    {
+        if (instance.IsInEncounter(encounter))
+        {
+            instance.LeaveEncounter();
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to end an Encounter which is not currently active!");
+        }
+    }
+
     public static void Next()
     {
         if (instance.locked) return;
@@ -113,6 +125,11 @@ public class GameState
         }
     }
 
+    private bool IsInEncounter(Encounter encounter)
+    {
+        return (currentPhase is Phase.InEncounter) && (encounter.Equals(currentEncounter));
+    }
+
     private bool IsPlayerAlive()
     {
         return (player != null) && player.IsAlive();
@@ -121,6 +138,18 @@ public class GameState
     private bool IsWaitingForNewPlayer()
     {
         return player == null && currentPhase == Phase.PlayerCreation;
+    }
+
+    private void LeaveEncounter()
+    {
+        currentEncounter.TearDown();
+        deck.Accept(stagingArea.Cards);
+        deck.Accept(player.CardsPlayed.Cards);
+        // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
+        Debug.Log($"Ending {currentEncounter} and entering Town");
+        currentPhase = Phase.InTown;
+        currentEncounter = null;
+        // TODO: set up Town phase
     }
 
     private void NewCards(CardZone cardZone, List<Card> cards)
@@ -158,6 +187,7 @@ public class GameState
         {
             currentEncounter = Encounter.From(stagingArea.Cards);
             currentEncounter.HappensTo(player);
+            currentEncounter.Uses(deck);
             Debug.Log("Starting a " + currentEncounter + " Encounter");
             currentPhase = Phase.InEncounter;
             currentEncounter.Begin();

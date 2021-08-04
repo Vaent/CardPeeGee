@@ -112,6 +112,8 @@ public class Player
 
     public void Damage(int amount)
     {
+        // TODO: determine and play appropriate audio clip
+        // note that Damage(0) calls result in the "phew" audio clip
         UpdateHP(hp - amount);
         // TODO: check for death
     }

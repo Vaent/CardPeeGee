@@ -5,7 +5,7 @@ public static class Text
 {
     private static readonly Vector2 defaultPositionAnnounceEncounter = new Vector2(7.5f, 2.5f);
     private static readonly Vector2 defaultPositionBelowDealtCards = new Vector2(0.7f, 0.5f);
-    private static readonly Vector2 defaultPositionBelowDealtCardsPostScript = new Vector2(0.7f, 0.0f);
+    private static readonly Vector2 defaultPositionLeftOfDealtCards = new Vector2(0.6f, 3.2f);
     private static readonly TextMesh prefabTextMesh = Resources.Load<TextMesh>("Prefab Text Mesh");
 
     public class Options
@@ -233,9 +233,9 @@ public static class Text
             TextValues.Add((int)TextReference.DealHand, "Dealing your starting hand...");
 
             DefaultPositions.Add((int)TextReference.CharacterSearch, defaultPositionBelowDealtCards);
-            DefaultPositions.Add((int)TextReference.CharacterIdentified, defaultPositionBelowDealtCardsPostScript);
+            DefaultPositions.Add((int)TextReference.CharacterIdentified, defaultPositionBelowDealtCards);
             DefaultPositions.Add((int)TextReference.HPSearch, defaultPositionBelowDealtCards);
-            DefaultPositions.Add((int)TextReference.HPCalculated, defaultPositionBelowDealtCardsPostScript);
+            DefaultPositions.Add((int)TextReference.HPCalculated, defaultPositionBelowDealtCards);
             DefaultPositions.Add((int)TextReference.DealHand, defaultPositionBelowDealtCards);
         }
 
@@ -255,18 +255,33 @@ public static class Text
         {
             TextValues.Add((int)TextReference.Announce, "it's a\nTRAP!");
             TextValues.Add((int)TextReference.Stats, "Difficulty: {0}\nDamage: {1}");
+            TextValues.Add((int)TextReference.ScoreCards, "Score cards:\n(evasion)");
             TextValues.Add((int)TextReference.AttemptEvade, "You try to\navoid it...");
+            TextValues.Add((int)TextReference.Assisted, "helped by your\nActive cards");
+            TextValues.Add((int)TextReference.EvasionScore, "Evasion score: {0}");
+            TextValues.Add((int)TextReference.DamageAvoided, "Damage avoided: {0}");
+            TextValues.Add((int)TextReference.DamageDealt, "Damage dealt: {0}");
 
             DefaultPositions.Add((int)TextReference.Announce, defaultPositionAnnounceEncounter);
             DefaultPositions.Add((int)TextReference.Stats, new Vector2(7.5f, 0));
+            DefaultPositions.Add((int)TextReference.ScoreCards, defaultPositionLeftOfDealtCards);
             DefaultPositions.Add((int)TextReference.AttemptEvade, defaultPositionAnnounceEncounter);
+            DefaultPositions.Add((int)TextReference.Assisted, defaultPositionAnnounceEncounter);
+            DefaultPositions.Add((int)TextReference.EvasionScore, defaultPositionBelowDealtCards);
+            DefaultPositions.Add((int)TextReference.DamageAvoided, defaultPositionBelowDealtCards);
+            DefaultPositions.Add((int)TextReference.DamageDealt, defaultPositionBelowDealtCards);
         }
 
         public enum TextReference
         {
             Announce,
             Stats,
-            AttemptEvade
+            ScoreCards,
+            AttemptEvade,
+            Assisted,
+            EvasionScore,
+            DamageAvoided,
+            DamageDealt
         }
     }
 

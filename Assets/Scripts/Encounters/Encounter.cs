@@ -7,6 +7,8 @@ using UnityEngine;
 public abstract class Encounter
 {
     protected readonly Card agitator;
+    protected Deck deck;
+    private readonly EncounterCardZone encounterCardZone = new GameObject().AddComponent<EncounterCardZone>();
     protected Player player;
     protected readonly List<Card> props;
 
@@ -59,6 +61,10 @@ public abstract class Encounter
     {
         if (player == null) throw new Exception("Attempted to Begin encounter with no Player");
         JukeBox.Play(ThemeMusic);
+        // TODO: display encounter art/animation (may need to be delegated to BeginImpl)
+        var encounterCards = new List<Card>(props);
+        encounterCards.Insert(0, agitator);
+        encounterCardZone.Accept(encounterCards);
         BeginImpl();
     }
 
@@ -93,5 +99,39 @@ public abstract class Encounter
         return Array.Exists(playableSuits, suit => card.Suit == suit)
             || (allowActivate && player.CanActivate(card))
             || PlayerCanConvert(card, playableSuits);
+    }
+
+    public void TearDown()
+    {
+        // TODO: try to get a reference for the relevant BaseText implementation and only tear that down
+        Text.Battle.TearDown();
+        Text.Healer.TearDown();
+        Text.Trap.TearDown();
+        Text.Treasure.TearDown();
+
+        deck.Accept(encounterCardZone.Cards);
+        Timer.DelayThenInvoke(5, UnityEngine.Object.Destroy, encounterCardZone.gameObject);
+        // TODO: refactor to reuse encounterCardZone instead of destroying it
+    }
+
+    public void Uses(Deck deck)
+    {
+        this.deck = deck;
+    }
+
+    private class EncounterCardZone : CardZone
+    {
+        private static readonly Vector3 anchor = new Vector3(6.5f, 3.7f, 0);
+
+        protected override void ProcessNewCards(List<Card> newCards)
+        {
+            var cardsList = Cards;
+            cardsList[0].Resize(1.2f);
+            cardsList[0].MoveTo(anchor + (0.1f * Vector3.left));
+            for (int i = 1; i < cardsList.Count; i++)
+            {
+                cardsList[i].MoveTo(anchor + (i * Vector3.right));
+            }
+        }
     }
 }

@@ -7,8 +7,7 @@ The CardController class complements this class by handling the
 "physical" GameObject which is displayed. */
 public class Card
 {
-    private const int ConversionPenalty = 2;
-
+    private static readonly int ConversionPenalty = 2;
     private static readonly GameObject abstractCard = Resources.Load<GameObject>("Models/Abstract Card");
 
     // state variables
@@ -143,11 +142,6 @@ public class Card
     }
 
     public override string ToString()
-    {
-        return name + "_" + suit;
-    }
-
-    public string ToStringForDisplay()
     {
         return name + " of " + suit + "s";
     }

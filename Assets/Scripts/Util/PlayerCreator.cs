@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
-using static Text.PlayerCreator.TextReference;
+using static Text.Excerpts.PlayerCreator;
+using static Text.TextManager;
 using UnityEngine;
 
 /* Singleton which manages the process of building a new Player */
 public class PlayerCreator
 {
+    private static readonly int hpBaseValue = 15;
     private static PlayerCreator instance;
 
+    private Text.BaseExcerpt characterIdentifiedExcerpt;
     private Phase currentPhase;
     private Deck deck;
+    private Text.BaseExcerpt hpCalculatedExcerpt;
     private TextMesh hpDisplay;
     private bool movedCharacterCard;
     private bool movedRejectedCandidates;
@@ -73,7 +77,8 @@ public class PlayerCreator
     {
         if (candidate.Name.Equals("Queen") || candidate.Name.Equals("King"))
         {
-            Text.PlayerCreator.DisplayAsExtension((int)CharacterIdentified, (int)CharacterSearch, candidate.ToStringForDisplay());
+            characterIdentifiedExcerpt = CharacterIdentified(candidate);
+            DisplayTextAsExtension(characterIdentifiedExcerpt, CharacterSearch);
             Timer.DelayThenInvoke(2, CharacterCardCallback, candidate);
         }
         else
@@ -84,15 +89,16 @@ public class PlayerCreator
 
     private void GetCharacterCard()
     {
-        Text.PlayerCreator.Display((int)CharacterSearch);
+        DisplayText(CharacterSearch);
         deck.DealCards(1);
     }
 
     private void GetHP(List<Card> cards)
     {
-        int hp = 15 + CardUtil.SumValues(cards);
+        int hp = hpBaseValue + CardUtil.SumValues(cards);
         List<int> cardValues = cards.ConvertAll(card => card.Value);
-        Text.PlayerCreator.DisplayAsExtension((int)HPCalculated, (int)HPSearch, hp, string.Join(" + ", cardValues));
+        hpCalculatedExcerpt = HPCalculated(hp, hpBaseValue, string.Join(" + ", cardValues));
+        DisplayTextAsExtension(hpCalculatedExcerpt, HPSearch);
         player.Heal(hp);
         Timer.DelayThenInvoke(2, HPCallback);
     }
@@ -122,9 +128,9 @@ public class PlayerCreator
     {
         if (cardZone.Equals(deck))
         {
-            Text.PlayerCreator.Hide((int)HPSearch);
-            Text.PlayerCreator.Hide((int)HPCalculated);
-            Text.PlayerCreator.Display((int)DealHand);
+            Hide(HPSearch);
+            Hide(hpCalculatedExcerpt);
+            DisplayText(DealHand);
             deck.DealCards(5);
         }
         else if (cardZone.Equals(stagingArea))
@@ -133,7 +139,7 @@ public class PlayerCreator
         }
         else if (cardZone.Equals(player.Hand))
         {
-            Text.PlayerCreator.TearDown();
+            TearDownDisplayedText();
             GameState.Register(player);
         }
     }
@@ -157,9 +163,9 @@ public class PlayerCreator
             }
             else
             {
-                Text.PlayerCreator.Hide((int)CharacterSearch);
-                Text.PlayerCreator.Hide((int)CharacterIdentified);
-                Text.PlayerCreator.Display((int)HPSearch);
+                Hide(CharacterSearch);
+                Hide(characterIdentifiedExcerpt);
+                DisplayText(HPSearch);
                 deck.DealCards(3);
             }
         }

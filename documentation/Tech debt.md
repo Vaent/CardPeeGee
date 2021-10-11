@@ -2,7 +2,8 @@
 
 ## Bugs
 
-*All caught up*
+- The Unity editor shows card GameObjects are active after they have been returned to the deck during player creation (they are expected to have active=false set when the movement is completed)
+- Debug log states "Player has 1 HP after healing" during player creation, however the correct amount of healing is being applied i.e. 0HP -> 44HP
 
 ## In scope
 
@@ -10,11 +11,12 @@
 
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
-- Rationalise debugs/reduce spam
+- Rationalise debugs/reduce spam.
+- Review all uses of `Timer.Delay(...)` and `Timer.DelayThenInvoke(...)` to ensure the pace of automatic actions is appropriate - some messages are appearing/disappearing much too quickly.
 
 ### Desired
 
-- Improve referencing in the Text utility.
+- Apply namespaces to scripts in subfolders of the root directory `Assets/Scripts/` (this has already been done for `Text` and `Text.Excerpts`)
 - Reduce the use of magic numbers e.g. number of cards in starting hand.
   - Ultimately most of these parameters should be redefinable to support extensions to the base game.
 

@@ -12,7 +12,6 @@ public abstract class Encounter
     protected Player player;
     protected readonly List<Card> props;
 
-    protected abstract Color ThemeColor { get; }
     protected abstract JukeBox.Track ThemeMusic { get; }
 
     // no-args constructor is only for cases where agitator/props are not used by the inheriting class
@@ -47,15 +46,6 @@ public abstract class Encounter
     }
 
     public abstract void Advance();
-
-    protected Text.Options StrongTextOptions()
-    {
-        return new Text.Options()
-            .Align(TextAlignment.Center)
-            .Color(ThemeColor)
-            .Size(Text.TextSize.Large)
-            .Style(FontStyle.Bold);
-    }
 
     public void Begin()
     {
@@ -103,11 +93,7 @@ public abstract class Encounter
 
     public void TearDown()
     {
-        // TODO: try to get a reference for the relevant BaseText implementation and only tear that down
-        Text.Battle.TearDown();
-        Text.Healer.TearDown();
-        Text.Trap.TearDown();
-        Text.Treasure.TearDown();
+        Text.TextManager.TearDownDisplayedText();
 
         deck.Accept(encounterCardZone.Cards);
         Timer.DelayThenInvoke(5, UnityEngine.Object.Destroy, encounterCardZone.gameObject);

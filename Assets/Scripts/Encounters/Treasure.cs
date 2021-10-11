@@ -1,16 +1,14 @@
 using ExtensionMethods;
 using System.Collections.Generic;
-using static Text.Treasure.TextReference;
+using static Text.Excerpts.Treasure;
+using static Text.TextManager;
 using UnityEngine;
 
 public class Treasure : Encounter
 {
-    private static readonly Color themeColor = Color.yellow;
-
     private List<Card> trapsOnChest;
     private Card trapSelectedForDisarm;
 
-    protected override Color ThemeColor => themeColor;
     protected override JukeBox.Track ThemeMusic => JukeBox.Track.Treasure;
 
     public Treasure(List<Card> cards) : base(cards)
@@ -26,7 +24,7 @@ public class Treasure : Encounter
     protected override void BeginImpl()
     {
         Debug.Log("Found a treasure");
-        Text.Treasure.DisplayFormatted(StrongTextOptions(), (int)Announce);
+        DisplayText(Announce);
         if (trapsOnChest.Count == 0)
         {
             DeliverTreasure();

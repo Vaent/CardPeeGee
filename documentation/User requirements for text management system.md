@@ -1,21 +1,21 @@
 # User requirements for text management system
 
-The below should inform ongoing refinement/expansion of the text management system.
+The below should inform ongoing refinement/expansion of the text management system. Points marked with a `+` are considered to have been delivered (but may still be improved in future).
 
 ```
 As a creator/maintainer of text excerpts
 I want:
 - to manage all excerpts in one place
-- to group related excerpts in appropriate categories
++ to group related excerpts in appropriate categories
 - to include relevant metadata for each excerpt
 ```
 
 ```
 As a developer working on code which displays or hides text in the game
 I want:
-- a simple, repeatable process for displaying excerpts
-- clear and readily accessible information about available excerpts
-- to be alerted by the IDE/compiler if code does not use excerpts correctly (avoid runtime failure)
++ a simple, repeatable process for displaying excerpts
++ clear and readily accessible information about available excerpts
++ to be alerted by the IDE/compiler if code does not use excerpts correctly (avoid runtime failure)
 ```
 
 ```

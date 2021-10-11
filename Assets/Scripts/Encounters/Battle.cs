@@ -1,17 +1,15 @@
 using ExtensionMethods;
 using System.Collections.Generic;
-using static Text.Battle.TextReference;
+using static Text.Excerpts.Battle;
+using static Text.TextManager;
 using UnityEngine;
 
 public class Battle : Encounter
 {
-    private static readonly Color themeColor = Color.green;
-
     private bool battleHasStarted;
     private List<Monster> enemies;
     private bool isHealerBattle;
 
-    protected override Color ThemeColor => themeColor;
     protected override JukeBox.Track ThemeMusic => JukeBox.Track.Battle;
 
     public Battle(List<Card> cards) : base(cards)
@@ -40,7 +38,7 @@ public class Battle : Encounter
     protected override void BeginImpl()
     {
         Debug.Log("Beginning a battle against " + enemies.Print());
-        Text.Battle.DisplayFormatted(StrongTextOptions(), (int)Announce);
+        DisplayText(Announce);
         // TODO: prompt to activate/play cards then click the deck
         GameState.Unlock();
     }

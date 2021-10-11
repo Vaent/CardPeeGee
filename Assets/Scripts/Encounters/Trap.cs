@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using static System.Math;
-using static Text.Trap.TextReference;
+using static Text.Excerpts.Trap;
+using static Text.TextManager;
 using UnityEngine;
 
 public class Trap : Encounter
 {
-    private static readonly Color themeColor = new Color(0.75f, 0.75f, 0.75f);
-
     private int baseDamage;
     private int damageAvoided;
+    private Text.BaseExcerpt damageAvoidedExcerpt;
     private int damageDealt;
     private int evasionScore;
+    private Text.BaseExcerpt evasionScoreExcerpt;
     private List<Card> scoreCards;
     private int trapDifficulty;
 
-    protected override Color ThemeColor => themeColor;
     protected override JukeBox.Track ThemeMusic => JukeBox.Track.Trap;
 
     public Trap(List<Card> cards) : base(cards)
@@ -33,16 +33,15 @@ public class Trap : Encounter
     protected override void BeginImpl()
     {
         Debug.Log($"Trap [difficulty: {trapDifficulty}, damage: {baseDamage}] has been triggered");
-        Text.Trap.DisplayFormatted(StrongTextOptions(), (int)Announce);
-        Text.Trap.DisplayFormatted(StrongTextOptions(), (int)Stats, trapDifficulty, baseDamage);
+        DisplayText(Announce);
+        DisplayText(Stats(trapDifficulty, baseDamage));
         Timer.DelayThenInvoke(1f, CalculateScores);
     }
 
     private void CalculateScores()
     {
-        Text.Options smallText = new Text.Options().Size(Text.TextSize.Small);
-        Text.Trap.DisplayFormatted(smallText, (int)ScoreCards);
-        Text.Trap.DisplayAsExtension((int)AttemptEvade, (int)Announce);
+        DisplayText(ScoreCards);
+        DisplayTextAsExtension(AttemptEvade, Announce);
         deck.DealCards(1);
     }
 
@@ -57,7 +56,7 @@ public class Trap : Encounter
             scoreCards = cardZone.Cards;
             if (scoreCards.Count < (player.CardsActivated.Cards.Count + 1))
             {
-                Text.Trap.DisplayAsExtension((int)Assisted, (int)AttemptEvade);
+                DisplayTextAsExtension(Assisted, AttemptEvade);
                 deck.DealCards(1);
                 // TODO: play a random "helper" audio clip
                 return;
@@ -74,19 +73,21 @@ public class Trap : Encounter
         evasionScore = CardUtil.SumValues(scoreCards);
         damageAvoided = Mathf.Clamp((2 * (evasionScore - trapDifficulty)), 0, baseDamage);
         damageDealt = baseDamage - damageAvoided;
-        Text.Trap.Display((int)EvasionScore, evasionScore);
+        evasionScoreExcerpt = EvasionScore(evasionScore);
+        DisplayText(evasionScoreExcerpt);
         Timer.DelayThenInvoke(0.4f, DetermineOutcomeCallback);
     }
 
     private void DetermineOutcomeCallback()
     {
-        Text.Trap.DisplayAsExtension((int)DamageAvoided, (int)EvasionScore, damageAvoided);
+        damageAvoidedExcerpt = DamageAvoided(damageAvoided);
+        DisplayTextAsExtension(damageAvoidedExcerpt, evasionScoreExcerpt);
         Timer.DelayThenInvoke(0.4f, DetermineOutcomeCallback1);
     }
 
     private void DetermineOutcomeCallback1()
     {
-        Text.Trap.DisplayAsExtension((int)DamageDealt, (int)DamageAvoided, damageDealt);
+        DisplayTextAsExtension(DamageDealt(damageDealt), damageAvoidedExcerpt);
         Timer.DelayThenInvoke(1, DetermineOutcomeCallback2);
     }
 

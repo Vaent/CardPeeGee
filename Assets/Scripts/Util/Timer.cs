@@ -29,9 +29,7 @@ public class Timer : MonoBehaviour
 
     private IEnumerator Delay(float seconds)
     {
-        Debug.Log("Begin delay of " + seconds + " seconds");
         yield return new WaitForSeconds(seconds);
-        Debug.Log("Delay complete");
     }
 
     private IEnumerator DelInv(float seconds, Callback callback)

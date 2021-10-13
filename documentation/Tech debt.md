@@ -2,7 +2,7 @@
 
 ## Bugs
 
-- The Unity editor shows card GameObjects are active after they have been returned to the deck during player creation (they are expected to have active=false set when the movement is completed)
+*All caught up*
 
 ## In scope
 

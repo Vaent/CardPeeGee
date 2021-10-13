@@ -75,6 +75,14 @@ public class Deck : CardZone
         return Cards.SelectRandom(count);
     }
 
+    protected override void MovedCards(List<Card> movingCards)
+    {
+        movingCards.ForEach(card =>
+        {
+            if (Cards.Contains(card)) card.Hide();
+        });
+    }
+
     protected override void ProcessNewCards(List<Card> newCards)
     {
         if (this.isLoading) return;

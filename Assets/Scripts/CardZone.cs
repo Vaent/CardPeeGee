@@ -58,8 +58,12 @@ public abstract class CardZone : MonoBehaviour
         {
             Debug.Log(this + " finished moving " + movingCards.Print());
             GameState.NotifyCardsReceived(this, movingCards);
+            MovedCards(movingCards);
         }
     }
+
+    // empty method which can optionally be overridden by CardZone implementations
+    protected virtual void MovedCards(List<Card> movingCards) { }
 
     /* This method allows for custom behaviour after new cards have been registered.
     Typically it will trigger an animation to 'move' the cards,

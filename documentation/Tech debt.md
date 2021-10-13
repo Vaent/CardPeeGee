@@ -3,7 +3,6 @@
 ## Bugs
 
 - The Unity editor shows card GameObjects are active after they have been returned to the deck during player creation (they are expected to have active=false set when the movement is completed)
-- Debug log states "Player has 1 HP after healing" during player creation, however the correct amount of healing is being applied i.e. 0HP -> 44HP
 
 ## In scope
 

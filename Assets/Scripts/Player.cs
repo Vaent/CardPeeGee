@@ -114,8 +114,8 @@ public class Player
     {
         // TODO: determine and play appropriate audio clip
         // note that Damage(0) calls result in the "phew" audio clip
+        Debug.Log($"Player is taking damage... initial HP {hp}, damage amount {amount}");
         UpdateHP(hp - amount);
-        // TODO: check for death
     }
 
     private void Deselect(Card card)
@@ -126,10 +126,9 @@ public class Player
 
     public void Heal(int amount)
     {
-        Debug.Log("Healing Player... initial HP " + hp + ", heal amount " + amount);
+        // TODO: play audio clip
+        Debug.Log($"Healing Player... initial HP {hp}, heal amount {amount}");
         UpdateHP(hp + amount);
-        Debug.Log("Player has " + hp + " HP after healing");
-        // TODO: check for victory
     }
 
     public bool IsAlive()
@@ -144,20 +143,19 @@ public class Player
 
     public void UpdateHP(int newValue)
     {
+        hp += newValue.CompareTo(hp);
+        hpDisplay.text = $"HP: {hp}";
+        // TODO: check for death
+
         if (newValue == hp)
         {
-            return;
+            Debug.Log($"Player has {hp} HP after healing/damage applied");
+            // TODO: check for victory
         }
-        else if (newValue > hp)
+        else
         {
-            hp++;
+            Timer.DelayThenInvoke(0.05f, this.UpdateHP, newValue);
         }
-        else if (newValue < hp)
-        {
-            hp--;
-        }
-        hpDisplay.text = "HP: " + hp;
-        if (hp != newValue) Timer.DelayThenInvoke(0.05f, this.UpdateHP, newValue);
     }
 
     abstract class SelectableCards : CardZone

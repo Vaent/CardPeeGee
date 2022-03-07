@@ -94,6 +94,17 @@ public class Trap : Encounter
     private void DetermineOutcomeCallback2()
     {
         player.Damage(damageDealt);
-        Timer.DelayThenInvoke(2.5f, GameState.EndEncounter, this);
+        //TODO: refactor handling of player death
+        //the implementation below would fail if >50hp are removed resulting in death
+        //(it should not be possible for a trap to do that much damage in Vanilla but a more robust solution is needed)
+        Timer.DelayThenInvoke(2.5f, DetermineOutcomeCallback3);
+    }
+
+    private void DetermineOutcomeCallback3()
+    {
+        if (player.IsAlive())
+        {
+            GameState.EndEncounter(this);
+        }
     }
 }

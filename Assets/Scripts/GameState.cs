@@ -1,4 +1,8 @@
+using ExtensionMethods;
+using System;
 using System.Collections.Generic;
+using static Text.Excerpts.Generic;
+using static Text.TextManager;
 using UnityEngine;
 
 /* Singleton for managing overall flow of a game. */
@@ -29,6 +33,18 @@ public class GameState
         }
     }
 
+    public static void PlayerLeftTown()
+    {
+        if (instance.currentPhase is Phase.InTown)
+        {
+            instance.LeaveTown();
+        }
+        else
+        {
+            Debug.LogWarning("Attempted to exit town when not currently in town!");
+        }
+    }
+
     public static void Next()
     {
         if (instance.locked) return;
@@ -43,9 +59,14 @@ public class GameState
         {
             instance.currentEncounter.Advance();
         }
+        else if (instance.currentPhase == Phase.InTown)
+        {
+            Town.Advance();
+        }
         else if (instance.currentPhase == Phase.NewDay)
         {
             Debug.Log("New Encounter");
+            TearDownDisplayedText();
             instance.deck.DealCards(3);
         }
     }
@@ -103,7 +124,7 @@ public class GameState
         }
         else
         {
-            throw new System.Exception("Illegal call to Register(Player)");
+            throw new Exception("Illegal call to Register(Player)");
         }
     }
 
@@ -121,7 +142,9 @@ public class GameState
             case Phase.InEncounter:
                 currentEncounter.CardSelected(card);
                 break;
-            // TODO: add case for Phase.InTown
+            case Phase.InTown:
+                Town.CardSelected(card);
+                break;
         }
     }
 
@@ -149,7 +172,14 @@ public class GameState
         Debug.Log($"Ending {currentEncounter} and entering Town");
         currentPhase = Phase.InTown;
         currentEncounter = null;
-        // TODO: set up Town phase
+        Town.Enter(player, deck);
+    }
+
+    private void LeaveTown()
+    {
+        DisplayText(NewEncounterPrompt);
+        currentPhase = Phase.NewDay;
+        locked = false;
     }
 
     private void NewCards(CardZone cardZone, List<Card> cards)
@@ -197,6 +227,7 @@ public class GameState
     private void PlayerCreated(Player player)
     {
         this.player = player;
+        DisplayText(NewEncounterPrompt);
         this.currentPhase = Phase.NewDay;
         this.locked = false;
     }
@@ -204,8 +235,23 @@ public class GameState
     private void StartGame()
     {
         currentPhase = Phase.PlayerCreation;
-        player = null;
-        GameObject.Find("eventtext3").GetComponent<TextMesh>().text = "";
+        if (player != null)
+        {
+            deck.Accept(stagingArea.Cards);
+            currentEncounter?.TearDown();
+            currentEncounter = null;
+            deck.Accept(player.CharacterCard.Cards);
+            Debug.Log("Should be destroying... " + player.Hand.Cards.Print());
+            deck.Accept(player.Hand.Cards);
+            deck.Accept(player.CardsActivated.Cards);
+            deck.Accept(player.CardsPlayed.Cards);
+            player = null;
+            Timer.DelayThenInvoke(3, PlayerCreator.Initialise, deck, stagingArea);
+            return;
+            //TODO: complete/refactor handling of dead player
+            //NB Timer.Callback<T,U> was created for the rough implementation; if not subsequently used elsewhere it may be disposable
+        }
+        UnityEngine.Object.Destroy(GameObject.Find("eventtext3"));
         PlayerCreator.Initialise(deck, stagingArea);
     }
 

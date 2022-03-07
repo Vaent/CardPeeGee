@@ -46,6 +46,21 @@ public class Player
             && !card.CurrentLocation.Equals(CardsActivated);
     }
 
+    public bool CanActivateAny()
+    {
+        return hand.Cards.Exists(card => ACE.Equals(card.Name) || JACK.Equals(card.Name));
+    }
+
+    public bool CanConvert(Card card, params Suit[] targetSuits)
+    {
+        if (!hand.Contains(card) && !cardsActivated.Contains(card)) return false;
+
+        return CardsActivated.Exists(activeCard =>
+            activeCard != card
+            && JACK.Equals(activeCard.Name)
+            && ((activeCard.Suit == card.Suit) || Array.Exists(targetSuits, suit => activeCard.Suit == suit)));
+    }
+
     public void ConfigureSelectedCardDiscard(Card selectedCard)
     {
         // TODO: share logic from ConfigureOptions method to record new selection, resize/raise/lower cards etc
@@ -120,7 +135,7 @@ public class Player
 
     private void Deselect(Card card)
     {
-        if (!card.Equals(selectedCard)) throw new Exception("Attempted to deselect a card which is not selected");
+        if (IsAlive() && !card.Equals(selectedCard)) throw new Exception("Attempted to deselect a card which is not selected");
         selectedCard = null;
     }
 
@@ -141,11 +156,21 @@ public class Player
         return hand.Contains(card) || cardsActivated.Contains(card);
     }
 
-    public void UpdateHP(int newValue)
+    private void UpdateHP(int newValue)
     {
         hp += newValue.CompareTo(hp);
-        hpDisplay.text = $"HP: {hp}";
-        // TODO: check for death
+        if (hp <= 0)
+        {
+            hpDisplay.text = "DEAD";
+            Text.TextManager.TearDownDisplayedText();
+            GameState.Unlock();
+            return;
+            // TODO: implement death properly
+        }
+        else
+        {
+            hpDisplay.text = $"HP: {hp}";
+        }
 
         if (newValue == hp)
         {
@@ -167,6 +192,8 @@ public class Player
             this.player = player;
         }
 
+        protected abstract void AdjustPositions();
+
         public void Deselect(Card card)
         {
             var allCards = Cards;
@@ -175,6 +202,13 @@ public class Player
             card.SetHeight(i * 0.01f);
             card.Resize(1);
             selectedCardOptionsPanel.Hide();
+        }
+
+        public override void Unregister(Card card)
+        {
+            player.Deselect(card);
+            base.Unregister(card);
+            AdjustPositions();
         }
     }
 
@@ -188,7 +222,7 @@ public class Player
             // TODO: if an Ace is activated during an encounter, check whether it affects any played cards
         }
 
-        private void AdjustPositions()
+        protected override void AdjustPositions()
         {
             var allCards = Cards;
             CardUtil.Sort(allCards);
@@ -200,13 +234,6 @@ public class Player
                 CardController.MovementTracker tracker = cardsInMotion[card];
                 card.MoveTo(leftPosition + positionAdjustment, tracker, true);
             }
-        }
-
-        public override void Unregister(Card card)
-        {
-            player.Deselect(card);
-            base.Unregister(card);
-            AdjustPositions();
         }
     }
 
@@ -259,7 +286,7 @@ public class Player
             AdjustPositions();
         }
 
-        private void AdjustPositions()
+        protected override void AdjustPositions()
         {
             var allCards = Cards;
             CardUtil.Sort(allCards);
@@ -276,13 +303,6 @@ public class Player
                 CardController.MovementTracker tracker = cardsInMotion[card];
                 card.MoveTo(leftPosition + positionAdjustment, tracker, true);
             }
-        }
-
-        public override void Unregister(Card card)
-        {
-            player.Deselect(card);
-            base.Unregister(card);
-            AdjustPositions();
         }
     }
 }

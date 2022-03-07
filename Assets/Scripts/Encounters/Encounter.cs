@@ -1,4 +1,3 @@
-using static Constant;
 using ExtensionMethods;
 using System;
 using System.Collections.Generic;
@@ -69,14 +68,6 @@ public abstract class Encounter
         this.player = player;
     }
 
-    protected bool PlayerCanConvert(Card card, params Suit[] targetSuits)
-    {
-        return player.CardsActivated.Exists(activeCard =>
-            activeCard != card
-            && JACK.Equals(activeCard.Name)
-            && ((activeCard.Suit == card.Suit) || Array.Exists(targetSuits, suit => activeCard.Suit == suit)));
-    }
-
     protected bool PlayerCanUse(Card card, params Suit[] playableSuits)
     {
         return PlayerCanUse(card, true, playableSuits);
@@ -88,7 +79,7 @@ public abstract class Encounter
 
         return Array.Exists(playableSuits, suit => card.Suit == suit)
             || (allowActivate && player.CanActivate(card))
-            || PlayerCanConvert(card, playableSuits);
+            || player.CanConvert(card, playableSuits);
     }
 
     public void TearDown()

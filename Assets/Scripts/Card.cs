@@ -7,7 +7,7 @@ The CardController class complements this class by handling the
 "physical" GameObject which is displayed. */
 public class Card
 {
-    private static readonly int ConversionPenalty = 2;
+    public static readonly int conversionPenalty = 2;
     private static readonly GameObject abstractCard = Resources.Load<GameObject>("Models/Abstract Card");
 
     // state variables
@@ -68,7 +68,7 @@ public class Card
     {
         convertedSuit = newSuit;
         // converting the card's suit also decreases its effective value
-        Convert(value - ConversionPenalty);
+        Convert(value - conversionPenalty);
     }
 
     public void DoClicked()

@@ -85,15 +85,18 @@ namespace Text
             return textMesh;
         }
 
-        public static void Hide(BaseExcerpt excerpt)
+        public static void HideText(params BaseExcerpt[] excerpts)
         {
-            try
+            foreach (BaseExcerpt excerpt in excerpts)
             {
-                textMeshes[excerpt].gameObject.SetActive(false);
-            }
-            catch (KeyNotFoundException)
-            {
-                Debug.LogWarning($"Attempted to Hide({excerpt}) but no mesh found");
+                try
+                {
+                    textMeshes[excerpt].gameObject.SetActive(false);
+                }
+                catch (KeyNotFoundException)
+                {
+                    Debug.LogWarning($"Attempted to Hide({excerpt}) but no mesh found");
+                }
             }
         }
 

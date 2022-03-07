@@ -128,8 +128,8 @@ public class PlayerCreator
     {
         if (cardZone.Equals(deck))
         {
-            Hide(HPSearch);
-            Hide(hpCalculatedExcerpt);
+            HideText(HPSearch);
+            HideText(hpCalculatedExcerpt);
             DisplayText(DealHand);
             deck.DealCards(5);
         }
@@ -163,8 +163,8 @@ public class PlayerCreator
             }
             else
             {
-                Hide(CharacterSearch);
-                Hide(characterIdentifiedExcerpt);
+                HideText(CharacterSearch);
+                HideText(characterIdentifiedExcerpt);
                 DisplayText(HPSearch);
                 deck.DealCards(3);
             }

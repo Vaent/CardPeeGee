@@ -8,6 +8,7 @@
 
 ### Required
 
+- Implement player death properly. This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
 - Rationalise debugs/reduce spam.
@@ -18,6 +19,13 @@
 - Apply namespaces to scripts in subfolders of the root directory `Assets/Scripts/` (this has already been done for `Text` and `Text.Excerpts`)
 - Reduce the use of magic numbers e.g. number of cards in starting hand.
   - Ultimately most of these parameters should be redefinable to support extensions to the base game.
+- Separate out the responsibilities of GameState; state management is too tightly coupled to object management (e.g. movement of cards) and this class is likely to bloat if not refactored.
+  - More control can be handed to Encounter and Town classes.
+  - Consider giving Encounter & Town a common interface to streamline object management (they should be notified about the same events).
+- Review usage of `static readonly` fields, replace with auto-implemented properties if the value may be made customisable in future.
+- Amend debug/print functions to avoid line breaks in strings which contain newline characters (particularly problematic for TextManager debugs).
+  - Consider replacing Text.Excerpt content with the excerpt name (and args?) in debugs.
+  - It may be sufficient to have Text.Excerpt implement IFormattable with a compact/debug format option, and invoke this where appropriate, since Excerpts are the main culprit.
 
 ## Out of scope
 
@@ -37,3 +45,6 @@
 - Add a mute button to the title screen.
 - Saving an ongoing game.
 - Saving user settings/creating profiles.
+- When determining whether the player can afford to but new cards in Town, extend the logic to account for the Ace bonus.
+  - This will only be relevant if the cost of purchase (or the size of the Ace bonus) is made customisable with relatively high values allowed; otherwise it is unlikely that having the Ace active for the boost will take the total high enough even though playing the Ace along with other diamonds would not.
+  - The logic required to implement this will be much more convoluted than the vanilla implementation so it should not be added unless/until it is both relevant and necessary.

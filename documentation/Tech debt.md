@@ -9,6 +9,7 @@
 ### Required
 
 - Implement player death properly. This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
+- Implement Card conversion properly in the options panel. Again should be picked up as part of the build process but need to ensure it is not missed.
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
 - Rationalise debugs/reduce spam.
@@ -48,3 +49,4 @@
 - When determining whether the player can afford to but new cards in Town, extend the logic to account for the Ace bonus.
   - This will only be relevant if the cost of purchase (or the size of the Ace bonus) is made customisable with relatively high values allowed; otherwise it is unlikely that having the Ace active for the boost will take the total high enough even though playing the Ace along with other diamonds would not.
   - The logic required to implement this will be much more convoluted than the vanilla implementation so it should not be added unless/until it is both relevant and necessary.
+- Automated testing.

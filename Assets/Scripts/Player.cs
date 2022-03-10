@@ -61,55 +61,60 @@ public class Player
             && ((activeCard.Suit == card.Suit) || Array.Exists(targetSuits, suit => activeCard.Suit == suit)));
     }
 
-    public void ConfigureSelectedCardDiscard(Card selectedCard)
+    public void ConfigureSelectedCardDiscard(Card newSelectedCard)
     {
-        // TODO: share logic from ConfigureOptions method to record new selection, resize/raise/lower cards etc
-        selectedCardOptionsPanel.ConfigureAndDisplayDiscardOption(selectedCard);
+        if (ConfirmCardSelection(newSelectedCard))
+        {
+            Select(newSelectedCard);
+            selectedCardOptionsPanel.ConfigureAndDisplayDiscardOption(newSelectedCard);
+        }
     }
 
     public void ConfigureSelectedCardOptions(Card newSelectedCard, params Suit[] playableSuits)
     {
-        Debug.Log(newSelectedCard + " has been selected in " + newSelectedCard.CurrentLocation);
+        if (ConfirmCardSelection(newSelectedCard))
+        {
+            if (ConvertedCardRequires(newSelectedCard))
+            {
+                // TODO: display a message advising the card cannot be played because it was used to convert another card
+                Debug.Log($"Unable to play {newSelectedCard} because it is currently converting another played card");
+            }
+            else
+            {
+                Select(newSelectedCard);
+                SelectedCardOptionsPanel.ReInitialiser ri = selectedCardOptionsPanel.PrepareFor(newSelectedCard);
+                if (CanActivate(newSelectedCard)) ri.IncludeActivate();
+                if (Array.Exists(playableSuits, suit => newSelectedCard.Suit == suit)) ri.IncludePlay();
+                if (Array.Exists(playableSuits, suit => newSelectedCard.Suit != suit))
+                {
+                    if (cardsActivated.Exists(card => JACK.Equals(card.Name) && (card.Suit == newSelectedCard.Suit) && (card != newSelectedCard)))
+                    {
+                        ri.IncludePlayAs(Array.FindAll(playableSuits, suit => newSelectedCard.Suit != suit));
+                    }
+                    else
+                    {
+                        Suit[] convertableSuits = Array.FindAll(playableSuits, suit =>
+                            suit != newSelectedCard.Suit
+                            && cardsActivated.Exists(card => JACK.Equals(card.Name) && card.Suit == suit));
+                        if (convertableSuits.Length > 0) ri.IncludePlayAs(convertableSuits);
+                    }
+                }
+                ri.Display();
+            }
+        }
+    }
 
+    private bool ConfirmCardSelection(Card newSelectedCard)
+    {
+        Debug.Log(newSelectedCard + " has been selected in " + newSelectedCard.CurrentLocation);
+        bool isNewSelection = !newSelectedCard.Equals(selectedCard); // reselection => deselection
         if (selectedCard != null)
         {
             SelectableCards selectedCardLocation = (SelectableCards)selectedCard.CurrentLocation;
             selectedCardLocation.Deselect(selectedCard);
-        }
-
-        if (newSelectedCard.Equals(selectedCard))
-        {
-            // reselection => deselection
             selectedCard = null;
         }
-        else if (ConvertedCardRequires(newSelectedCard))
-        {
-            // TODO: display a message advising the card cannot be played because it was used to convert another card
-        }
-        else
-        {
-            selectedCard = newSelectedCard;
-            newSelectedCard.SetHeight(1);
-            newSelectedCard.Resize(1.5f);
-            SelectedCardOptionsPanel.ReInitialiser ri = selectedCardOptionsPanel.PrepareFor(newSelectedCard);
-            if (CanActivate(newSelectedCard)) ri.IncludeActivate();
-            if (Array.Exists(playableSuits, suit => newSelectedCard.Suit == suit)) ri.IncludePlay();
-            if (Array.Exists(playableSuits, suit => newSelectedCard.Suit != suit))
-            {
-                if (cardsActivated.Exists(card => JACK.Equals(card.Name) && card.Suit == newSelectedCard.Suit))
-                {
-                    ri.IncludePlayAs(Array.FindAll(playableSuits, suit => newSelectedCard.Suit != suit));
-                }
-                else
-                {
-                    Suit[] convertableSuits = Array.FindAll(playableSuits, suit =>
-                        suit != newSelectedCard.Suit
-                        && cardsActivated.Exists(card => JACK.Equals(card.Name) && card.Suit == suit));
-                    if (convertableSuits.Length > 0) ri.IncludePlayAs(convertableSuits);
-                }
-            }
-            ri.Display();
-        }
+        return isNewSelection;
     }
 
     private bool ConvertedCardRequires(Card newSelectedCard)
@@ -154,6 +159,13 @@ public class Player
     public bool IsHolding(Card card)
     {
         return hand.Contains(card) || cardsActivated.Contains(card);
+    }
+
+    private void Select(Card newSelectedCard)
+    {
+        selectedCard = newSelectedCard;
+        newSelectedCard.SetHeight(1);
+        newSelectedCard.Resize(1.5f);
     }
 
     private void UpdateHP(int newValue)

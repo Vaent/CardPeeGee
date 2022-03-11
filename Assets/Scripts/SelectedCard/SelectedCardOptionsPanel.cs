@@ -9,10 +9,10 @@ public class SelectedCardOptionsPanel : MonoBehaviour
 	public ActivateCard activate;
 	public DiscardCard discard;
 	public PlayCard play;
-	public PlayCardAsClub playAsClub;
-	public PlayCardAsDiamond playAsDiamond;
-	public PlayCardAsHeart playAsHeart;
-	public PlayCardAsSpade playAsSpade;
+	public PlayCardAs playAsClub;
+	public PlayCardAs playAsDiamond;
+	public PlayCardAs playAsHeart;
+	public PlayCardAs playAsSpade;
 
 	public CardZone CardsActivatedZone { get; private set; }
 	public CardZone CardsPlayedZone { get; private set; }

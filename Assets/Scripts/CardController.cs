@@ -45,6 +45,17 @@ public class CardController : MonoBehaviour
 
 // MonoBehaviour methods end / custom methods begin
 
+    public void ApplyColor(Color color)
+    {
+        cardRenderer.color = color;
+    }
+
+    public void ChangeFace(Sprite newSprite)
+    {
+        face = newSprite;
+        if (cardRenderer.sprite != back) cardRenderer.sprite = face;
+    }
+
     private void DetermineRotation(bool endFaceUp)
     {
         rotate = (cardRenderer.sprite == back) ? endFaceUp : !endFaceUp;
@@ -64,11 +75,6 @@ public class CardController : MonoBehaviour
     {
         gameObject.SetActive(true);
         StartCoroutine(MoveCoroutine(targetPosition, tracker, endFaceUp));
-    }
-
-    public void ApplyColor(Color color)
-    {
-        cardRenderer.color = color;
     }
 
     public void Kill()

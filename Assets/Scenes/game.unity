@@ -2401,10 +2401,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 502795896}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c754a9672d1bc141853fac09fd552d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 44059301b92a9e0468978e65fe503643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 762302773}
+  suit: 1
 --- !u!65 &502795898
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6585,10 +6586,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1619880449}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f66aba17209ae54b83d646e6ecb7b09, type: 3}
+  m_Script: {fileID: 11500000, guid: 44059301b92a9e0468978e65fe503643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 762302773}
+  suit: 2
 --- !u!65 &1619880451
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6919,10 +6921,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1656433993}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbf33a36caa61654e9c2134aac8dd347, type: 3}
+  m_Script: {fileID: 11500000, guid: 44059301b92a9e0468978e65fe503643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 762302773}
+  suit: 0
 --- !u!65 &1656433995
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7873,10 +7876,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1774812240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46db2413c7cb2a1488a88bac1f78b566, type: 3}
+  m_Script: {fileID: 11500000, guid: 44059301b92a9e0468978e65fe503643, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 762302773}
+  suit: 3
 --- !u!65 &1774812242
 BoxCollider:
   m_ObjectHideFlags: 0

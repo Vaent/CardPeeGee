@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CardUtil
 {
     private static readonly Sprite[] cardFaces = Resources.LoadAll<Sprite>("Graphics/Sprites/Card Faces/Standard");
+    private static readonly Sprite[] cardFacesNonstandard = Resources.LoadAll<Sprite>("Graphics/Sprites/Card Faces");
 
     public static int Compare(Card a, Card b)
     {
@@ -29,6 +31,15 @@ public class CardUtil
         if (cards == null || cards.Count == 0) return 0;
         var filteredList = cards.FindAll(card => (card.Suit == suit));
         return filteredList.Count;
+    }
+
+    public static Sprite GetCardFace(Suit suit, int value)
+    {
+        Sprite face = (value < 2) ?
+            Array.Find(cardFacesNonstandard, sprite => sprite.name.StartsWith($"{suit} {value:00}")) :
+            Array.Find(cardFaces, sprite => sprite.name.StartsWith($"{suit} {value:00}"));
+        if (face == null) throw new ArgumentException($"No card face found matching suit: {suit} and value: {value}");
+        return face;
     }
 
     public static int GetPriorityOfTenValuedCard(Card card)

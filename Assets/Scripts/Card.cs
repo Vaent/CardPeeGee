@@ -1,4 +1,5 @@
 using static Constant;
+using System;
 using UnityEngine;
 
 /* Class which acts as the virtual representation of a card,
@@ -17,6 +18,7 @@ public class Card
     private int? convertedValue;
     // initial assigned values cannot be changed
     private readonly CardController cardController;
+    private Sprite face;
     private readonly string name;
     private readonly Suit suit;
     private readonly int value;
@@ -36,6 +38,7 @@ public class Card
 
     public Card(Sprite face, CardZone startingLocation)
     {
+        this.face = face;
         string[] filenameParts = face.name.Split(' ');
         this.suit = (Suit)Suit.Parse(typeof(Suit), filenameParts[0]);
         this.value = int.Parse(filenameParts[1]);
@@ -60,15 +63,27 @@ public class Card
 
     public void Convert(int newValue)
     {
+        if (newValue < 0 || newValue > 11) throw new ArgumentOutOfRangeException($"A card cannot have a value of {value}.");
+
         convertedValue = newValue;
-        // TODO: calculate and display the convertedFace sprite
+        Sprite convertedFace = CardUtil.GetCardFace(this.Suit, this.Value);
+        cardController.ChangeFace(convertedFace);
     }
 
     public void Convert(Suit newSuit)
     {
-        convertedSuit = newSuit;
-        // converting the card's suit also decreases its effective value
-        Convert(value - conversionPenalty);
+        try
+        {
+            convertedSuit = newSuit;
+            // converting the card's suit also decreases its effective value
+            Convert(value - conversionPenalty);
+        }
+        catch (ArgumentException ex)
+        {
+            Debug.LogError($"Failed to convert card; reverting to natural state.\n{ex}");
+            ResetCardProperties();
+            throw new InvalidOperationException($"Unable to convert {this} to {newSuit}.\n{ex}");
+        }
     }
 
     public void DoClicked()
@@ -120,6 +135,7 @@ public class Card
     {
         convertedSuit = null;
         convertedValue = null;
+        cardController.ChangeFace(face);
     }
 
     public void ResetDisplayProperties()

@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 
-public class PlayCardAsDiamond : PlayCard
+public class PlayCardAs : PlayCard
 {
+    public Suit suit;
+
     private readonly Color convertedCardColor = new Color(1f, 1f, 0.6f);
 
     protected override Color NewColor => convertedCardColor;
 
     protected override void OnMouseDown()
     {
-        // TODO: convert card to Diamond suit
+        panel.SelectedCard.Convert(suit);
         base.OnMouseDown();
     }
 }

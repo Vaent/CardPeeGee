@@ -2,7 +2,8 @@
 
 ## Bugs
 
-*All caught up*
+- During card selection phases, when clicking on a card which cannot be used in that context, any card which has already been selected should be deselected. Current implemented behaviour ignores the click except for logging a debug message - the player receives no feedback.
+- The only conversion option for cards with value 2 should be Spades, and only in combat since the "Zero of Spades" has a useful function there. Currently the only check is whether a sprite exists for the requested conversion. There is no feedback to the player if that check fails.
 
 ## In scope
 
@@ -32,6 +33,8 @@
 
 - **Accessibility!!!** Should be in scope but since the original game was not built with access needs in mind, retrofitting features like text resizing, control over colour palettes etc will require disproportionate effort and probably require delivery of additional tech debt, like being able to resize/reconfigure the play area.
 - Procedurally generate card sprites from name/number and suit. It should be possible to scrap the 52 individual sprites (and additional variants) which all have exactly the same layout, and instead have an abstract card face with spaces for the number/letter and the suit pip.
+- Have converted cards show their natural suit/value as well as the converted suit/value.
+  - Suggested implementation is to bisect the card face diagonally, with converted pips (on yellow background) in the top left section and natural pips (on white background) in bottom right.
 - Replace fixed dimension 700x500 play area with a more flexible frame.
   - May still be constrained to landscape format but should at least accommodate different screen resolutions (SD/HD/FHD etc) and ideally different aspect ratios (between 4:3 and 16:9, and ideally beyond).
   - A nice-to-have extension would be flexible placement of game elements allowing user configuration, which may help support portrait formats.

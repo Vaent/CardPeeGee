@@ -43,7 +43,7 @@ public class Player
     public bool CanActivate(Card card)
     {
         return (ACE.Equals(card.Name) || JACK.Equals(card.Name))
-            && !card.CurrentLocation.Equals(CardsActivated);
+            && card.CurrentLocation.Equals(hand);
     }
 
     public bool CanActivateAny()

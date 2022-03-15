@@ -45,7 +45,8 @@ public class Battle : Encounter
 
     public override void CardSelected(Card card)
     {
-        if ((battleHasStarted && !isHealerBattle) || !PlayerCanUse(card, Suit.Club, Suit.Spade)) return;
+        if (battleHasStarted && !isHealerBattle) return;
+
         player.ConfigureSelectedCardOptions(card, Suit.Club, Suit.Spade);
     }
 

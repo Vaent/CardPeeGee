@@ -2,7 +2,6 @@
 
 ## Bugs
 
-- During card selection phases, when clicking on a card which cannot be used in that context, any card which has already been selected should be deselected. Current implemented behaviour ignores the click except for logging a debug message - the player receives no feedback.
 - The only conversion option for cards with value 2 should be Spades, and only in combat since the "Zero of Spades" has a useful function there. Currently the only check is whether a sprite exists for the requested conversion. There is no feedback to the player if that check fails.
 
 ## In scope
@@ -10,7 +9,6 @@
 ### Required
 
 - Implement player death properly. This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
-- Implement Card conversion properly in the options panel. Again should be picked up as part of the build process but need to ensure it is not missed.
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
 - Rationalise debugs/reduce spam.

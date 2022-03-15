@@ -51,6 +51,15 @@ public class Player
         return hand.Cards.Exists(card => ACE.Equals(card.Name) || JACK.Equals(card.Name));
     }
 
+    private void CancelSelectedCard()
+    {
+        if (selectedCard == null) return;
+
+        SelectableCards selectedCardLocation = (SelectableCards)selectedCard.CurrentLocation;
+        selectedCardLocation.Deselect(selectedCard);
+        selectedCard = null;
+    }
+
     public bool CanConvert(Card card, params Suit[] targetSuits)
     {
         if (!hand.Contains(card) && !cardsActivated.Contains(card)) return false;
@@ -59,6 +68,20 @@ public class Player
             activeCard != card
             && JACK.Equals(activeCard.Name)
             && ((activeCard.Suit == card.Suit) || Array.Exists(targetSuits, suit => activeCard.Suit == suit)));
+    }
+
+    public bool CanUse(Card card, params Suit[] playableSuits)
+    {
+        return CanUse(card, true, playableSuits);
+    }
+
+    public bool CanUse(Card card, bool allowActivate, params Suit[] playableSuits)
+    {
+        if (!IsHolding(card)) return false;
+
+        return Array.Exists(playableSuits, suit => card.Suit == suit)
+            || (allowActivate && CanActivate(card))
+            || CanConvert(card, playableSuits);
     }
 
     public void ConfigureSelectedCardDiscard(Card newSelectedCard)
@@ -72,7 +95,16 @@ public class Player
 
     public void ConfigureSelectedCardOptions(Card newSelectedCard, params Suit[] playableSuits)
     {
-        if (ConfirmCardSelection(newSelectedCard))
+        ConfigureSelectedCardOptions(newSelectedCard, true, playableSuits);
+    }
+
+    public void ConfigureSelectedCardOptions(Card newSelectedCard, bool allowActivate, params Suit[] playableSuits)
+    {
+        if (!CanUse(newSelectedCard, allowActivate, playableSuits))
+        {
+            CancelSelectedCard();
+        }
+        else if (ConfirmCardSelection(newSelectedCard))
         {
             if (ConvertedCardRequires(newSelectedCard))
             {
@@ -107,13 +139,8 @@ public class Player
     private bool ConfirmCardSelection(Card newSelectedCard)
     {
         Debug.Log(newSelectedCard + " has been selected in " + newSelectedCard.CurrentLocation);
-        bool isNewSelection = !newSelectedCard.Equals(selectedCard); // reselection => deselection
-        if (selectedCard != null)
-        {
-            SelectableCards selectedCardLocation = (SelectableCards)selectedCard.CurrentLocation;
-            selectedCardLocation.Deselect(selectedCard);
-            selectedCard = null;
-        }
+        bool isNewSelection = (newSelectedCard != selectedCard);
+        CancelSelectedCard();
         return isNewSelection;
     }
 

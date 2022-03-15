@@ -68,20 +68,6 @@ public abstract class Encounter
         this.player = player;
     }
 
-    protected bool PlayerCanUse(Card card, params Suit[] playableSuits)
-    {
-        return PlayerCanUse(card, true, playableSuits);
-    }
-
-    protected bool PlayerCanUse(Card card, bool allowActivate, params Suit[] playableSuits)
-    {
-        if (!player.IsHolding(card)) return false;
-
-        return Array.Exists(playableSuits, suit => card.Suit == suit)
-            || (allowActivate && player.CanActivate(card))
-            || player.CanConvert(card, playableSuits);
-    }
-
     public void TearDown()
     {
         Text.TextManager.TearDownDisplayedText();

@@ -44,7 +44,7 @@ public class Treasure : Encounter
             trapSelectedForDisarm = card;
             // TODO: deal score cards
         }
-        else if (PlayerCanUse(card, Suit.Spade))
+        else
         {
             player.ConfigureSelectedCardOptions(card, Suit.Spade);
         }

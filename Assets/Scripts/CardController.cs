@@ -16,7 +16,7 @@ public class CardController : MonoBehaviour
     private Card cardScript;
     private Sprite face;
     private float speedModifier = 1;
-    private bool rotate = false;
+    private Orientation? targetOrientation = null;
     private Vector3? targetPosition = null;
 
     void Update()
@@ -27,13 +27,13 @@ public class CardController : MonoBehaviour
             if (targetPosition.Equals(transform.position))
             {
                 targetPosition = null;
-                if (rotate == true)
-                {
-                    Flip();
-                    rotate = false;
-                }
             }
-            // TODO: rotate gradually instead of flipping at destination
+        }
+        if (targetOrientation != null)
+        {
+            transform.Rotate(Vector3.right, Time.deltaTime * speedModifier * 60);
+            ApplySpriteBasedOnOrientation();
+            CheckOrientationAgainstTarget();
         }
     }
 
@@ -50,31 +50,42 @@ public class CardController : MonoBehaviour
         cardRenderer.color = color;
     }
 
+    private void ApplySpriteBasedOnOrientation()
+    {
+        Sprite expected = (transform.forward.z >= 0) ? face : back;
+        /* Assigning cardRenderer.sprite is presumed to be more expensive than reading its value,
+           so is only done when necessary, since this method is called on every Update() when rotating.
+           The assumption has not been tested and is subject to review. */
+        if (cardRenderer.sprite != expected) cardRenderer.sprite = expected;
+    }
+
     public void ChangeFace(Sprite newSprite)
     {
         face = newSprite;
         if (cardRenderer.sprite != back) cardRenderer.sprite = face;
     }
 
-    private void DetermineRotation(bool endFaceUp)
+    private void CheckOrientationAgainstTarget()
     {
-        rotate = (cardRenderer.sprite == back) ? endFaceUp : !endFaceUp;
+        if (targetOrientation == null) return;
+
+        if (transform.forward.z == (int)targetOrientation)
+        {
+            // transform orientation matches target, no further change needed
+            targetOrientation = null;
+        }
+        else if ((transform.forward.z * (int)targetOrientation > 0) && (transform.up.z * (int)targetOrientation > 0))
+        {
+            // transform has rotated just beyond target orientation
+            transform.rotation.SetLookRotation(Vector3.forward * (int)targetOrientation);
+            targetOrientation = null;
+        }
     }
 
-    public void Flip()
-    {
-        cardRenderer.sprite = (cardRenderer.sprite == face) ? back : face;
-    }
-
-    public void GoTo(Vector3 targetPosition)
-    {
-        GoTo(targetPosition, null, (cardRenderer.sprite == face));
-    }
-
-    public void GoTo(Vector3 targetPosition, CardController.MovementTracker tracker, bool endFaceUp)
+    public void GoTo(Vector3 targetPosition, MovementTracker tracker = null, Orientation? targetOrientation = null)
     {
         gameObject.SetActive(true);
-        StartCoroutine(MoveCoroutine(targetPosition, tracker, endFaceUp));
+        StartCoroutine(MoveCoroutine(targetPosition, tracker, targetOrientation));
     }
 
     public void Kill()
@@ -86,16 +97,18 @@ public class CardController : MonoBehaviour
     public void KillMovement()
     {
         targetPosition = null;
-        rotate = false;
+        targetOrientation = null;
     }
 
-    private IEnumerator MoveCoroutine(Vector3 targetPosition, CardController.MovementTracker tracker, bool endFaceUp)
+    private IEnumerator MoveCoroutine(Vector3 targetPosition, MovementTracker tracker, Orientation? targetOrientation)
     {
         while (this.targetPosition != null) yield return null;
 
         this.speedModifier = Vector3.Distance(transform.position, targetPosition) * 2;
         this.targetPosition = targetPosition;
-        DetermineRotation(endFaceUp);
+        // rotation may continue following previous movement if targetOrientation not yet reached; therefore it should not be nullified
+        if (targetOrientation != null) this.targetOrientation = targetOrientation;
+        CheckOrientationAgainstTarget();
         while (!targetPosition.Equals(transform.position)) yield return null;
         Debug.Log("Finished moving " + cardScript.ToStringVerbose());
         if (tracker != null) tracker.completed = true;
@@ -115,20 +128,16 @@ public class CardController : MonoBehaviour
     public void SetHeight(float newHeight)
     {
         // N.B. camera is positioned on the negative z-axis, pointed toward zero
-        newHeight = newHeight * -1;
+        newHeight *= -1;
         transform.position = new Vector3(transform.position.x, transform.position.y, newHeight);
     }
 
-    public void TurnFaceDown()
-    {
-        cardRenderer.sprite = back;
-    }
+// nested types
 
-    public void TurnFaceUp()
+    public enum Orientation
     {
-        cardRenderer.sprite = face;
-        // TODO: if card has been converted, use convertedFace instead of face
-        // NB the above will likely never apply here so is not a priority
+        FaceDown = -1,
+        FaceUp = 1
     }
 
     public class MovementTracker

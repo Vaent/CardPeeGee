@@ -101,20 +101,10 @@ public class Card
         return convertedSuit != null;
     }
 
-    public void MoveTo(Vector3 newPosition)
-    {
-        cardController.GoTo(newPosition);
-    }
-
-    public void MoveTo(Vector3 newPosition, bool endFaceUp)
-    {
-        MoveTo(newPosition, null, endFaceUp);
-    }
-
-    public void MoveTo(Vector3 newPosition, CardController.MovementTracker tracker, bool endFaceUp)
+    public void MoveTo(Vector3 newPosition, CardController.MovementTracker tracker = null, CardController.Orientation? targetOrientation = null)
     {
         SetHeight(newPosition.z);
-        cardController.GoTo(newPosition, tracker, endFaceUp);
+        cardController.GoTo(newPosition, tracker, targetOrientation);
     }
 
     public Vector3 Position()

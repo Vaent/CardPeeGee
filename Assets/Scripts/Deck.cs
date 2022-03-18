@@ -94,7 +94,7 @@ public class Deck : CardZone
             CardController.MovementTracker tracker = cardsInMotion[card];
             card.ResetCardProperties();
             card.ResetDisplayProperties();
-            card.MoveTo(this.transform.position + Vector3.forward, tracker, false);
+            card.MoveTo(this.transform.position + Vector3.forward, tracker, CardController.Orientation.FaceDown);
 #if UNITY_EDITOR
             if (card.CompareTag(STACK_DECK)) card.Unstack();
 #endif

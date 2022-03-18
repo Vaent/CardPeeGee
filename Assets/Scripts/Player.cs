@@ -271,7 +271,7 @@ public class Player
                 Card card = allCards[i];
                 Vector3 positionAdjustment = new Vector3(i * spacingFactor, 0, i * -0.01f);
                 CardController.MovementTracker tracker = cardsInMotion[card];
-                card.MoveTo(leftPosition + positionAdjustment, tracker, true);
+                card.MoveTo(leftPosition + positionAdjustment, tracker, CardController.Orientation.FaceUp);
             }
         }
     }
@@ -290,7 +290,7 @@ public class Player
                 Card card = allCards[i];
                 Vector3 positionAdjustment = new Vector3(i * spacingFactor, 0, i * -0.01f);
                 CardController.MovementTracker tracker = cardsInMotion[card];
-                card.MoveTo(leftPosition + positionAdjustment, tracker, true);
+                card.MoveTo(leftPosition + positionAdjustment, tracker, CardController.Orientation.FaceUp);
             }
         }
     }
@@ -303,7 +303,7 @@ public class Player
         {
             if (Cards.Count != 1) throw new Exception("CharacterCardZone can only contain a single element, it now contains " + Cards.Print());
             CardController.MovementTracker tracker = cardsInMotion[newCards[0]];
-            newCards[0].MoveTo(characterCardPosition, tracker, true);
+            newCards[0].MoveTo(characterCardPosition, tracker, CardController.Orientation.FaceUp);
         }
     }
 
@@ -340,7 +340,7 @@ public class Player
                 Card card = allCards[i];
                 Vector3 positionAdjustment = new Vector3((i + 0.5f) * spacingFactor, 0, i * -0.01f);
                 CardController.MovementTracker tracker = cardsInMotion[card];
-                card.MoveTo(leftPosition + positionAdjustment, tracker, true);
+                card.MoveTo(leftPosition + positionAdjustment, tracker, CardController.Orientation.FaceUp);
             }
         }
     }

@@ -2,7 +2,7 @@
 
 This is a coarse-grained, blow-by-blow description of events managed by the game engine, presented as pseudocode to help identify traits which could be more effectively shared between components.
 
-This work is motivated by a need to refine/augment the original [Gameplay flow](Design decisions - Gameplay flow.md) and refactor the low-level GameState model.
+This work is motivated by a need to refine/augment the original "Design decisions - Gameplay flow" document and refactor the low-level GameState model.
 
 ## 0. Pre-game
 

@@ -6,7 +6,7 @@ using static Text.Excerpts.Town;
 using static Text.TextManager;
 using UnityEngine;
 
-public class Town
+public class Town : GamePhase
 {
     private static readonly int charityUpperLimitExclusive = 4;
     private static readonly int costOfNewCard = 8;
@@ -17,6 +17,8 @@ public class Town
     private Deck deck;
     private Phase phase;
     private Player player;
+
+    public GamePhase Get => instance;
 
     private Town() { }
 

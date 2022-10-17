@@ -1,48 +1,39 @@
 # Gameplay flow
 
-Gameplay is turn-based and managed through the following high level interactions:
+**Updated 2022/04/06-2022/10/17** to reflect planned changes.
 
-- A mouse click on the Deck sprite, or pressing the `D` key, triggers `GameState.Next()`
-- `GameState.Next()` determines the next action to be performed, based on the current state.
-  - If a process is currently being resolved, no further action is taken.
-  - If the player has not yet been created (or is dead) a new player is generated.
-  - If an Encounter exists or the player is in town, trigger the next step.
-  - Else, create a new Encounter.
-- Encounters manage logic and temporary state inherent to the encounter type. They are given a reference to the Player so that they can directly apply damage/healing, check stats etc.
-- Town stages are managed through a singleton class.
+Gameplay is defined by a series of phases as outlined in [Breakdown of core game logic](./breakdown-of-core-game-logic.md) which are managed through the following high level behaviours:
 
-## Locking and unlocking GameState
+- `GameState` keeps track of the phase currently in progress, and universal game elements such as the player and deck. GameState is also responsible for initialising the next phase when the previous one wraps up.
+- Individual phase definitions manage their own low-level logic and state.
+- `GameController` handles events, including user input, and forwards messages as appropriate based on the current game state. Input is no longer filtered based on locking/unlocking GameState - the recipient of the message is solely responsible for determining whether the message requires any action.
 
-Before beginning a new action, GameState will lock itself to prevent `Next` being repeatedly triggered while a process is playing out. Once the process is completed and player input is allowed again, the responsible entity needs to unlock GameState. This will usually happen after some animation/audio clip has finished playing, often when score cards are returned to the Deck after resolving an event.
+## Phases (general)
 
-While the GameState is locked, feedback on internal state changes will still be picked up and passed on, e.g. notification of cards arriving at a CardZone. Only player input (or code behaving like player input) is blocked.
+When the scene is set up, phase 0 (Pre-game/player creation) will be loaded in GameState, which thereafter will always have exactly one phase loaded.
 
-## Generating a new player (Util/PlayerCreator)
+The new `GamePhase` interface will ensure messages can be passed through in a consistent manner. All phases will be notified of the following events:
 
-1. Invoke `DrawCards` on the Deck to get a Character Card.
-1. Instantiate `Player` using the Character Card.
-1. Invoke `DealCards` targeting the StagingArea.
-1. Calculate HP from the dealt cards and invoke `Heal` on the Player.
-1. Return cards in the StagingArea to the Deck.
-1. Invoke `DealCards` to get a starting hand.
-1. Transfer the dealt cards to the Player.
+- Phase loaded in GameState (i.e. initialisation)
+- User interaction with the deck (mouse click or D key)
+- User interaction with cards
+- User interaction with context-specific GUI elements
+- Cards have arrived at a new location
+- Player HP has been updated
 
-## Encounter flow
+### Progression of game phases
 
-### Create new encounter
+0. Pre-game/player creation -> Encounter
+0. Encounter -> Town
+0. Town -> Encounter
 
-This process is managed by GameState.
+PlayerCreator and Town will expose their singleton instances and will no longer be updated via static methods.
 
-1. Invoke `DealCards` targeting the StagingArea.
-1. Instantiate `Encounter` using the dealt cards.
-1. Associate the Player through `encounter.HappensTo(player)`.
-1. Invoke `encounter.Begin()`.
+Encounters will still be instantiated case-by-case due to their complexity and highly variable nature. A new EncounterPhase class provides lightweight logic to create and manage those instances.
 
-### Progress existing encounter
+Endings are treated as artifacts which may appear within the above, not as separate game phases, since play resumes in the originating phase following a victory.
 
-Based on player input, GameState invokes `Advance` on the current Encounter instance. Each implementation of Encounter will have its own logic for checking cards that the player has played from their hand, dealing cards from the Deck to determine temporary scores and so on.
-
-Some encounter types resolve automatically: Healers with no jailor/fee; all Traps; and Treasure with no trap. These encounters will perform all necessary tasks as soon as they `Begin` and will then self-terminate, so will never be actively progressed.
+TODO: determine whether or not GameController will forward messages to the active GamePhase while an ending screen is open; most input should be blocked temporarily but the GamePhase might need to be notified of other events while an ending screen is open (i.e. if some cards have not finished moving before the ending is triggered). **Design to be revisited once the relevant low-level systems are fleshed out enough to inform this.** Preliminary expectation is that everything will be fully resolved prior to launching the ending sequence, but need to check for any events where this cannot be guaranteed.
 
 ### End existing encounter
 
@@ -57,4 +48,4 @@ Once completed, the Encounter is responsible for tidying up after itself i.e. pe
 - Animations must be ended/encounter graphics removed
 - Text relating to the encounter must be cleared
 
-Finally the Encounter will set a flag and notify GameState of its termination. GameState will verify that the flag has been set (so that code elsewhere cannot incorrectly terminate an active Encounter) then clear the Encounter instance and go to the next GameState Phase.
+Finally the Encounter will set a flag and notify GameState of its termination. GameState will verify that the flag has been set (so that code elsewhere cannot incorrectly terminate an active Encounter) then drop the Encounter instance and load the next phase.

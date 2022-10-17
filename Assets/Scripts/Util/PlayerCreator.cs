@@ -4,7 +4,7 @@ using static Text.TextManager;
 using UnityEngine;
 
 /* Singleton which manages the process of building a new Player */
-public class PlayerCreator
+public class PlayerCreator : GamePhase
 {
     private static readonly int hpBaseValue = 15;
     private static PlayerCreator instance;
@@ -18,6 +18,8 @@ public class PlayerCreator
     private bool movedRejectedCandidates;
     private Player player;
     private StagingArea stagingArea;
+
+    public GamePhase Get => instance;
 
     private PlayerCreator(Deck deck, StagingArea stagingArea)
     {

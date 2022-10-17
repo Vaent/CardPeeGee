@@ -4,37 +4,33 @@ This is a coarse-grained, blow-by-blow description of events managed by the game
 
 This work is motivated by a need to refine/augment the original "Design decisions - Gameplay flow" document and refactor the low-level GameState model.
 
-## 0. Pre-game
+## 0. Pre-game/player creation
 
 - Prompt the user to create their character ("player")
+- When the user proceeds:
+  - While character card is null:
+    - Deal 1 card
+    - If the dealt card is a King or Queen:
+      - Assign it to the player as their character card
+      - Return all other dealt cards to the deck
+    - Loop
+  - Deal 3 cards
+  - Calculate initial HP using the dealt cards
+  - Apply initial HP to player
+  - Return dealt cards to the deck
+  - Deal 5 cards to the player's hand
 
-## 1. Create player
+## 1. Main game loop
 
-- While character card is null:
-  - Deal 1 card
-  - If the dealt card is a King or Queen:
-    - Assign it to the player as their character card
-    - Return all other dealt cards to the deck
-  - Loop
-- Deal 3 cards
-- Calculate initial HP using the dealt cards
-- Apply initial HP to player
-- Return dealt cards to the deck
-- Deal 5 cards to the player's hand
-
-## 2. Main game loop
-
-### 2a. New day
-
-- Prompt the user to start an encounter
-
-### 2b. Encounter
+### 1a. Encounter
 
 ENCOUNTER_SETUP:
-- Deal 3 cards
-- Assign the dealt cards to the encounter
-- Determine the encounter type using the first card ("agitator")
-- Determine the encounter stats using all the cards (agitator and "props")
+- Prompt the user to start an encounter
+- When the user proceeds:
+  - Deal 3 cards
+  - Assign the dealt cards to the encounter
+  - Determine the encounter type using the first card ("agitator")
+  - Determine the encounter stats using all the cards (agitator and "props")
 
 Resolve encounter according to type
 
@@ -137,7 +133,7 @@ ENCOUNTER_CLEANUP:
   - Set actual damage = trap damage
 - Apply [actual damage] damage to player
 
-### 2c. Town
+### 1b. Town
 
 - If cards held by player (hand + activated) > 6:
   - Allow the user to select/discard their cards
@@ -168,22 +164,22 @@ ENCOUNTER_CLEANUP:
 
 ### ITERATE MAIN GAME LOOP
 
-## 3. Endings
+## 2. Endings
 
-Endings interrupt the [main game loop](#2-main-game-loop) as soon as they are triggered.
+Endings interrupt the [main game loop](#1-main-game-loop) as soon as they are triggered.
 
 ENDING_SETUP:
 - Freeze gameplay
 - Block user input
 - Fade the game view (mask it with a semi-transparent overlay)
 
-### 3a. Player death
+### 2a. Player death
 
 - Display death message
 - Prompt the user to click anywhere to restart
 - Enable user input
 - When the user clicks to restart:
-  - Reload the scene (clear all and restart from the [pre-game stage](#0-pre-game))
+  - Reload the scene (clear all and restart from the [pre-game stage](#0-pre-game-player-creation))
 
 **Triggered when:** Player HP is reduced to or below zero
 
@@ -193,7 +189,7 @@ ENDING_SETUP:
 - Healer encounter with jailor (while fighting a round of combat)
 - Trap encounter
 
-### 3b. Victory: Goliath
+### 2b. Victory: Goliath
 
 - Display Goliath victory message
 - Prompt the user to click anywhere to continue
@@ -208,7 +204,7 @@ ENDING_SETUP:
 - Healer encounter (when healing is received)
 - Town - healing phase
 
-### 3c. Victory: Full Court
+### 2c. Victory: Full Court
 
 - Display Full Court victory message
 - Highlight all cards contributing to the victory and move them to "display slots"
@@ -230,7 +226,7 @@ ENDING_SETUP:
 - Town - charity phase
 - Town - shopping phase
 
-### 3d. Victory: Elemental Union
+### 2d. Victory: Elemental Union
 
 - Display Elemental Union victory message
 - Highlight all cards contributing to the victory and move them to "display slots"
@@ -252,7 +248,7 @@ ENDING_SETUP:
 - Town - charity phase
 - Town - shopping phase
 
-### 3e. Victory: Master of the Elements
+### 2e. Victory: Master of the Elements
 
 - Display Master of the Elements victory message
 - Highlight all cards contributing to the victory and move them to "display slots"

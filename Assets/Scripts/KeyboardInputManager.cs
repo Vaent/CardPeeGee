@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class KeyboardInputManager : MonoBehaviour
 {
+    public static KeyCode KeybindingForDeck { get; private set; } = KeyCode.D;
+
     void Update()
     {
-        if (Input.GetKeyDown("d")) GameState.Next();
+        if (Input.GetKeyDown(KeybindingForDeck)) GameController.RegisterInteractionWithDeck();
     }
 }

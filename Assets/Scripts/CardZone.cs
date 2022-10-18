@@ -57,7 +57,7 @@ public abstract class CardZone : MonoBehaviour
         if (movingCards.Count > 0)
         {
             Debug.Log(this + " finished moving " + movingCards.Print());
-            GameState.NotifyCardsReceived(this, movingCards);
+            GameController.RegisterCardsReceived(this, movingCards);
             MovedCards(movingCards);
         }
     }

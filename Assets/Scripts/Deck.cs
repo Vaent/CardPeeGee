@@ -23,7 +23,7 @@ public class Deck : CardZone
 
     void OnMouseDown()
     {
-        GameState.Next();
+        GameController.RegisterInteractionWithDeck();
     }
 
     public void DealCards(int count)

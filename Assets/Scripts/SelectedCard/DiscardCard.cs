@@ -7,8 +7,7 @@ public class DiscardCard : MonoBehaviour
 
     private void OnMouseDown()
     {
-        deck.Accept(panel.SelectedCard);
         panel.Hide();
-        Town.PlayerHasDiscarded(panel.SelectedCard);
+        GameController.RegisterDiscardAction(panel.SelectedCard);
     }
 }

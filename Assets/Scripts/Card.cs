@@ -86,11 +86,6 @@ public class Card
         }
     }
 
-    public void DoClicked()
-    {
-        GameState.NotifyCardSelected(this);
-    }
-
     public void Hide()
     {
         cardController.Kill();

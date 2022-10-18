@@ -110,6 +110,7 @@ public class Town : GamePhase
 
     public static void PlayerHasDiscarded(Card card)
     {
+        instance.deck.Accept(card);
         if (!instance.deck.Equals(card.CurrentLocation))
         {
             Debug.LogError($"{card} was reported as a discard but has not been returned to the deck");

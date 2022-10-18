@@ -19,8 +19,6 @@ public class PlayerCreator : GamePhase
     private Player player;
     private StagingArea stagingArea;
 
-    public GamePhase Get => instance;
-
     private PlayerCreator(Deck deck, StagingArea stagingArea)
     {
         hpDisplay ??= GameObject.Find("hptext").GetComponent<TextMesh>();
@@ -34,6 +32,12 @@ public class PlayerCreator : GamePhase
     public static void Close()
     {
         instance = null;
+    }
+
+    public static GamePhase GetClean()
+    {
+        // TODO: initialisation
+        return instance;
     }
 
     public static void Initialise(Deck deck, StagingArea stagingArea)
@@ -172,6 +176,9 @@ public class PlayerCreator : GamePhase
             }
         }
     }
+
+    // cards are not selectable during player creation
+    public void RegisterInteractionWith(Card card) { }
 
 // PlayerCreator.Phase is managed internally through the currentPhase field
 

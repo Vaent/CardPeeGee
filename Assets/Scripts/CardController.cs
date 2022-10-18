@@ -40,7 +40,7 @@ public class CardController : MonoBehaviour
     void OnMouseDown()
     {
         Debug.Log("Clicked " + cardScript);
-        GameController.RegisterInteractionWithCard(cardScript);
+        GameController.RegisterInteractionWith(cardScript);
     }
 
 // MonoBehaviour methods end / custom methods begin

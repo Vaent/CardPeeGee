@@ -12,9 +12,9 @@ public static class GameController
         Town.PlayerHasDiscarded(card);
     }
 
-    public static void RegisterInteractionWithCard(Card card)
+    public static void RegisterInteractionWith(Card card)
     {
-        GameState.NotifyCardSelected(card);
+        GameState.CurrentPhase.RegisterInteractionWith(card);
     }
 
     public static void RegisterInteractionWithDeck()

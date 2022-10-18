@@ -17,6 +17,8 @@ public class GameState
     private Player player;
     private StagingArea stagingArea;
 
+    public static GamePhase CurrentPhase { get; private set; } = PlayerCreator.GetClean();
+
     private GameState() { }
 
 // class methods have public visibility
@@ -69,11 +71,6 @@ public class GameState
             TearDownDisplayedText();
             instance.deck.DealCards(3);
         }
-    }
-
-    public static void NotifyCardSelected(Card card)
-    {
-        if (instance.locked == false) instance.CardSelected(card);
     }
 
     public static void NotifyCardsReceived(CardZone cardZone, List<Card> cards)
@@ -135,19 +132,6 @@ public class GameState
 
 // instance methods are only visible to the class/instance
 
-    private void CardSelected(Card card)
-    {
-        switch (currentPhase)
-        {
-            case Phase.InEncounter:
-                currentEncounter.CardSelected(card);
-                break;
-            case Phase.InTown:
-                Town.CardSelected(card);
-                break;
-        }
-    }
-
     private bool IsInEncounter(Encounter encounter)
     {
         return (currentPhase is Phase.InEncounter) && (encounter.Equals(currentEncounter));
@@ -170,6 +154,7 @@ public class GameState
         deck.Accept(player.CardsPlayed.Cards);
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
         Debug.Log($"Ending {currentEncounter} and entering Town");
+        CurrentPhase = Town.GetClean();
         currentPhase = Phase.InTown;
         currentEncounter = null;
         Town.Enter(player, deck);
@@ -177,6 +162,7 @@ public class GameState
 
     private void LeaveTown()
     {
+        CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
         currentPhase = Phase.NewDay;
         locked = false;
@@ -221,12 +207,14 @@ public class GameState
             Debug.Log("Starting a " + currentEncounter + " Encounter");
             currentPhase = Phase.InEncounter;
             currentEncounter.Begin();
+            ((EncounterPhase)CurrentPhase).encounter = currentEncounter;
         }
     }
 
     private void PlayerCreated(Player player)
     {
         this.player = player;
+        CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
         this.currentPhase = Phase.NewDay;
         this.locked = false;
@@ -234,6 +222,7 @@ public class GameState
 
     private void StartGame()
     {
+        CurrentPhase = PlayerCreator.GetClean();
         currentPhase = Phase.PlayerCreation;
         if (player != null)
         {

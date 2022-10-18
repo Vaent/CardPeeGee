@@ -18,27 +18,11 @@ public class Town : GamePhase
     private Phase phase;
     private Player player;
 
-    public GamePhase Get => instance;
-
     private Town() { }
 
     public static void Advance()
     {
         instance.ResolveCurrentPhase();
-    }
-
-    public static void CardSelected(Card card)
-    {
-        switch (instance.phase)
-        {
-            case Phase.Tax:
-                instance.player.ConfigureSelectedCardDiscard(card);
-                break;
-            case Phase.Heal:
-            case Phase.Shop:
-                // TODO: check whether the card is usable in the current context, display options if so
-                break;
-        }
     }
 
     public static void Enter(Player player, Deck deck)
@@ -48,6 +32,12 @@ public class Town : GamePhase
         JukeBox.Play(JukeBox.Track.Ambient);
         DisplayText(Announce);
         Timer.DelayThenInvoke(0.8f, instance.SetUpTaxPhase);
+    }
+
+    public static GamePhase GetClean()
+    {
+        // TODO: initialisation
+        return instance;
     }
 
     private void LeaveTown()
@@ -123,6 +113,20 @@ public class Town : GamePhase
         {
             HideText(Tax);
             Timer.DelayThenInvoke(0.5f, instance.SetUpShopPhase);
+        }
+    }
+
+    public void RegisterInteractionWith(Card card)
+    {
+        switch (phase)
+        {
+            case Phase.Tax:
+                player.ConfigureSelectedCardDiscard(card);
+                break;
+            case Phase.Heal:
+            case Phase.Shop:
+                // TODO: check whether the card is usable in the current context, display options if so
+                break;
         }
     }
 

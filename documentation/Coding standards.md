@@ -1,6 +1,6 @@
 # Code styling
 
-Microsoft's C# conventions should be followed by default, unless they contradict the project standards below. See https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions.
+Microsoft's C# conventions should be followed by default, unless they contradict the project standards below. See https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions.
 
 ## Constants
 

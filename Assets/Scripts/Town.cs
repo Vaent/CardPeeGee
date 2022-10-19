@@ -6,7 +6,7 @@ using static Text.Excerpts.Town;
 using static Text.TextManager;
 using UnityEngine;
 
-public class Town : GamePhase
+public class Town : IGamePhase
 {
     private static readonly int charityUpperLimitExclusive = 4;
     private static readonly int costOfNewCard = 8;
@@ -34,7 +34,7 @@ public class Town : GamePhase
         Timer.DelayThenInvoke(0.8f, instance.SetUpTaxPhase);
     }
 
-    public static GamePhase GetClean()
+    public static IGamePhase GetClean()
     {
         // TODO: initialisation
         return instance;

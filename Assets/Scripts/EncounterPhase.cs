@@ -1,5 +1,5 @@
 ﻿// PLACEHOLDER - see documentation/Design decisions - Gameplay flow.md
-public class EncounterPhase : GamePhase
+public class EncounterPhase : IGamePhase
 {
     private static readonly EncounterPhase instance = new EncounterPhase();
 
@@ -8,7 +8,7 @@ public class EncounterPhase : GamePhase
 
     private EncounterPhase() { }
 
-    public static GamePhase GetClean()
+    public static IGamePhase GetClean()
     {
         // TODO: initialisation
         return instance;

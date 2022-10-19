@@ -4,7 +4,7 @@ using static Text.TextManager;
 using UnityEngine;
 
 /* Singleton which manages the process of building a new Player */
-public class PlayerCreator : GamePhase
+public class PlayerCreator : IGamePhase
 {
     private static readonly int hpBaseValue = 15;
     private static PlayerCreator instance;
@@ -34,7 +34,7 @@ public class PlayerCreator : GamePhase
         instance = null;
     }
 
-    public static GamePhase GetClean()
+    public static IGamePhase GetClean()
     {
         // TODO: initialisation
         return instance;

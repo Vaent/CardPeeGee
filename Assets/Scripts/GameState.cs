@@ -17,7 +17,7 @@ public class GameState
     private Player player;
     private StagingArea stagingArea;
 
-    public static GamePhase CurrentPhase { get; private set; } = PlayerCreator.GetClean();
+    public static IGamePhase CurrentPhase { get; private set; } = PlayerCreator.GetClean();
 
     private GameState() { }
 

@@ -6,7 +6,9 @@ using UnityEngine;
 /* Singleton which manages the process of building a new Player */
 public class PlayerCreator : IGamePhase
 {
-    private static readonly int hpBaseValue = 15;
+    private static readonly int initialHandNumberOfCards = 5;
+    private static readonly int initialHpBaseValue = 15;
+    private static readonly int initialHpNumberOfCards = 3;
     private static PlayerCreator instance;
 
     private Text.BaseExcerpt characterIdentifiedExcerpt;
@@ -101,9 +103,9 @@ public class PlayerCreator : IGamePhase
 
     private void GetHP(List<Card> cards)
     {
-        int hp = hpBaseValue + CardUtil.SumValues(cards);
+        int hp = initialHpBaseValue + CardUtil.SumValues(cards);
         List<int> cardValues = cards.ConvertAll(card => card.Value);
-        hpCalculatedExcerpt = HPCalculated(hp, hpBaseValue, string.Join(" + ", cardValues));
+        hpCalculatedExcerpt = HPCalculated(hp, initialHpBaseValue, string.Join(" + ", cardValues));
         DisplayTextAsExtension(hpCalculatedExcerpt, HPSearch);
         player.Heal(hp);
         Timer.DelayThenInvoke(2, HPCallback);
@@ -137,7 +139,7 @@ public class PlayerCreator : IGamePhase
             HideText(HPSearch);
             HideText(hpCalculatedExcerpt);
             DisplayText(DealHand);
-            deck.DealCards(5);
+            deck.DealCards(initialHandNumberOfCards);
         }
         else if (cardZone.Equals(stagingArea))
         {
@@ -172,7 +174,7 @@ public class PlayerCreator : IGamePhase
                 HideText(CharacterSearch);
                 HideText(characterIdentifiedExcerpt);
                 DisplayText(HPSearch);
-                deck.DealCards(3);
+                deck.DealCards(initialHpNumberOfCards);
             }
         }
     }

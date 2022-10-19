@@ -105,7 +105,7 @@ public class PlayerCreator : IGamePhase
     {
         int hp = initialHpBaseValue + CardUtil.SumValues(cards);
         List<int> cardValues = cards.ConvertAll(card => card.Value);
-        hpCalculatedExcerpt = HPCalculated(hp, initialHpBaseValue, string.Join(" + ", cardValues));
+        hpCalculatedExcerpt = HPCalculated(hp, initialHpBaseValue, cardValues);
         DisplayTextAsExtension(hpCalculatedExcerpt, HPSearch);
         player.Heal(hp);
         Timer.DelayThenInvoke(2, HPCallback);

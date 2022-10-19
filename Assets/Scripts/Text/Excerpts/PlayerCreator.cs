@@ -1,4 +1,5 @@
-﻿using static Text.Position;
+﻿using System.Collections.Generic;
+using static Text.Position;
 
 namespace Text.Excerpts
 {
@@ -12,14 +13,12 @@ namespace Text.Excerpts
 
         public static Excerpt<Card> CharacterIdentified(Card characterCard)
         {
-            //UnityEngine.Debug.LogFormat("CharacterIdentified_ precedingText: {0}", CharacterIdentified_.precedingText);
             return new Excerpt<Card>(CharacterIdentified_, characterCard);
         }
 
-        public static Excerpt<int, int, string> HPCalculated(int hpTotal, int hpBaseValue, string hpFromCards)
+        public static Excerpt<int, int, string> HPCalculated(int hpTotal, int hpBaseValue, List<int> hpCardValues)
         {
-            //UnityEngine.Debug.LogFormat("HPCalculated_ precedingText: {0}", HPCalculated_.precedingText);
-            return new Excerpt<int, int, string>(HPCalculated_, hpTotal, hpBaseValue, hpFromCards);
+            return new Excerpt<int, int, string>(HPCalculated_, hpTotal, hpBaseValue, string.Join(" + ", hpCardValues));
         }
     }
 }

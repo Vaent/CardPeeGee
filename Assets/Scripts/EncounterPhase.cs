@@ -14,6 +14,9 @@ public class EncounterPhase : IGamePhase
         return instance;
     }
 
+    // cards are not discarded during encounters
+    public void RegisterDiscardAction(Card card) { }
+
     public void RegisterInteractionWith(Card card)
     {
         encounter.CardSelected(card);

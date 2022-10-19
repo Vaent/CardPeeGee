@@ -98,21 +98,21 @@ public class Town : IGamePhase
         return false;
     }
 
-    public static void PlayerHasDiscarded(Card card)
+    public void RegisterDiscardAction(Card card)
     {
-        instance.deck.Accept(card);
-        if (!instance.deck.Equals(card.CurrentLocation))
+        deck.Accept(card);
+        if (!deck.Equals(card.CurrentLocation))
         {
             Debug.LogError($"{card} was reported as a discard but has not been returned to the deck");
         }
-        else if (instance.phase != Phase.Tax)
+        else if (phase != Phase.Tax)
         {
             Debug.LogError($"{card} was discarded when tax is not expected to be paid");
         }
         else
         {
             HideText(Tax);
-            Timer.DelayThenInvoke(0.5f, instance.SetUpShopPhase);
+            Timer.DelayThenInvoke(0.5f, SetUpShopPhase);
         }
     }
 

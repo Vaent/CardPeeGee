@@ -177,6 +177,9 @@ public class PlayerCreator : IGamePhase
         }
     }
 
+    // cards are not discarded during player creation
+    public void RegisterDiscardAction(Card card) { }
+
     // cards are not selectable during player creation
     public void RegisterInteractionWith(Card card) { }
 

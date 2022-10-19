@@ -9,7 +9,7 @@ public static class GameController
 
     public static void RegisterDiscardAction(Card card)
     {
-        Town.PlayerHasDiscarded(card);
+        GameState.CurrentPhase.RegisterDiscardAction(card);
     }
 
     public static void RegisterInteractionWith(Card card)

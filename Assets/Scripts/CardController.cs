@@ -31,7 +31,7 @@ public class CardController : MonoBehaviour
         }
         if (targetOrientation != null)
         {
-            transform.Rotate(Vector3.right, Time.deltaTime * speedModifier * 60);
+            transform.Rotate(Vector3.right, Time.deltaTime * 360);
             ApplySpriteBasedOnOrientation();
             CheckOrientationAgainstTarget();
         }

@@ -3,7 +3,6 @@
 ## Bugs
 
 - The only conversion option for cards with value 2 should be Spades, and only in combat since the "Zero of Spades" has a useful function there. Currently the only check is whether a sprite exists for the requested conversion. There is no feedback to the player if that check fails.
-- Cards returned to the deck may retain a rotation value away from the plane of the play area - observed in manual testing when repeatedly stacking the deck to deal the 2 of Spades as the first card in new encounters.
 
 ## In scope
 

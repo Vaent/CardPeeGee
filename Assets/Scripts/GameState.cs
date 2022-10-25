@@ -11,7 +11,6 @@ public class GameState
     private static readonly GameState instance = new GameState();
 
     private Encounter currentEncounter;
-    private Phase currentPhase;
     private Deck deck;
     private bool locked;
     private Player player;
@@ -37,7 +36,7 @@ public class GameState
 
     public static void PlayerLeftTown()
     {
-        if (instance.currentPhase is Phase.InTown)
+        if (CurrentPhase is Town)
         {
             instance.LeaveTown();
         }
@@ -57,19 +56,22 @@ public class GameState
         {
             instance.StartGame();
         }
-        else if (instance.currentPhase == Phase.InEncounter)
+        else if (CurrentPhase is EncounterPhase)
         {
-            instance.currentEncounter.Advance();
+            if (instance.currentEncounter == null)
+            {
+                Debug.Log("New Encounter");
+                TearDownDisplayedText();
+                instance.deck.DealCards(3);
+            }
+            else
+            {
+                instance.currentEncounter.Advance();
+            }
         }
-        else if (instance.currentPhase == Phase.InTown)
+        else if (CurrentPhase is Town)
         {
             Town.Advance();
-        }
-        else if (instance.currentPhase == Phase.NewDay)
-        {
-            Debug.Log("New Encounter");
-            TearDownDisplayedText();
-            instance.deck.DealCards(3);
         }
     }
 
@@ -134,7 +136,7 @@ public class GameState
 
     private bool IsInEncounter(Encounter encounter)
     {
-        return (currentPhase is Phase.InEncounter) && (encounter.Equals(currentEncounter));
+        return (CurrentPhase is EncounterPhase) && (encounter.Equals(currentEncounter));
     }
 
     private bool IsPlayerAlive()
@@ -144,7 +146,7 @@ public class GameState
 
     private bool IsWaitingForNewPlayer()
     {
-        return player == null && currentPhase == Phase.PlayerCreation;
+        return player == null && (CurrentPhase is PlayerCreator);
     }
 
     private void LeaveEncounter()
@@ -155,7 +157,6 @@ public class GameState
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
         Debug.Log($"Ending {currentEncounter} and entering Town");
         CurrentPhase = Town.GetClean();
-        currentPhase = Phase.InTown;
         currentEncounter = null;
         Town.Enter(player, deck);
     }
@@ -164,24 +165,23 @@ public class GameState
     {
         CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
-        currentPhase = Phase.NewDay;
         locked = false;
     }
 
     private void NewCards(CardZone cardZone, List<Card> cards)
     {
-        switch (currentPhase)
+        switch (CurrentPhase)
         {
-            case Phase.PlayerCreation:
+            case PlayerCreator _:
                 PlayerCreator.NotifyCardsReceived(cardZone, cards);
                 break;
-            case Phase.NewDay:
+            case EncounterPhase _ when currentEncounter == null:
                 NewCardsNewDay(cardZone, cards);
                 break;
-            case Phase.InEncounter:
+            case EncounterPhase _:
                 NewCardsInEncounter(cardZone, cards);
                 break;
-            case Phase.InTown:
+            case Town _:
                 NewCardsInTown(cardZone, cards);
                 break;
         }
@@ -205,7 +205,6 @@ public class GameState
             currentEncounter.HappensTo(player);
             currentEncounter.Uses(deck);
             Debug.Log("Starting a " + currentEncounter + " Encounter");
-            currentPhase = Phase.InEncounter;
             currentEncounter.Begin();
             ((EncounterPhase)CurrentPhase).encounter = currentEncounter;
         }
@@ -216,14 +215,11 @@ public class GameState
         this.player = player;
         CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
-        this.currentPhase = Phase.NewDay;
         this.locked = false;
     }
 
     private void StartGame()
     {
-        CurrentPhase = PlayerCreator.GetClean();
-        currentPhase = Phase.PlayerCreation;
         if (player != null)
         {
             deck.Accept(stagingArea.Cards);
@@ -236,21 +232,13 @@ public class GameState
             deck.Accept(player.CardsPlayed.Cards);
             player = null;
             Timer.DelayThenInvoke(3, PlayerCreator.Initialise, deck, stagingArea);
+            CurrentPhase = PlayerCreator.GetClean();
             return;
             //TODO: complete/refactor handling of dead player
             //NB Timer.Callback<T,U> was created for the rough implementation; if not subsequently used elsewhere it may be disposable
         }
         UnityEngine.Object.Destroy(GameObject.Find("eventtext3"));
         PlayerCreator.Initialise(deck, stagingArea);
-    }
-
-// GameState.Phase is managed internally through the currentPhase field
-
-    private enum Phase
-    {
-        PlayerCreation,
-        NewDay,
-        InEncounter,
-        InTown
+        CurrentPhase = PlayerCreator.GetClean();
     }
 }

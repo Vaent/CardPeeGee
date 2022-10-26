@@ -49,14 +49,6 @@ public class PlayerCreator : IGamePhase
         instance.GetCharacterCard();
     }
 
-    public static void NotifyCardsReceived(CardZone cardZone, List<Card> cards)
-    {
-        if (instance != null)
-        {
-            instance.NewCards(cardZone, cards);
-        }
-    }
-
 // callbacks on the instance are public
 
     public void CharacterCardCallback(Card card)
@@ -111,27 +103,6 @@ public class PlayerCreator : IGamePhase
         Timer.DelayThenInvoke(2, HPCallback);
     }
 
-    private void NewCards(CardZone cardZone, List<Card> cards)
-    {
-        switch (currentPhase)
-        {
-            case Phase.GetCharacterCard:
-                if (cardZone.Equals(stagingArea))
-                {
-                    CheckCharacterCard(cards[0]);
-                }
-                break;
-            case Phase.GetHP:
-                NotifyGetHP(cardZone, cards);
-                break;
-            case Phase.GetHand:
-                NotifyGetHand(cardZone, cards);
-                break;
-            default:
-                throw new System.Exception("PlayerCreator.currentPhase not recognised");
-        }
-    }
-
     private void NotifyGetHand(CardZone cardZone, List<Card> cards)
     {
         if (cardZone.Equals(deck))
@@ -176,6 +147,27 @@ public class PlayerCreator : IGamePhase
                 DisplayText(HPSearch);
                 deck.DealCards(initialHpNumberOfCards);
             }
+        }
+    }
+
+    public void RegisterCardsReceived(CardZone destination, List<Card> cards)
+    {
+        switch (currentPhase)
+        {
+            case Phase.GetCharacterCard:
+                if (destination.Equals(stagingArea))
+                {
+                    CheckCharacterCard(cards[0]);
+                }
+                break;
+            case Phase.GetHP:
+                NotifyGetHP(destination, cards);
+                break;
+            case Phase.GetHand:
+                NotifyGetHand(destination, cards);
+                break;
+            default:
+                throw new System.Exception("PlayerCreator.currentPhase not recognised");
         }
     }
 

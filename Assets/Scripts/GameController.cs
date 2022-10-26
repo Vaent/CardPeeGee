@@ -4,7 +4,7 @@ public static class GameController
 {
     public static void RegisterCardsReceived(CardZone destination, List<Card> cards)
     {
-        GameState.NotifyCardsReceived(destination, cards);
+        GameState.CurrentPhase.RegisterCardsReceived(destination, cards);
     }
 
     public static void RegisterDiscardAction(Card card)

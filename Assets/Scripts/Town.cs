@@ -98,6 +98,11 @@ public class Town : IGamePhase
         return false;
     }
 
+    public void RegisterCardsReceived(CardZone destination, List<Card> cards)
+    {
+        // placeholder
+    }
+
     public void RegisterDiscardAction(Card card)
     {
         deck.Accept(card);

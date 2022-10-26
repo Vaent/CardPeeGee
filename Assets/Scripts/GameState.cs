@@ -10,13 +10,14 @@ public class GameState
 {
     private static readonly GameState instance = new GameState();
 
-    private Encounter currentEncounter;
     private Deck deck;
     private bool locked;
     private Player player;
     private StagingArea stagingArea;
 
     public static IGamePhase CurrentPhase { get; private set; } = PlayerCreator.GetClean();
+    public static Deck GetDeck => instance.deck;
+    public static Player GetPlayer => instance.player;
 
     private GameState() { }
 
@@ -58,7 +59,7 @@ public class GameState
         }
         else if (CurrentPhase is EncounterPhase)
         {
-            if (instance.currentEncounter == null)
+            if (((EncounterPhase)CurrentPhase).encounter == null)
             {
                 Debug.Log("New Encounter");
                 TearDownDisplayedText();
@@ -66,18 +67,13 @@ public class GameState
             }
             else
             {
-                instance.currentEncounter.Advance();
+                ((EncounterPhase)CurrentPhase).encounter.Advance();
             }
         }
         else if (CurrentPhase is Town)
         {
             Town.Advance();
         }
-    }
-
-    public static void NotifyCardsReceived(CardZone cardZone, List<Card> cards)
-    {
-        instance.NewCards(cardZone, cards);
     }
 
 #if UNITY_EDITOR
@@ -136,7 +132,7 @@ public class GameState
 
     private bool IsInEncounter(Encounter encounter)
     {
-        return (CurrentPhase is EncounterPhase) && (encounter.Equals(currentEncounter));
+        return (CurrentPhase is EncounterPhase EP) && (encounter.Equals(EP.encounter));
     }
 
     private bool IsPlayerAlive()
@@ -151,13 +147,13 @@ public class GameState
 
     private void LeaveEncounter()
     {
-        currentEncounter.TearDown();
+        ((EncounterPhase)CurrentPhase).encounter.TearDown();
         deck.Accept(stagingArea.Cards);
         deck.Accept(player.CardsPlayed.Cards);
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
-        Debug.Log($"Ending {currentEncounter} and entering Town");
+        Debug.Log($"Ending {((EncounterPhase)CurrentPhase).encounter} and entering Town");
+        ((EncounterPhase)CurrentPhase).encounter = null;
         CurrentPhase = Town.GetClean();
-        currentEncounter = null;
         Town.Enter(player, deck);
     }
 
@@ -166,48 +162,6 @@ public class GameState
         CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
         locked = false;
-    }
-
-    private void NewCards(CardZone cardZone, List<Card> cards)
-    {
-        switch (CurrentPhase)
-        {
-            case PlayerCreator _:
-                PlayerCreator.NotifyCardsReceived(cardZone, cards);
-                break;
-            case EncounterPhase _ when currentEncounter == null:
-                NewCardsNewDay(cardZone, cards);
-                break;
-            case EncounterPhase _:
-                NewCardsInEncounter(cardZone, cards);
-                break;
-            case Town _:
-                NewCardsInTown(cardZone, cards);
-                break;
-        }
-    }
-
-    private void NewCardsInEncounter(CardZone cardZone, List<Card> cards)
-    {
-        currentEncounter.CardsArrivedAt(cardZone, cards);
-    }
-
-    private void NewCardsInTown(CardZone cardZone, List<Card> cards)
-    {
-        // placeholder
-    }
-
-    private void NewCardsNewDay(CardZone cardZone, List<Card> cards)
-    {
-        if (stagingArea.Equals(cardZone))
-        {
-            currentEncounter = Encounter.From(stagingArea.Cards);
-            currentEncounter.HappensTo(player);
-            currentEncounter.Uses(deck);
-            Debug.Log("Starting a " + currentEncounter + " Encounter");
-            currentEncounter.Begin();
-            ((EncounterPhase)CurrentPhase).encounter = currentEncounter;
-        }
     }
 
     private void PlayerCreated(Player player)
@@ -223,8 +177,8 @@ public class GameState
         if (player != null)
         {
             deck.Accept(stagingArea.Cards);
-            currentEncounter?.TearDown();
-            currentEncounter = null;
+            ((EncounterPhase)CurrentPhase).encounter?.TearDown();
+            ((EncounterPhase)CurrentPhase).encounter = null;
             deck.Accept(player.CharacterCard.Cards);
             Debug.Log("Should be destroying... " + player.Hand.Cards.Print());
             deck.Accept(player.Hand.Cards);

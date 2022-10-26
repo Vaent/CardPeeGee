@@ -1,4 +1,6 @@
-﻿// PLACEHOLDER - see documentation/Design decisions - Gameplay flow.md
+﻿using System.Collections.Generic;
+using UnityEngine;
+
 public class EncounterPhase : IGamePhase
 {
     private static readonly EncounterPhase instance = new EncounterPhase();
@@ -12,6 +14,22 @@ public class EncounterPhase : IGamePhase
     {
         // TODO: initialisation
         return instance;
+    }
+
+    public void RegisterCardsReceived(CardZone destination, List<Card> cards)
+    {
+        if (encounter != null)
+        {
+            encounter.CardsArrivedAt(destination, cards);
+        }
+        else if ((encounter == null) && (destination is StagingArea))
+        {
+            encounter = Encounter.From(destination.Cards);
+            encounter.HappensTo(GameState.GetPlayer);
+            encounter.Uses(GameState.GetDeck);
+            Debug.Log($"Starting a {encounter} Encounter");
+            encounter.Begin();
+        }
     }
 
     // cards are not discarded during encounters

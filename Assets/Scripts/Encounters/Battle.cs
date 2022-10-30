@@ -40,7 +40,6 @@ public class Battle : Encounter
         Debug.Log("Beginning a battle against " + enemies.Print());
         DisplayText(Announce);
         // TODO: prompt to activate/play cards then click the deck
-        GameState.Unlock();
     }
 
     public override void CardSelected(Card card)
@@ -56,11 +55,7 @@ public class Battle : Encounter
         {
             // TODO: calculate scores, deal damage if applicable
             // TODO: end the encounter if all enemies are dead
-            // TODO: return cards to the deck and unlock GameState if encounter is still active
-        }
-        else if (cardZone is Deck)
-        {
-            GameState.Unlock();
+            // TODO: return cards to the deck if encounter is still active
         }
     }
 }

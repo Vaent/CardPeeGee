@@ -13,51 +13,41 @@ public class PlayerCreator : IGamePhase
 
     private Text.BaseExcerpt characterIdentifiedExcerpt;
     private Phase currentPhase;
-    private Deck deck;
     private Text.BaseExcerpt hpCalculatedExcerpt;
     private TextMesh hpDisplay;
+    private bool isInProgress = false;
     private bool movedCharacterCard;
     private bool movedRejectedCandidates;
     private Player player;
-    private StagingArea stagingArea;
 
-    private PlayerCreator(Deck deck, StagingArea stagingArea)
+    private PlayerCreator()
     {
         hpDisplay ??= GameObject.Find("hptext").GetComponent<TextMesh>();
         currentPhase = Phase.GetCharacterCard;
-        this.deck = deck;
-        this.stagingArea = stagingArea;
     }
 
 // class methods have public visibility
 
-    public static void Close()
-    {
-        instance = null;
-    }
-
     public static IGamePhase GetClean()
     {
-        // TODO: initialisation
+        instance = new PlayerCreator();
         return instance;
     }
 
-    public static void Initialise(Deck deck, StagingArea stagingArea)
-    {
-        if (instance != null) Debug.LogWarning("Discarding existing (incomplete) progress");
-        instance = new PlayerCreator(deck, stagingArea);
-        instance.GetCharacterCard();
-    }
-
 // callbacks on the instance are public
+
+    public void BeginCreating()
+    {
+        GetCharacterCard();
+    }
 
     public void CharacterCardCallback(Card card)
     {
         player = new Player(card, hpDisplay);
         currentPhase = Phase.GetHP;
-        if (stagingArea.Cards.Count > 0)
+        if (GameState.GetStagingArea.Cards.Count > 0)
         {
-            deck.Accept(stagingArea.Cards);
+            GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
         }
         else
         {
@@ -68,7 +58,7 @@ public class PlayerCreator : IGamePhase
     public void HPCallback()
     {
         currentPhase = Phase.GetHand;
-        deck.Accept(stagingArea.Cards);
+        GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
     }
 
 // normal instance methods are only visible to the class/instance
@@ -83,14 +73,14 @@ public class PlayerCreator : IGamePhase
         }
         else
         {
-            deck.DealCards(1);
+            GameState.GetDeck.DealCards(1);
         }
     }
 
     private void GetCharacterCard()
     {
         DisplayText(CharacterSearch);
-        deck.DealCards(1);
+        GameState.GetDeck.DealCards(1);
     }
 
     private void GetHP(List<Card> cards)
@@ -105,14 +95,14 @@ public class PlayerCreator : IGamePhase
 
     private void NotifyGetHand(CardZone cardZone, List<Card> cards)
     {
-        if (cardZone.Equals(deck))
+        if (cardZone.Equals(GameState.GetDeck))
         {
             HideText(HPSearch);
             HideText(hpCalculatedExcerpt);
             DisplayText(DealHand);
-            deck.DealCards(initialHandNumberOfCards);
+            GameState.GetDeck.DealCards(initialHandNumberOfCards);
         }
-        else if (cardZone.Equals(stagingArea))
+        else if (cardZone.Equals(GameState.GetStagingArea))
         {
             player.AddToHand(cards);
         }
@@ -125,7 +115,7 @@ public class PlayerCreator : IGamePhase
 
     private void NotifyGetHP(CardZone cardZone, List<Card> cards)
     {
-        if (cardZone.Equals(deck))
+        if (cardZone.Equals(GameState.GetDeck))
         {
             movedRejectedCandidates = true;
         }
@@ -136,7 +126,7 @@ public class PlayerCreator : IGamePhase
 
         if (movedCharacterCard && movedRejectedCandidates)
         {
-            if (cardZone.Equals(stagingArea))
+            if (cardZone.Equals(GameState.GetStagingArea))
             {
                 GetHP(cards);
             }
@@ -145,7 +135,7 @@ public class PlayerCreator : IGamePhase
                 HideText(CharacterSearch);
                 HideText(characterIdentifiedExcerpt);
                 DisplayText(HPSearch);
-                deck.DealCards(initialHpNumberOfCards);
+                GameState.GetDeck.DealCards(initialHpNumberOfCards);
             }
         }
     }
@@ -155,7 +145,7 @@ public class PlayerCreator : IGamePhase
         switch (currentPhase)
         {
             case Phase.GetCharacterCard:
-                if (destination.Equals(stagingArea))
+                if (destination.Equals(GameState.GetStagingArea))
                 {
                     CheckCharacterCard(cards[0]);
                 }
@@ -177,7 +167,24 @@ public class PlayerCreator : IGamePhase
     // cards are not selectable during player creation
     public void RegisterInteractionWith(Card card) { }
 
-// PlayerCreator.Phase is managed internally through the currentPhase field
+    public void RegisterInteractionWithDeck()
+    {
+        if (!isInProgress)
+        {
+            isInProgress = true;
+            if (GameState.GetPlayer?.IsAlive() == false)
+            {
+                GameState.Restart();
+            }
+            else
+            {
+                UnityEngine.Object.Destroy(GameObject.Find("eventtext3"));
+                BeginCreating();
+            }
+        }
+    }
+
+    // PlayerCreator.Phase is managed internally through the currentPhase field
 
     private enum Phase
     {

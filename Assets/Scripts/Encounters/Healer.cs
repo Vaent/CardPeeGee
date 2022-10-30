@@ -59,7 +59,6 @@ public class Healer : Encounter
         if (IsHealingBlocked())
         {
             // TODO: prompt input for battle/fee as required
-            GameState.Unlock();
         }
         else
         {
@@ -93,11 +92,6 @@ public class Healer : Encounter
         {
             // TODO: calculate how much of the fee has been paid, update display
             // TODO: deliver healing (and potions) to player if fee has been fully paid
-            // TODO: unlock GameState if fee has not been fully paid
-        }
-        else if (cardZone is Deck)
-        {
-            GameState.Unlock();
         }
     }
 

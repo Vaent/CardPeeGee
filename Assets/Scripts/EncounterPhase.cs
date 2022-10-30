@@ -5,6 +5,7 @@ public class EncounterPhase : IGamePhase
 {
     private static readonly EncounterPhase instance = new EncounterPhase();
 
+    private bool isCreatingEncounter = false;
     // PLACEHOLDER pending extraction of encounter management logic from GameState into this class
     public Encounter encounter;
 
@@ -12,7 +13,8 @@ public class EncounterPhase : IGamePhase
 
     public static IGamePhase GetClean()
     {
-        // TODO: initialisation
+        instance.encounter = null;
+        instance.isCreatingEncounter = false;
         return instance;
     }
 
@@ -38,5 +40,23 @@ public class EncounterPhase : IGamePhase
     public void RegisterInteractionWith(Card card)
     {
         encounter.CardSelected(card);
+    }
+
+    public void RegisterInteractionWithDeck()
+    {
+        if (encounter == null)
+        {
+            if (!isCreatingEncounter)
+            {
+                isCreatingEncounter = true;
+                Debug.Log("New Encounter");
+                Text.TextManager.TearDownDisplayedText();
+                GameState.GetDeck.DealCards(3);
+            }
+        }
+        else
+        {
+            encounter.Advance();
+        }
     }
 }

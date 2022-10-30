@@ -3,7 +3,6 @@
 ## Bugs
 
 - The only conversion option for cards with value 2 should be Spades, and only in combat since the "Zero of Spades" has a useful function there. Currently the only check is whether a sprite exists for the requested conversion. There is no feedback to the player if that check fails.
-- PlayerCreator initialisation/GetClean workaround has broken the process of starting a new game after player death - use of Timer with 3 second delay means PlayerCreator is initialised (deleting the existing instance) after GetClean was used to retrieve the existing instance. This is a symptom of the broader issues with PlayerCreator intialisation and should be resolved naturally when refactoring is complete; the bug is being logged anyway for completeness.
 
 ## In scope
 

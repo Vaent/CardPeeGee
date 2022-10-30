@@ -20,11 +20,6 @@ public class Town : IGamePhase
 
     private Town() { }
 
-    public static void Advance()
-    {
-        instance.ResolveCurrentPhase();
-    }
-
     public static void Enter(Player player, Deck deck)
     {
         instance.player = player;
@@ -135,6 +130,11 @@ public class Town : IGamePhase
         }
     }
 
+    public void RegisterInteractionWithDeck()
+    {
+        ResolveCurrentPhase();
+    }
+
     private void ResolveCurrentPhase()
     {
         switch (phase)
@@ -177,7 +177,6 @@ public class Town : IGamePhase
     {
         DisplayText(Charity);
         Timer.DelayThenInvoke(0.5f, GiveCharity);
-        GameState.Unlock();
     }
 
     private void SetUpHealPhase()
@@ -195,7 +194,6 @@ public class Town : IGamePhase
             DisplayTextAsExtension(HealingNotPossible, CardsCanBeActivated);
             DisplayTextAsExtension(Continue, HealingNotPossible);
         }
-        GameState.Unlock();
     }
 
     private void SetUpShopPhase()
@@ -213,7 +211,6 @@ public class Town : IGamePhase
             DisplayTextAsExtension(ShoppingNotPossible, CardsCanBeActivated);
             DisplayTextAsExtension(Continue, ShoppingNotPossible);
         }
-        GameState.Unlock();
     }
 
     private void SetUpTaxPhase()
@@ -227,7 +224,6 @@ public class Town : IGamePhase
         else if (cardsHeldCount > taxLowerLimitExclusive)
         {
             DisplayText(Tax);
-            GameState.Unlock();
         }
         else
         {

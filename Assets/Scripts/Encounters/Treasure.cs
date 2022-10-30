@@ -33,7 +33,6 @@ public class Treasure : Encounter
         {
             Debug.Log("The chest is trapped: " + trapsOnChest.Print());
             // TODO: prompt to attempt disarm or abandon the treasure
-            GameState.Unlock();
         }
     }
 
@@ -57,12 +56,8 @@ public class Treasure : Encounter
             // TODO: calculate scores
             // TODO: deal damage/remove trap if applicable
             // if (trapsOnChest.Count == 0) DeliverTreasure();
-            // TODO: return cards to the deck and unlock GameState if encounter is still active
+            // TODO: return cards to the deck if encounter is still active
             trapSelectedForDisarm = null;
-        }
-        else if (cardZone is Deck)
-        {
-            GameState.Unlock();
         }
     }
 

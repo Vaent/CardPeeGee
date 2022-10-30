@@ -202,7 +202,7 @@ public class Player
         {
             hpDisplay.text = "DEAD";
             Text.TextManager.TearDownDisplayedText();
-            GameState.Unlock();
+            GameState.PlayerDied();
             return;
             // TODO: implement death properly
         }

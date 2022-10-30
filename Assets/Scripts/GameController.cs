@@ -19,6 +19,6 @@ public static class GameController
 
     public static void RegisterInteractionWithDeck()
     {
-        GameState.Next();
+        GameState.CurrentPhase.RegisterInteractionWithDeck();
     }
 }

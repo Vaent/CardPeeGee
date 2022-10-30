@@ -1,23 +1,21 @@
 using ExtensionMethods;
 using System;
-using System.Collections.Generic;
 using static Text.Excerpts.Generic;
 using static Text.TextManager;
 using UnityEngine;
 
-/* Singleton for managing overall flow of a game. */
 public class GameState
 {
     private static readonly GameState instance = new GameState();
 
     private Deck deck;
-    private bool locked;
     private Player player;
     private StagingArea stagingArea;
 
     public static IGamePhase CurrentPhase { get; private set; } = PlayerCreator.GetClean();
     public static Deck GetDeck => instance.deck;
     public static Player GetPlayer => instance.player;
+    public static StagingArea GetStagingArea => instance.stagingArea;
 
     private GameState() { }
 
@@ -35,6 +33,15 @@ public class GameState
         }
     }
 
+    public static void PlayerDied()
+    {
+        if (instance.player?.IsAlive() == false)
+        {
+            ((EncounterPhase)CurrentPhase).encounter?.TearDown();
+            CurrentPhase = PlayerCreator.GetClean();
+        }
+    }
+
     public static void PlayerLeftTown()
     {
         if (CurrentPhase is Town)
@@ -44,35 +51,6 @@ public class GameState
         else
         {
             Debug.LogWarning("Attempted to exit town when not currently in town!");
-        }
-    }
-
-    public static void Next()
-    {
-        if (instance.locked) return;
-        instance.locked = true;
-        // IMPORTANT: remember to unlock GameState when ready for new input
-
-        if (!instance.IsPlayerAlive())
-        {
-            instance.StartGame();
-        }
-        else if (CurrentPhase is EncounterPhase)
-        {
-            if (((EncounterPhase)CurrentPhase).encounter == null)
-            {
-                Debug.Log("New Encounter");
-                TearDownDisplayedText();
-                instance.deck.DealCards(3);
-            }
-            else
-            {
-                ((EncounterPhase)CurrentPhase).encounter.Advance();
-            }
-        }
-        else if (CurrentPhase is Town)
-        {
-            Town.Advance();
         }
     }
 
@@ -114,7 +92,6 @@ public class GameState
     {
         if (instance.IsWaitingForNewPlayer())
         {
-            PlayerCreator.Close();
             instance.PlayerCreated(player);
         }
         else
@@ -123,12 +100,12 @@ public class GameState
         }
     }
 
-    public static void Unlock()
+    public static void Restart()
     {
-        instance.locked = false;
+        instance.StartNewGame();
     }
 
-// instance methods are only visible to the class/instance
+    // instance methods are only visible to the class/instance
 
     private bool IsInEncounter(Encounter encounter)
     {
@@ -152,7 +129,6 @@ public class GameState
         deck.Accept(player.CardsPlayed.Cards);
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
         Debug.Log($"Ending {((EncounterPhase)CurrentPhase).encounter} and entering Town");
-        ((EncounterPhase)CurrentPhase).encounter = null;
         CurrentPhase = Town.GetClean();
         Town.Enter(player, deck);
     }
@@ -161,7 +137,6 @@ public class GameState
     {
         CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
-        locked = false;
     }
 
     private void PlayerCreated(Player player)
@@ -169,30 +144,19 @@ public class GameState
         this.player = player;
         CurrentPhase = EncounterPhase.GetClean();
         DisplayText(NewEncounterPrompt);
-        this.locked = false;
     }
 
-    private void StartGame()
+    private void StartNewGame()
     {
-        if (player != null)
-        {
-            deck.Accept(stagingArea.Cards);
-            ((EncounterPhase)CurrentPhase).encounter?.TearDown();
-            ((EncounterPhase)CurrentPhase).encounter = null;
-            deck.Accept(player.CharacterCard.Cards);
-            Debug.Log("Should be destroying... " + player.Hand.Cards.Print());
-            deck.Accept(player.Hand.Cards);
-            deck.Accept(player.CardsActivated.Cards);
-            deck.Accept(player.CardsPlayed.Cards);
-            player = null;
-            Timer.DelayThenInvoke(3, PlayerCreator.Initialise, deck, stagingArea);
-            CurrentPhase = PlayerCreator.GetClean();
-            return;
-            //TODO: complete/refactor handling of dead player
-            //NB Timer.Callback<T,U> was created for the rough implementation; if not subsequently used elsewhere it may be disposable
-        }
-        UnityEngine.Object.Destroy(GameObject.Find("eventtext3"));
-        PlayerCreator.Initialise(deck, stagingArea);
-        CurrentPhase = PlayerCreator.GetClean();
+        deck.Accept(stagingArea.Cards);
+        deck.Accept(player.CharacterCard.Cards);
+        Debug.Log("Should be destroying... " + player.Hand.Cards.Print());
+        deck.Accept(player.Hand.Cards);
+        deck.Accept(player.CardsActivated.Cards);
+        deck.Accept(player.CardsPlayed.Cards);
+        player = null;
+        Timer.DelayThenInvoke(3, ((PlayerCreator)CurrentPhase).BeginCreating);
+        return;
+        //TODO: complete/refactor handling of dead player
     }
 }

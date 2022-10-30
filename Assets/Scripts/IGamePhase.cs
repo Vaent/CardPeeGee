@@ -8,4 +8,6 @@ public interface IGamePhase
     public void RegisterDiscardAction(Card card);
 
     public void RegisterInteractionWith(Card card);
+
+    public void RegisterInteractionWithDeck();
 }

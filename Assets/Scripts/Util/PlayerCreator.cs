@@ -3,16 +3,13 @@ using static Text.Excerpts.PlayerCreator;
 using static Text.TextManager;
 using UnityEngine;
 
-/* Singleton which manages the process of building a new Player */
 public class PlayerCreator : IGamePhase
 {
     private static readonly int initialHandNumberOfCards = 5;
     private static readonly int initialHpBaseValue = 15;
     private static readonly int initialHpNumberOfCards = 3;
-    private static PlayerCreator instance;
 
     private Text.BaseExcerpt characterIdentifiedExcerpt;
-    private Phase currentPhase;
     private Text.BaseExcerpt hpCalculatedExcerpt;
     private TextMesh hpDisplay;
     private bool isInProgress = false;
@@ -22,29 +19,27 @@ public class PlayerCreator : IGamePhase
 
     private PlayerCreator()
     {
-        hpDisplay ??= GameObject.Find("hptext").GetComponent<TextMesh>();
-        currentPhase = Phase.GetCharacterCard;
+        hpDisplay = GameObject.Find("hptext").GetComponent<TextMesh>();
     }
 
-// class methods have public visibility
+// class methods
 
     public static IGamePhase GetClean()
     {
-        instance = new PlayerCreator();
-        return instance;
+        return new PlayerCreator();
     }
 
-// callbacks on the instance are public
+// public instance methods
 
     public void BeginCreating()
     {
-        GetCharacterCard();
+        DisplayText(CharacterSearch);
+        GameState.GetDeck.DealCards(1);
     }
 
     public void CharacterCardCallback(Card card)
     {
         player = new Player(card, hpDisplay);
-        currentPhase = Phase.GetHP;
         if (GameState.GetStagingArea.Cards.Count > 0)
         {
             GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
@@ -55,13 +50,19 @@ public class PlayerCreator : IGamePhase
         }
     }
 
-    public void HPCallback()
-    {
-        currentPhase = Phase.GetHand;
-        GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
-    }
+    public void HPCallback() => GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
 
-// normal instance methods are only visible to the class/instance
+// private instance methods
+
+    private void CalculateAndApplyInitialHP(List<Card> cards)
+    {
+        int hp = initialHpBaseValue + CardUtil.SumValues(cards);
+        List<int> cardValues = cards.ConvertAll(card => card.Value);
+        hpCalculatedExcerpt = HPCalculated(hp, initialHpBaseValue, cardValues);
+        DisplayTextAsExtension(hpCalculatedExcerpt, HPSearch);
+        player.Heal(hp);
+        Timer.DelayThenInvoke(2, HPCallback);
+    }
 
     private void CheckCharacterCard(Card candidate)
     {
@@ -75,22 +76,6 @@ public class PlayerCreator : IGamePhase
         {
             GameState.GetDeck.DealCards(1);
         }
-    }
-
-    private void GetCharacterCard()
-    {
-        DisplayText(CharacterSearch);
-        GameState.GetDeck.DealCards(1);
-    }
-
-    private void GetHP(List<Card> cards)
-    {
-        int hp = initialHpBaseValue + CardUtil.SumValues(cards);
-        List<int> cardValues = cards.ConvertAll(card => card.Value);
-        hpCalculatedExcerpt = HPCalculated(hp, initialHpBaseValue, cardValues);
-        DisplayTextAsExtension(hpCalculatedExcerpt, HPSearch);
-        player.Heal(hp);
-        Timer.DelayThenInvoke(2, HPCallback);
     }
 
     private void NotifyGetHand(CardZone cardZone, List<Card> cards)
@@ -128,7 +113,7 @@ public class PlayerCreator : IGamePhase
         {
             if (cardZone.Equals(GameState.GetStagingArea))
             {
-                GetHP(cards);
+                CalculateAndApplyInitialHP(cards);
             }
             else
             {
@@ -142,29 +127,27 @@ public class PlayerCreator : IGamePhase
 
     public void RegisterCardsReceived(CardZone destination, List<Card> cards)
     {
-        switch (currentPhase)
+        if (player == null)
         {
-            case Phase.GetCharacterCard:
-                if (destination.Equals(GameState.GetStagingArea))
-                {
-                    CheckCharacterCard(cards[0]);
-                }
-                break;
-            case Phase.GetHP:
-                NotifyGetHP(destination, cards);
-                break;
-            case Phase.GetHand:
-                NotifyGetHand(destination, cards);
-                break;
-            default:
-                throw new System.Exception("PlayerCreator.currentPhase not recognised");
+            if (destination.Equals(GameState.GetStagingArea))
+            {
+                CheckCharacterCard(cards[0]);
+            }
+        }
+        else if (!player.IsAlive())
+        {
+            NotifyGetHP(destination, cards);
+        }
+        else
+        {
+            NotifyGetHand(destination, cards);
         }
     }
 
     // cards are not discarded during player creation
     public void RegisterDiscardAction(Card card) { }
 
-    // cards are not selectable during player creation
+    // cards are not interactable during player creation
     public void RegisterInteractionWith(Card card) { }
 
     public void RegisterInteractionWithDeck()
@@ -182,14 +165,5 @@ public class PlayerCreator : IGamePhase
                 BeginCreating();
             }
         }
-    }
-
-    // PlayerCreator.Phase is managed internally through the currentPhase field
-
-    private enum Phase
-    {
-        GetCharacterCard,
-        GetHP,
-        GetHand
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using static Text.Excerpts.Town;
 using static Text.TextManager;
 using UnityEngine;
+using Text;
 
 public class Town : IGamePhase
 {
@@ -14,47 +15,37 @@ public class Town : IGamePhase
 
     private static readonly Town instance = new Town();
 
-    private Deck deck;
     private Phase phase;
-    private Player player;
 
     private Town() { }
 
-    public static void Enter(Player player, Deck deck)
+    public static IGamePhase GetClean()
     {
-        instance.player = player;
-        instance.deck = deck;
         JukeBox.Play(JukeBox.Track.Ambient);
         DisplayText(Announce);
         Timer.DelayThenInvoke(0.8f, instance.SetUpTaxPhase);
-    }
-
-    public static IGamePhase GetClean()
-    {
-        // TODO: initialisation
         return instance;
     }
 
     private void LeaveTown()
     {
-        player = null;
         TearDownDisplayedText();
         GameState.PlayerLeftTown();
     }
 
     private void GiveCharity()
     {
-        deck.DealCards(player.Hand, 1);
+        GameState.GetDeck.DealCards(GameState.GetPlayer.Hand, 1);
         Timer.DelayThenInvoke(1.5f, SetUpShopPhase);
     }
 
     private bool PlayerCanHeal()
     {
-        if (player.CardsActivated.Cards.Exists(card => Heart.Equals(card.Suit)))
+        if (GameState.GetPlayer.CardsActivated.Cards.Exists(card => Heart.Equals(card.Suit)))
         {
             return true;
         }
-        if (player.Hand.Cards.Exists(card => Heart.Equals(card.Suit)))
+        if (GameState.GetPlayer.Hand.Cards.Exists(card => Heart.Equals(card.Suit)))
         {
             return true;
         }
@@ -65,25 +56,25 @@ public class Town : IGamePhase
     private bool PlayerCanShop()
     {
         int availableToSpend = 0;
-        foreach (Card card in player.CardsActivated.Cards)
+        foreach (Card card in GameState.GetPlayer.CardsActivated.Cards)
         {
             availableToSpend += ValueIfPlayedOrConverted(card, Diamond);
             if (availableToSpend >= costOfNewCard) return true;
         }
-        foreach (Card card in player.Hand.Cards)
+        foreach (Card card in GameState.GetPlayer.Hand.Cards)
         {
             availableToSpend += ValueIfPlayedOrConverted(card, Diamond);
             if (availableToSpend >= costOfNewCard) return true;
         }
-        foreach (Card card in player.Hand.Cards)
+        foreach (Card card in GameState.GetPlayer.Hand.Cards)
         {
             if (JACK.Equals(card.Name) && (card.Suit != Diamond))
             {
-                List<Card> matchingSuits = player.Hand.Cards.FindAll(match => (card.Suit.Equals(match.Suit) && !match.Equals(card)));
+                List<Card> matchingSuits = GameState.GetPlayer.Hand.Cards.FindAll(match => (card.Suit.Equals(match.Suit) && !match.Equals(card)));
                 availableToSpend += CardUtil.SumValues(matchingSuits);
                 availableToSpend -= (2 * matchingSuits.Count); // conversion penalty
 
-                matchingSuits = player.CardsActivated.Cards.FindAll(match => card.Suit.Equals(match.Suit));
+                matchingSuits = GameState.GetPlayer.CardsActivated.Cards.FindAll(match => card.Suit.Equals(match.Suit));
                 availableToSpend += CardUtil.SumValues(matchingSuits);
                 availableToSpend -= (2 * matchingSuits.Count); // conversion penalty
 
@@ -100,19 +91,15 @@ public class Town : IGamePhase
 
     public void RegisterDiscardAction(Card card)
     {
-        deck.Accept(card);
-        if (!deck.Equals(card.CurrentLocation))
+        if (phase == Phase.Tax)
         {
-            Debug.LogError($"{card} was reported as a discard but has not been returned to the deck");
-        }
-        else if (phase != Phase.Tax)
-        {
-            Debug.LogError($"{card} was discarded when tax is not expected to be paid");
+            GameState.GetDeck.Accept(card);
+            HideText(Tax);
+            Timer.DelayThenInvoke(0.5f, SetUpShopPhase);
         }
         else
         {
-            HideText(Tax);
-            Timer.DelayThenInvoke(0.5f, SetUpShopPhase);
+            Debug.LogError($"Attempted to discard {card} when tax is not expected to be paid");
         }
     }
 
@@ -121,7 +108,7 @@ public class Town : IGamePhase
         switch (phase)
         {
             case Phase.Tax:
-                player.ConfigureSelectedCardDiscard(card);
+                GameState.GetPlayer.ConfigureSelectedCardDiscard(card);
                 break;
             case Phase.Heal:
             case Phase.Shop:
@@ -140,31 +127,31 @@ public class Town : IGamePhase
         switch (phase)
         {
             case Phase.Shop:
-                if (player.CardsPlayed.Cards.Count > 0)
+                if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int amountSpent = CardUtil.SumValues(player.CardsPlayed.Cards);
-                    if (player.CardsActivated.Exists(card => ACE.Equals(card.Name) && Diamond.Equals(card.Suit)))
+                    int amountSpent = CardUtil.SumValues(GameState.GetPlayer.CardsPlayed.Cards);
+                    if (GameState.GetPlayer.CardsActivated.Exists(card => ACE.Equals(card.Name) && Diamond.Equals(card.Suit)))
                     {
                         amountSpent = Mathf.CeilToInt(1.5f * amountSpent);
                     }
-                    deck.Accept(player.CardsPlayed.Cards);
+                    GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
                     int numberOfNewCards = Mathf.FloorToInt(amountSpent / costOfNewCard);
-                    Timer.DelayThenInvoke(2f, deck.DealCards, numberOfNewCards);
+                    Timer.DelayThenInvoke(2f, GameState.GetDeck.DealCards, numberOfNewCards);
                 }
                 HideText(Shopping, ShoppingIsPossible, ShoppingNotPossible, CardsCanBeActivated);
                 // TODO: hide "points text"
                 SetUpHealPhase();
                 break;
             case Phase.Heal:
-                if (player.CardsPlayed.Cards.Count > 0)
+                if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int healAmount = CardUtil.SumValues(player.CardsPlayed.Cards);
-                    if (player.CardsActivated.Exists(card => ACE.Equals(card.Name) && Heart.Equals(card.Suit)))
+                    int healAmount = CardUtil.SumValues(GameState.GetPlayer.CardsPlayed.Cards);
+                    if (GameState.GetPlayer.CardsActivated.Exists(card => ACE.Equals(card.Name) && Heart.Equals(card.Suit)))
                     {
                         healAmount = Mathf.CeilToInt(1.5f * healAmount);
                     }
-                    player.Heal(healAmount);
-                    deck.Accept(player.CardsPlayed.Cards);
+                    GameState.GetPlayer.Heal(healAmount);
+                    GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
                 }
                 LeaveTown();
                 break;
@@ -179,44 +166,37 @@ public class Town : IGamePhase
         Timer.DelayThenInvoke(0.5f, GiveCharity);
     }
 
-    private void SetUpHealPhase()
+    private void SetUpHealOrShopCommon(Phase targetPhase, Excerpt defaultText, Excerpt textIfPossible, Excerpt textIfNotPossible, Func<bool> playerCanDo)
     {
-        instance.phase = Phase.Heal;
-        DisplayTextAsExtension(Healing, Announce);
-        if (player.CanActivateAny()) DisplayText(CardsCanBeActivated);
-        if (PlayerCanHeal())
+        phase = targetPhase;
+        DisplayTextAsExtension(defaultText, Announce);
+        if (GameState.GetPlayer.CanActivateAny()) DisplayText(CardsCanBeActivated);
+        if (playerCanDo())
         {
-            DisplayTextAsExtension(HealingIsPossible, CardsCanBeActivated);
-            DisplayTextAsExtension(Continue, HealingIsPossible);
+            DisplayTextAsExtension(textIfPossible, CardsCanBeActivated);
+            DisplayTextAsExtension(Continue, textIfPossible);
         }
         else
         {
-            DisplayTextAsExtension(HealingNotPossible, CardsCanBeActivated);
-            DisplayTextAsExtension(Continue, HealingNotPossible);
+            DisplayTextAsExtension(textIfNotPossible, CardsCanBeActivated);
+            DisplayTextAsExtension(Continue, textIfNotPossible);
         }
+    }
+
+    private void SetUpHealPhase()
+    {
+        SetUpHealOrShopCommon(Phase.Heal, Healing, HealingIsPossible, HealingNotPossible, PlayerCanHeal);
     }
 
     private void SetUpShopPhase()
     {
-        instance.phase = Phase.Shop;
-        DisplayTextAsExtension(Shopping, Announce);
-        if (player.CanActivateAny()) DisplayText(CardsCanBeActivated);
-        if (PlayerCanShop())
-        {
-            DisplayTextAsExtension(ShoppingIsPossible, CardsCanBeActivated);
-            DisplayTextAsExtension(Continue, ShoppingIsPossible);
-        }
-        else
-        {
-            DisplayTextAsExtension(ShoppingNotPossible, CardsCanBeActivated);
-            DisplayTextAsExtension(Continue, ShoppingNotPossible);
-        }
+        SetUpHealOrShopCommon(Phase.Shop, Shopping, ShoppingIsPossible, ShoppingNotPossible, PlayerCanShop);
     }
 
     private void SetUpTaxPhase()
     {
-        instance.phase = Phase.Tax;
-        int cardsHeldCount = player.CardsActivated.Cards.Count + player.Hand.Cards.Count;
+        phase = Phase.Tax;
+        int cardsHeldCount = GameState.GetPlayer.CardsActivated.Cards.Count + GameState.GetPlayer.Hand.Cards.Count;
         if (cardsHeldCount < charityUpperLimitExclusive)
         {
             SetUpCharity();
@@ -237,7 +217,7 @@ public class Town : IGamePhase
         {
             return card.Value;
         }
-        else if (player.CanConvert(card, targetSuit))
+        else if (GameState.GetPlayer.CanConvert(card, targetSuit))
         {
             return Mathf.Max(0, (card.Value - Card.conversionPenalty));
         }

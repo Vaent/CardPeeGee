@@ -130,7 +130,6 @@ public class GameState
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
         Debug.Log($"Ending Encounter and entering Town");
         CurrentPhase = Town.GetClean();
-        Town.Enter(player, deck);
     }
 
     private void LeaveTown()

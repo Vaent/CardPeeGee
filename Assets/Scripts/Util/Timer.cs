@@ -1,9 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
-
-public delegate void Callback();
-public delegate void Callback<T>(T t);
-public delegate void Callback<T, U>(T t, U u);
 
 /* Singleton which provides "delay" functionality to classes which
 do not themselves extend MonoBehaviour.
@@ -18,12 +15,12 @@ public class Timer : MonoBehaviour
         Timer.instance = this;
     }
 
-    public static void DelayThenInvoke(float delaySeconds, Callback callback)
+    public static void DelayThenInvoke(float delaySeconds, Action callback)
     {
         instance.StartCoroutine(instance.DelInv(delaySeconds, callback));
     }
 
-    public static void DelayThenInvoke<T>(float delaySeconds, Callback<T> callback, T t)
+    public static void DelayThenInvoke<T>(float delaySeconds, Action<T> callback, T t)
     {
         instance.StartCoroutine(instance.DelInv(delaySeconds, callback, t));
     }
@@ -33,21 +30,15 @@ public class Timer : MonoBehaviour
         yield return new WaitForSeconds(seconds);
     }
 
-    private IEnumerator DelInv(float seconds, Callback callback)
+    private IEnumerator DelInv(float seconds, Action callback)
     {
         yield return Delay(seconds);
         callback();
     }
 
-    private IEnumerator DelInv<T>(float seconds, Callback<T> callback, T t)
+    private IEnumerator DelInv<T>(float seconds, Action<T> callback, T t)
     {
         yield return Delay(seconds);
         callback(t);
-    }
-
-    private IEnumerator DelInv<T, U>(float seconds, Callback<T, U> callback, T t, U u)
-    {
-        yield return Delay(seconds);
-        callback(t, u);
     }
 }

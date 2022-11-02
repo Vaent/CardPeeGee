@@ -37,7 +37,7 @@ public class GameState
     {
         if (instance.player?.IsAlive() == false)
         {
-            ((EncounterPhase)CurrentPhase).encounter?.TearDown();
+            ((EncounterPhase)CurrentPhase).TearDown();
             CurrentPhase = PlayerCreator.GetClean();
         }
     }
@@ -109,7 +109,7 @@ public class GameState
 
     private bool IsInEncounter(Encounter encounter)
     {
-        return (CurrentPhase is EncounterPhase EP) && (encounter.Equals(EP.encounter));
+        return (CurrentPhase is EncounterPhase EP) && EP.EncounterIs(encounter);
     }
 
     private bool IsPlayerAlive()
@@ -124,11 +124,11 @@ public class GameState
 
     private void LeaveEncounter()
     {
-        ((EncounterPhase)CurrentPhase).encounter.TearDown();
+        ((EncounterPhase)CurrentPhase).TearDown();
         deck.Accept(stagingArea.Cards);
         deck.Accept(player.CardsPlayed.Cards);
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
-        Debug.Log($"Ending {((EncounterPhase)CurrentPhase).encounter} and entering Town");
+        Debug.Log($"Ending Encounter and entering Town");
         CurrentPhase = Town.GetClean();
         Town.Enter(player, deck);
     }

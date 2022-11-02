@@ -5,9 +5,8 @@ public class EncounterPhase : IGamePhase
 {
     private static readonly EncounterPhase instance = new EncounterPhase();
 
+    private Encounter encounter;
     private bool isCreatingEncounter = false;
-    // PLACEHOLDER pending extraction of encounter management logic from GameState into this class
-    public Encounter encounter;
 
     private EncounterPhase() { }
 
@@ -16,6 +15,11 @@ public class EncounterPhase : IGamePhase
         instance.encounter = null;
         instance.isCreatingEncounter = false;
         return instance;
+    }
+
+    public bool EncounterIs(Encounter encounter)
+    {
+        return (encounter != null) && encounter.Equals(this.encounter);
     }
 
     public void RegisterCardsReceived(CardZone destination, List<Card> cards)
@@ -58,5 +62,10 @@ public class EncounterPhase : IGamePhase
         {
             encounter.Advance();
         }
+    }
+
+    public void TearDown()
+    {
+        encounter?.TearDown();
     }
 }

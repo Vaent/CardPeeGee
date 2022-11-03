@@ -16,11 +16,13 @@ public class Town : IGamePhase
     private static readonly Town instance = new Town();
 
     private Phase phase;
+    private bool isAcceptingInput = false;
 
     private Town() { }
 
     public static IGamePhase GetClean()
     {
+        instance.phase = Phase.Tax;
         JukeBox.Play(JukeBox.Track.Ambient);
         DisplayText(Announce);
         Timer.DelayThenInvoke(0.8f, instance.SetUpTaxPhase);
@@ -36,7 +38,6 @@ public class Town : IGamePhase
     private void GiveCharity()
     {
         GameState.GetDeck.DealCards(GameState.GetPlayer.Hand, 1);
-        Timer.DelayThenInvoke(1.5f, SetUpShopPhase);
     }
 
     private bool PlayerCanHeal()
@@ -86,13 +87,31 @@ public class Town : IGamePhase
 
     public void RegisterCardsReceived(CardZone destination, List<Card> cards)
     {
-        // placeholder
+        if (GameState.GetPlayer.Hand.Equals(destination))
+        {
+            isAcceptingInput = true;
+            switch (phase)
+            {
+                case Phase.Tax:
+                    HideText(Charity);
+                    SetUpShopPhase();
+                    break;
+                case Phase.Shop:
+                    SetUpHealPhase();
+                    break;
+            }
+        }
+        else if (GameState.GetPlayer.CardsPlayed.Equals(destination))
+        {
+            // TODO: update "points text"
+        }
     }
 
     public void RegisterDiscardAction(Card card)
     {
         if (phase == Phase.Tax)
         {
+            isAcceptingInput = false;
             GameState.GetDeck.Accept(card);
             HideText(Tax);
             Timer.DelayThenInvoke(0.5f, SetUpShopPhase);
@@ -105,21 +124,25 @@ public class Town : IGamePhase
 
     public void RegisterInteractionWith(Card card)
     {
+        if (!isAcceptingInput) return;
+
         switch (phase)
         {
             case Phase.Tax:
                 GameState.GetPlayer.ConfigureSelectedCardDiscard(card);
                 break;
-            case Phase.Heal:
             case Phase.Shop:
-                // TODO: check whether the card is usable in the current context, display options if so
+                GameState.GetPlayer.ConfigureSelectedCardOptions(card, Diamond);
+                break;
+            case Phase.Heal:
+                GameState.GetPlayer.ConfigureSelectedCardOptions(card, Heart);
                 break;
         }
     }
 
     public void RegisterInteractionWithDeck()
     {
-        ResolveCurrentPhase();
+        if (isAcceptingInput) ResolveCurrentPhase();
     }
 
     private void ResolveCurrentPhase()
@@ -127,6 +150,9 @@ public class Town : IGamePhase
         switch (phase)
         {
             case Phase.Shop:
+                isAcceptingInput = false;
+                HideText(Shopping, ShoppingIsPossible, ShoppingNotPossible, CardsCanBeActivated, Continue);
+                // TODO: hide "points text"
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
                     int amountSpent = CardUtil.SumValues(GameState.GetPlayer.CardsPlayed.Cards);
@@ -136,13 +162,22 @@ public class Town : IGamePhase
                     }
                     GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
                     int numberOfNewCards = Mathf.FloorToInt(amountSpent / costOfNewCard);
-                    Timer.DelayThenInvoke(2f, GameState.GetDeck.DealCards, numberOfNewCards);
+                    if (numberOfNewCards > 0)
+                    {
+                        Timer.DelayThenInvoke(1f, GameState.GetDeck.DealCards, GameState.GetPlayer.Hand, numberOfNewCards);
+                    }
+                    else
+                    {
+                        Timer.DelayThenInvoke(1f, SetUpHealPhase);
+                    }
                 }
-                HideText(Shopping, ShoppingIsPossible, ShoppingNotPossible, CardsCanBeActivated);
-                // TODO: hide "points text"
-                SetUpHealPhase();
+                else
+                {
+                    SetUpHealPhase();
+                }
                 break;
             case Phase.Heal:
+                isAcceptingInput = false;
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
                     int healAmount = CardUtil.SumValues(GameState.GetPlayer.CardsPlayed.Cards);
@@ -155,8 +190,6 @@ public class Town : IGamePhase
                 }
                 LeaveTown();
                 break;
-            default:
-                throw new Exception("Town.Phase value not recognised");
         }
     }
 
@@ -181,6 +214,7 @@ public class Town : IGamePhase
             DisplayTextAsExtension(textIfNotPossible, CardsCanBeActivated);
             DisplayTextAsExtension(Continue, textIfNotPossible);
         }
+        isAcceptingInput = true;
     }
 
     private void SetUpHealPhase()
@@ -195,7 +229,6 @@ public class Town : IGamePhase
 
     private void SetUpTaxPhase()
     {
-        phase = Phase.Tax;
         int cardsHeldCount = GameState.GetPlayer.CardsActivated.Cards.Count + GameState.GetPlayer.Hand.Cards.Count;
         if (cardsHeldCount < charityUpperLimitExclusive)
         {
@@ -204,6 +237,7 @@ public class Town : IGamePhase
         else if (cardsHeldCount > taxLowerLimitExclusive)
         {
             DisplayText(Tax);
+            isAcceptingInput = true;
         }
         else
         {

@@ -43,7 +43,7 @@ public class EncounterPhase : IGamePhase
 
     public void RegisterInteractionWith(Card card)
     {
-        encounter.CardSelected(card);
+        encounter?.CardSelected(card);
     }
 
     public void RegisterInteractionWithDeck()

@@ -25,6 +25,11 @@ public class Timer : MonoBehaviour
         instance.StartCoroutine(instance.DelInv(delaySeconds, callback, t));
     }
 
+    public static void DelayThenInvoke<T, U>(float delaySeconds, Action<T, U> callback, T t, U u)
+    {
+        instance.StartCoroutine(instance.DelInv(delaySeconds, callback, t, u));
+    }
+
     private IEnumerator Delay(float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -40,5 +45,11 @@ public class Timer : MonoBehaviour
     {
         yield return Delay(seconds);
         callback(t);
+    }
+
+    private IEnumerator DelInv<T, U>(float seconds, Action<T, U> callback, T t, U u)
+    {
+        yield return Delay(seconds);
+        callback(t, u);
     }
 }

@@ -27,11 +27,13 @@ public class Treasure : Encounter
         DisplayText(Announce);
         if (trapsOnChest.Count == 0)
         {
-            DeliverTreasure();
+            Timer.DelayThenInvoke(2, DeliverTreasure);
         }
         else
         {
             Debug.Log("The chest is trapped: " + trapsOnChest.Print());
+            DisplayTextAsExtension(AnnounceTrap, Announce);
+            Timer.DelayThenInvoke(2, RemoveBlockers);
             // TODO: prompt to attempt disarm or abandon the treasure
         }
     }
@@ -61,10 +63,20 @@ public class Treasure : Encounter
         }
     }
 
-    private void DeliverTreasure()
+    public void DeliverTreasure()
     {
         Debug.Log("The treasure is claimed");
-        // TODO: transfer agitator & props to the player's hand
-        // TODO: end encounter
+        DisplayTextAsExtension(KaChing, AnnounceTrap, Announce);
+        agitator.ResetDisplayProperties();
+        player.Hand.Accept(EncounterCards.Cards);
+        Timer.DelayThenInvoke(1.5f, GameState.EndEncounter, this);
+    }
+
+    // temporary method to resolve Treasure encounters while full encounter logic has not been delivered
+    public void RemoveBlockers()
+    {
+        DisplayText(TempRemoveTraps);
+        deck.Accept(trapsOnChest);
+        Timer.DelayThenInvoke(2, DeliverTreasure);
     }
 }

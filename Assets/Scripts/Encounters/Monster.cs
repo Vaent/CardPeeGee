@@ -11,6 +11,7 @@ public class Monster
     // accessors
     public int Attack => attack;
     public int Deal => deal;
+    public int Hp => hp;
 
     public Monster(Card agitator, List<Card> props)
     {

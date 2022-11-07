@@ -12,6 +12,7 @@
 - Implement player death properly. This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
+- Uncouple Battle encounters from Healer battles so that they only share relevant logic/state.
 - Rationalise debugs/reduce spam.
 - Review all uses of `Timer.Delay(...)` and `Timer.DelayThenInvoke(...)` to ensure the pace of automatic actions is appropriate - some messages are appearing/disappearing much too quickly.
 

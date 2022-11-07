@@ -9,6 +9,7 @@ public class Battle : Encounter
     private bool battleHasStarted;
     private List<Monster> enemies;
     private bool isHealerBattle;
+    private Text.BaseExcerpt monsterStatsText;
 
     protected override JukeBox.Track ThemeMusic => JukeBox.Track.Battle;
 
@@ -39,6 +40,9 @@ public class Battle : Encounter
     {
         Debug.Log("Beginning a battle against " + enemies.Print());
         DisplayText(Announce);
+        monsterStatsText = AnnounceStats(enemies[0].Attack, enemies[0].Deal, enemies[0].Hp);
+        DisplayTextAsExtension(monsterStatsText, Announce);
+        Timer.DelayThenInvoke(2, MonsterFlees);
         // TODO: prompt to activate/play cards then click the deck
     }
 
@@ -57,5 +61,21 @@ public class Battle : Encounter
             // TODO: end the encounter if all enemies are dead
             // TODO: return cards to the deck if encounter is still active
         }
+    }
+
+    public void ClaimLoot()
+    {
+        HideText(TempMonsterFlees);
+        DisplayText(LootIsClaimed);
+        player.Hand.Accept(props);
+        Timer.DelayThenInvoke(2, GameState.EndEncounter, this);
+    }
+
+    // temporary method to resolve Battle encounters while full encounter logic has not been delivered
+    public void MonsterFlees()
+    {
+        DisplayText(TempMonsterFlees);
+        deck.Accept(agitator);
+        Timer.DelayThenInvoke(2, ClaimLoot);
     }
 }

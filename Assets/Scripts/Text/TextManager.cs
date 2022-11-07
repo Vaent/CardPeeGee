@@ -22,17 +22,18 @@ namespace Text
             textMesh.gameObject.SetActive(true);
         }
 
-        public static void DisplayTextAsExtension(BaseExcerpt excerpt, BaseExcerpt precedingText)
+        public static void DisplayTextAsExtension(BaseExcerpt excerpt, params BaseExcerpt[] precedingTextCandidates)
         {
-            if (IsValidExtension(excerpt, precedingText))
+            foreach (BaseExcerpt precedingText in precedingTextCandidates)
             {
-                TextMesh precedingTextMesh = textMeshes[precedingText];
-                DisplayText(excerpt, new Options(precedingTextMesh), GetExtensionPosition(precedingTextMesh));
+                if (IsValidExtension(excerpt, precedingText))
+                {
+                    TextMesh precedingTextMesh = textMeshes[precedingText];
+                    DisplayText(excerpt, new Options(precedingTextMesh), GetExtensionPosition(precedingTextMesh));
+                    return;
+                }
             }
-            else
-            {
-                DisplayText(excerpt);
-            }
+            DisplayText(excerpt);
         }
 
         private static void Format(TextMesh textMesh, Options options)
@@ -109,7 +110,7 @@ namespace Text
             }
             else if (textMeshes.ContainsKey(precedingText) == false)
             {
-                Debug.LogError($"Excerpt ##{excerpt}## should extend ##{precedingText}## which is not currently displayed");
+                Debug.Log($"Excerpt ##{excerpt}## attempted to extend ##{precedingText}## which is not currently displayed");
                 return false;
             }
             else

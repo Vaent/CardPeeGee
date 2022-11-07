@@ -7,10 +7,11 @@ public abstract class Encounter
 {
     protected readonly Card agitator;
     protected Deck deck;
-    private readonly EncounterCardZone encounterCardZone = new GameObject().AddComponent<EncounterCardZone>();
+    private readonly EncounterCardZone encounterCardZone = new GameObject("EncounterCardZone").AddComponent<EncounterCardZone>();
     protected Player player;
     protected readonly List<Card> props;
 
+    protected CardZone EncounterCards => encounterCardZone;
     protected abstract JukeBox.Track ThemeMusic { get; }
 
     // no-args constructor is only for cases where agitator/props are not used by the inheriting class
@@ -90,10 +91,10 @@ public abstract class Encounter
         {
             var cardsList = Cards;
             cardsList[0].Resize(1.2f);
-            cardsList[0].MoveTo(anchor + (0.1f * Vector3.left));
+            cardsList[0].MoveTo(anchor + (0.1f * Vector3.left), cardsInMotion[cardsList[0]]);
             for (int i = 1; i < cardsList.Count; i++)
             {
-                cardsList[i].MoveTo(anchor + (i * Vector3.right));
+                cardsList[i].MoveTo(anchor + (i * Vector3.right), cardsInMotion[cardsList[i]]);
             }
         }
     }

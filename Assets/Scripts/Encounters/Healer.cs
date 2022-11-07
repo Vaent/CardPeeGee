@@ -40,21 +40,22 @@ public class Healer : Encounter
     protected override void BeginImpl()
     {
         DisplayText(Announce);
+        Text.Excerpt<int> healAmountText = HealAmount(healingAmount);
+        DisplayTextAsExtension(healAmountText, Announce);
+        var potionsText = (potions.Count > 0) ? $" and provide potions: {potions.Print()}" : "";
+        Debug.Log($"Healer will heal {healingAmount} HP{potionsText}");
+
         if (battleToResolve != null)
         {
             Debug.Log("Need to fight jailor(s) to free the healer");
+            DisplayTextAsExtension(Prisoner, healAmountText);
         }
         if (feeToPay > 0)
         {
-            Debug.Log("Healer charges a fee of " + feeToPay);
+            DisplayTextAsExtension(ChargesFee, Prisoner, healAmountText);
+            Debug.Log($"Healer charges a fee of {feeToPay}");
             // TODO: if player cannot pay the fee, display a message advising of this
         }
-        var healerEffects = "Healer will heal " + healingAmount + "HP";
-        if (potions.Count > 0)
-        {
-            healerEffects += (" and provide potions: " + potions.Print());
-        }
-        Debug.Log(healerEffects);
 
         if (IsHealingBlocked())
         {
@@ -84,6 +85,8 @@ public class Healer : Encounter
 
     public override void CardsArrivedAt(CardZone cardZone, List<Card> cards)
     {
+        if (EncounterCards.Equals(cardZone)) return;
+
         if (battleToResolve != null)
         {
             battleToResolve.CardsArrivedAt(cardZone, cards);

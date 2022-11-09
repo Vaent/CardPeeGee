@@ -3,6 +3,7 @@
 ## Bugs
 
 - The only conversion option for cards with value 2 should be Spades, and only in combat since the "Zero of Spades" has a useful function there. Currently the only check is whether a sprite exists for the requested conversion. There is no feedback to the player if that check fails.
+- (observed once while running WebGL build 0.0.1 in Chrome) During cleanup of a Trap encounter with 4 score cards: <King of Spades | 02 of Diamonds | 06 of Clubs | 04 of Spades> the King of Spades stayed in place while the other score cards and encounter cards were correctly returned to the Deck. This occurred while spamming the D key to check for any issues caused by failing to handle input correctly - may or may not be related. Debug messages in the DevTools console indicate that the 'virtual' card was returned to the Deck as expected but movement was not recorded (all other cards reported completion of their movement).
 
 ## In scope
 

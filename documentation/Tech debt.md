@@ -3,7 +3,6 @@
 ## Bugs
 
 - The only conversion option for cards with value 2 should be Spades, and only in combat since the "Zero of Spades" has a useful function there. Currently the only check is whether a sprite exists for the requested conversion. There is no feedback to the player if that check fails.
-- In a Trap encounter, if cards are active, the excerpt which says they are helping overlaps the encounter stats.
 
 ## In scope
 

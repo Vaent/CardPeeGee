@@ -5,7 +5,7 @@ namespace Text.Excerpts
 {
     public static class Trap
     {
-        private static readonly Vector2 statsPosition = new Vector2(7.5f, 0);
+        private static readonly Vector2 statsPosition = new Vector2(7.5f, -1);
 
         public static Excerpt Announce { get; } = new Excerpt("it's a\nTRAP!", announceEncounter, Options.StrongText.Color(new Color(0.75f, 0.75f, 0.75f)));
         public static Excerpt Assisted { get; } = new Excerpt("helped by your\nActive cards", announceEncounter);

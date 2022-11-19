@@ -24,12 +24,17 @@ namespace Text
 
         public static void DisplayTextAsExtension(BaseExcerpt excerpt, params BaseExcerpt[] precedingTextCandidates)
         {
+            DisplayTextAsExtension(excerpt, 0, precedingTextCandidates);
+        }
+
+        public static void DisplayTextAsExtension(BaseExcerpt excerpt, float spacing, params BaseExcerpt[] precedingTextCandidates)
+        {
             foreach (BaseExcerpt precedingText in precedingTextCandidates)
             {
                 if (IsValidExtension(excerpt, precedingText))
                 {
                     TextMesh precedingTextMesh = textMeshes[precedingText];
-                    DisplayText(excerpt, new Options(precedingTextMesh), GetExtensionPosition(precedingTextMesh));
+                    DisplayText(excerpt, new Options(precedingTextMesh), GetExtensionPosition(precedingTextMesh, spacing));
                     return;
                 }
             }
@@ -63,10 +68,11 @@ namespace Text
             if (options.StyleOption > 0) textMesh.fontStyle = (FontStyle)options.StyleOption;
         }
 
-        private static Vector2 GetExtensionPosition(TextMesh textBeingExtended)
+        private static Vector2 GetExtensionPosition(TextMesh textBeingExtended, float spacing = 0)
         {
             Vector2 extensionPosition = textBeingExtended.transform.position;
             extensionPosition.y -= textBeingExtended.GetComponent<MeshRenderer>().bounds.size.y;
+            extensionPosition.y -= spacing * 0.012f * textBeingExtended.fontSize;
             // TODO: infer x/y extension from textMesh alignment & anchor, add x alternative to y logic above
             return extensionPosition;
         }

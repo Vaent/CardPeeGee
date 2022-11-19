@@ -2668,7 +2668,7 @@ RectTransform:
   - {fileID: 183545108}
   - {fileID: 334828893}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4096,7 +4096,7 @@ RectTransform:
   - {fileID: 1317101587}
   - {fileID: 1004028751}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5404,7 +5404,7 @@ RectTransform:
   - {fileID: 1565583112}
   - {fileID: 1949738684}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5580,7 +5580,7 @@ RectTransform:
   - {fileID: 564834337}
   - {fileID: 1396811606}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7276,7 +7276,7 @@ GameObject:
   - component: {fileID: 1694712688}
   - component: {fileID: 1694712687}
   m_Layer: 5
-  m_Name: leave
+  m_Name: LeaveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7325,19 +7325,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1694712688}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1977669081}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: leave
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1694712688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8346,12 +8334,12 @@ GameObject:
   - component: {fileID: 1869004396}
   - component: {fileID: 1869004395}
   m_Layer: 5
-  m_Name: leavebutton
+  m_Name: LeaveButtonCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1869004394
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8364,8 +8352,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1694712690}
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_Father: {fileID: 1950136605}
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8423,7 +8411,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1523728546}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 10
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -8951,6 +8939,7 @@ Transform:
   - {fileID: 88267556}
   - {fileID: 2100345797}
   - {fileID: 169101862}
+  - {fileID: 1869004394}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

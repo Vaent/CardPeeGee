@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using static Text.Excerpts.Treasure;
 using static Text.TextManager;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Treasure : Encounter
 {
+    private static Canvas leaveButtonCanvas;
+
     private List<Card> trapsOnChest;
     private Card trapSelectedForDisarm;
 
@@ -13,13 +16,21 @@ public class Treasure : Encounter
 
     public Treasure(List<Card> cards) : base(cards)
     {
+        // TODO: improve acquisition of LeaveButton reference
+        leaveButtonCanvas ??= GameObject.Find("LeaveButtonCanvas").GetComponent<Canvas>();
+        leaveButtonCanvas.GetComponentInChildren<Button>().onClick.AddListener(AbandonTreasure);
         trapsOnChest = props.FindAll(card => (card.Suit == Suit.Spade));
     }
 
-    public override void Advance()
+    void AbandonTreasure()
     {
-        // TODO: deal score cards
+        leaveButtonCanvas.enabled = false;
+        GameState.EndEncounter(this);
     }
+
+    // Treasure progression (if not automatically resolved) is through clicking on trap cards
+    // or the "leave" button; Advance() has no purpose
+    public override void Advance() { }
 
     protected override void BeginImpl()
     {
@@ -33,8 +44,12 @@ public class Treasure : Encounter
         {
             Debug.Log("The chest is trapped: " + trapsOnChest.Print());
             DisplayTextAsExtension(AnnounceTrap, Announce);
-            Timer.DelayThenInvoke(2, RemoveBlockers);
-            // TODO: prompt to attempt disarm or abandon the treasure
+
+            DisplayText(PromptPlayCards);
+            DisplayTextAsExtension(PromptClickToDisarm, 1, PromptPlayCards);
+            DisplayTextAsExtension(PromptAbandonEncounter, 2, PromptClickToDisarm);
+            leaveButtonCanvas.enabled = true;
+            // TODO: display "points text" showing player's disarm bonus
         }
     }
 
@@ -70,13 +85,5 @@ public class Treasure : Encounter
         agitator.ResetDisplayProperties();
         player.Hand.Accept(EncounterCards.Cards);
         Timer.DelayThenInvoke(1.5f, GameState.EndEncounter, this);
-    }
-
-    // temporary method to resolve Treasure encounters while full encounter logic has not been delivered
-    public void RemoveBlockers()
-    {
-        DisplayText(TempRemoveTraps);
-        deck.Accept(trapsOnChest);
-        Timer.DelayThenInvoke(2, DeliverTreasure);
     }
 }

@@ -54,6 +54,11 @@ public class CardUtil
         }
     }
 
+    public static Predicate<Card> Is(Suit suit, string name)
+    {
+        return (Card card) => suit.Equals(card.Suit) && card.Name == name;
+    }
+
     public static void NewPack(CardZone startingLocation)
     {
         List<Card> pack = new List<Card>();

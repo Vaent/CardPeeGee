@@ -9,6 +9,7 @@ namespace Text
                 .Align(TextAlignment.Center)
                 .Size(TextSize.Large)
                 .Style(FontStyle.Bold);
+        public static Options TinyText => new Options().Size(TextSize.Tiny);
 
         public TextAlignment? AlignmentOption { get; private set; }
         public TextAnchor? AnchorOption { get; private set; }
@@ -74,7 +75,8 @@ namespace Text
         {
             Large = 50,
             Small = 35,
-            Standard = 40
+            Standard = 40,
+            Tiny = 28
         }
     }
 }

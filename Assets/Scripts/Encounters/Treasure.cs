@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Text;
 using static Text.Excerpts.Treasure;
 using static Text.TextManager;
-using static Timer;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +15,7 @@ public class Treasure : Encounter
 
     private int disarmBonus;
     private BaseExcerpt disarmBonusExcerpt;
+    private BaseExcerpt disarmOutcomeExcerpt;
     private int playerScore;
     private BaseExcerpt playerScoreExcerpt;
     private int trapScore;
@@ -49,7 +49,7 @@ public class Treasure : Encounter
         DisplayText(Announce);
         if (trapsOnChest.Count == 0)
         {
-            Timer.DelayThenInvoke(2, DeliverTreasure);
+            DeliverTreasure(2);
         }
         else
         {
@@ -83,7 +83,8 @@ public class Treasure : Encounter
         if (cardZone is StagingArea)
         {
             if (playerScore == 0)
-            { 
+            {
+                // a card has been dealt for the player's score in a disarm attempt
                 playerScore = disarmBonus + SumValues(cards);
                 playerScoreExcerpt = ScoreForPlayer(playerScore);
                 DisplayText(playerScoreExcerpt);
@@ -92,6 +93,7 @@ public class Treasure : Encounter
             }
             else
             {
+                // a card has been dealt for the trap's score in a disarm attempt
                 trapScore = trapSelectedForDisarm.Value + SumValues(cards);
                 trapScoreExcerpt = ScoreForTrap(trapScore);
                 DisplayTextAsExtension(trapScoreExcerpt, playerScoreExcerpt);
@@ -103,7 +105,7 @@ public class Treasure : Encounter
                     _ when playerScore > trapScore => HandleDisarmSuccess,
                     _ => () => throw new NotImplementedException() // to satisfy the compiler
                 };
-                DelayThenInvoke(2, () => {
+                Timer.DelayThenInvoke(2, () => {
                     HideText(playerScoreExcerpt, trapScoreExcerpt);
                     outcomeHandler();
                 });
@@ -113,16 +115,27 @@ public class Treasure : Encounter
         {
             if (cards.Contains(trapSelectedForDisarm))
             {
-                HandleTrapRemoved();
+                // a disarmed trap has been returned to the deck
+                trapsOnChest.Remove(trapSelectedForDisarm);
+                EndDisarmAttempt();
             }
             else
             {
-                HideText(trapScoreExcerpt);
-                HideText(playerScoreExcerpt);
-                trapSelectedForDisarm = null;
-                playerScore = 0;
-                trapScore = 0;
-                DisplayPrompts();
+                // score cards from a disarm attempt have been returned to the deck
+                if (trapsOnChest.Count == 0)
+                {
+                    DeliverTreasure(1);
+                }
+                else
+                {
+                    // the Treasure is still trapped
+                    HideText(disarmOutcomeExcerpt, AnnounceTrap);
+                    DisplayTextAsExtension(AnnounceTrapContinuation, Announce);
+                    trapSelectedForDisarm = null;
+                    playerScore = 0;
+                    trapScore = 0;
+                    DisplayPrompts();
+                }
             }
         }
         else if (player.CardsActivated.Equals(cardZone) || player.CardsPlayed.Equals(cardZone))
@@ -131,13 +144,18 @@ public class Treasure : Encounter
         }
     }
 
-    public void DeliverTreasure()
+    public void DeliverTreasure(int delay)
     {
         Debug.Log("The treasure is claimed");
-        DisplayTextAsExtension(KaChing, AnnounceTrap, Announce);
-        agitator.ResetDisplayProperties();
-        player.Hand.Accept(EncounterCards.Cards);
-        DelayThenInvoke(1.5f, GameState.EndEncounter, this);
+        Timer.DelayThenInvoke(delay, () =>
+        {
+            HideText(disarmOutcomeExcerpt, AnnounceTrap, AnnounceTrapContinuation, Announce);
+            DisplayText(KaChing);
+            agitator.ResetDisplayProperties();
+            player.Hand.Accept(EncounterCards.Cards);
+            // TODO: check for Full Court/Elemental Union victory
+            Timer.DelayThenInvoke(1.5f, GameState.EndEncounter, this);
+        });
     }
 
     private static void DisplayPrompts()
@@ -148,49 +166,39 @@ public class Treasure : Encounter
         leaveButtonCanvas.enabled = true;
     }
 
-    private void EndDisarmAttempt(BaseExcerpt outcomeExcerpt)
+    private void EndDisarmAttempt()
     {
-        DelayThenInvoke(2, () =>
-        {
-            Debug.Log("ending disarm attempt");
-            HideText(outcomeExcerpt);
-            deck.Accept(GameState.GetStagingArea.Cards);
-        });
+        Debug.Log("ending disarm attempt");
+        deck.Accept(GameState.GetStagingArea.Cards);
     }
 
     private void HandleDisarmFailure()
     {
-        var failureExcerpt = DisarmFailure(trapSelectedForDisarm.Value);
-        DisplayText(failureExcerpt);
-        player.Damage(trapSelectedForDisarm.Value);
-        EndDisarmAttempt(failureExcerpt);
+        SetAndDisplayOutcome(DisarmFailure(trapSelectedForDisarm.Value));
+        // TODO: add dart animation(s) with appropriate delay
+        Timer.DelayThenInvoke(0.5f, () =>
+        {
+            player.Damage(trapSelectedForDisarm.Value);
+            Timer.DelayThenInvoke(0.5f, EndDisarmAttempt);
+        });
     }
 
     private void HandleDisarmNeutral()
     {
-        DisplayText(DisarmNeutralOutcome);
-        EndDisarmAttempt(DisarmNeutralOutcome);
+        SetAndDisplayOutcome(DisarmNeutralOutcome);
+        Timer.DelayThenInvoke(3, EndDisarmAttempt);
     }
 
     private void HandleDisarmSuccess()
     {
-        DisplayText(DisarmSuccess);
+        SetAndDisplayOutcome(DisarmSuccess);
         deck.Accept(trapSelectedForDisarm);
     }
 
-    private void HandleTrapRemoved()
+    private void SetAndDisplayOutcome(BaseExcerpt outcomeExcerpt)
     {
-        trapsOnChest.Remove(trapSelectedForDisarm);
-        HideText(AnnounceTrap);
-        if (trapsOnChest.Count == 0)
-        {
-            DeliverTreasure();
-        }
-        else
-        {
-            DisplayTextAsExtension(AnnounceTrapContinuation, Announce);
-            EndDisarmAttempt(DisarmSuccess);
-        }
+        disarmOutcomeExcerpt = outcomeExcerpt;
+        DisplayText(disarmOutcomeExcerpt);
     }
 
     private void UpdateDisarmBonus()

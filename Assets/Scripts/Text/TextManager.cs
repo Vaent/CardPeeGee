@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Text
@@ -84,9 +85,9 @@ namespace Text
             {
                 textMesh = textMeshes[excerpt];
             }
-            catch (KeyNotFoundException)
+            catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException)
             {
-                textMesh = Object.Instantiate(prefabTextMesh).GetComponent<TextMesh>();
+                textMesh = UnityEngine.Object.Instantiate(prefabTextMesh).GetComponent<TextMesh>();
                 textMeshes.Add(excerpt, textMesh);
             }
             return textMesh;
@@ -100,7 +101,7 @@ namespace Text
                 {
                     textMeshes[excerpt].gameObject.SetActive(false);
                 }
-                catch (KeyNotFoundException)
+                catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException)
                 {
                     Debug.LogWarning($"Attempted to Hide({excerpt}) but no mesh found");
                 }
@@ -129,7 +130,7 @@ namespace Text
         {
             foreach (BaseExcerpt excerpt in textMeshes.Keys)
             {
-                Object.Destroy(textMeshes[excerpt].gameObject);
+                UnityEngine.Object.Destroy(textMeshes[excerpt].gameObject);
             }
             textMeshes.Clear();
         }

@@ -12,7 +12,7 @@ namespace Text.Excerpts
         private static Excerpt DisarmFailure_ { get; } = new Excerpt("You take {0} damage!", belowDealtCards);
         public static Excerpt DisarmNeutralOutcome { get; } = new Excerpt("You fail to disarm the trap,\nbut take no damage", belowDealtCards);
         public static Excerpt DisarmSuccess { get; } = new Excerpt("The trap is disarmed", belowDealtCards);
-        public static Excerpt KaChing { get; } = new Excerpt("ka-ching!", announceEncounter);
+        public static Excerpt KaChing { get; } = new Excerpt("ka-ching!", announceEncounter, Options.StrongText.Color(Color.yellow));
         public static Excerpt PromptAbandonEncounter { get; } = new Excerpt("Or, if you don't think it's\nworth the effort, you can just", stagingAreaOffset1);
         public static Excerpt PromptClickToDisarm { get; } = new Excerpt("Click on the spade 'prop' to\ntry disarming it.", stagingAreaOffset1);
         public static Excerpt PromptPlayCards { get; } = new Excerpt("Play spades to increase your\nchance of disarming the trap.", stagingAreaOffset1);

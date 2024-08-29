@@ -49,18 +49,13 @@ namespace Text
                 textMesh.alignment = (TextAlignment)options.AlignmentOption;
                 if (options.AnchorOption == null)
                 {
-                    switch (textMesh.alignment)
+                    textMesh.anchor = textMesh.alignment switch
                     {
-                        case TextAlignment.Center:
-                            textMesh.anchor = TextAnchor.UpperCenter;
-                            break;
-                        case TextAlignment.Left:
-                            textMesh.anchor = TextAnchor.UpperLeft;
-                            break;
-                        case TextAlignment.Right:
-                            textMesh.anchor = TextAnchor.UpperRight;
-                            break;
-                    }
+                        TextAlignment.Left => TextAnchor.UpperLeft,
+                        TextAlignment.Center => TextAnchor.UpperCenter,
+                        TextAlignment.Right => TextAnchor.UpperRight,
+                        _ => throw new NotImplementedException() // to satisfy the compiler
+                    };
                 }
             }
             if (options.AnchorOption != null) textMesh.anchor = (TextAnchor)options.AnchorOption;
@@ -80,12 +75,14 @@ namespace Text
 
         private static TextMesh GetTextMeshFor(BaseExcerpt excerpt)
         {
+            if (excerpt == null) return null;
+
             TextMesh textMesh;
             try
             {
                 textMesh = textMeshes[excerpt];
             }
-            catch (Exception ex) when (ex is KeyNotFoundException || ex is ArgumentNullException)
+            catch (KeyNotFoundException)
             {
                 textMesh = UnityEngine.Object.Instantiate(prefabTextMesh).GetComponent<TextMesh>();
                 textMeshes.Add(excerpt, textMesh);
@@ -115,7 +112,7 @@ namespace Text
                 Debug.LogWarning($"null argument supplied as preceding text for {excerpt}");
                 return false;
             }
-            else if (textMeshes.ContainsKey(precedingText) == false)
+            else if (!textMeshes.ContainsKey(precedingText))
             {
                 Debug.Log($"Excerpt ##{excerpt}## attempted to extend ##{precedingText}## which is not currently displayed");
                 return false;
@@ -128,9 +125,9 @@ namespace Text
 
         public static void TearDownDisplayedText()
         {
-            foreach (BaseExcerpt excerpt in textMeshes.Keys)
+            foreach (TextMesh textMesh in textMeshes.Values)
             {
-                UnityEngine.Object.Destroy(textMeshes[excerpt].gameObject);
+                UnityEngine.Object.Destroy(textMesh.gameObject);
             }
             textMeshes.Clear();
         }

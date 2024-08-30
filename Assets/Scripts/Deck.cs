@@ -37,6 +37,18 @@ public class Deck : CardZone
         target.Accept(DrawCards(count));
     }
 
+    /**
+     * <summary>
+     * Deals <paramref name="count"/> cards to the lower half of the staging area.
+     * Useful when a distinct second set of cards needs to be dealt before the first set is returned.
+     * </summary>
+     */
+    public void DealCardsAlternate(int count)
+    {
+        stagingArea.SetAlternate();
+        DealCards(stagingArea, count);
+    }
+
     // this method will select `count` cards randomly from the deck and return them to the caller
     // the cards remain in the deck until registered to another CardZone
     public List<Card> DrawCards(int count)

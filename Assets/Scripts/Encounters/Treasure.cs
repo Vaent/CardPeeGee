@@ -89,9 +89,7 @@ public class Treasure : Encounter
                 playerScore = disarmBonus + SumValues(cards);
                 playerScoreExcerpt = ScoreForPlayer(playerScore);
                 DisplayText(playerScoreExcerpt);
-                // TODO: deal the trap's score card to (1.5, -1.3, 0) - requires work on StagingArea and/or CardZone.Accept
-                // This target will be shared with Battle so is worth setting up as a standard option
-                deck.DealCards(1);
+                deck.DealCardsAlternate(1);
             }
             else
             {

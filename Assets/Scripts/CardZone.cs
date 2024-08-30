@@ -76,10 +76,7 @@ public abstract class CardZone : MonoBehaviour
     {
         if (card.CurrentLocation == this) return;
 
-        if (cards.Contains(card))
-        {
-            cards.Remove(card);
-        }
+        cards.Remove(card);
         cardsInMotion.Remove(card);
     }
 }

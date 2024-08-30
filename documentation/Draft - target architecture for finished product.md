@@ -69,18 +69,18 @@ There is no direct interaction between the player and the encounter/town; everyt
 1. GM deals cards to define the encounter.
 1. (Begin loop) GM queries the encounter for next steps.
 1. The encounter advises one of the following:
-  - an outcome has been determined with effects to be applied; or
-  - input is required based on a list of permitted actions; or
-  - the encounter has been resolved (exit loop).
+    - an outcome has been determined with effects to be applied; or
+    - input is required based on a list of permitted actions; or
+    - the encounter has been resolved (exit loop).
 1. If an outcome is returned, GM applies the effects, then (repeat loop); or
 1. If input is required, GM presents options to P1.
 1. P1 communicates their selection(s) to GM.
 1. GM updates encounter based on P1's selection(s), then (repeat loop).
 1. (End of loop) GM queries town for P1 tax/charity eligibility.
 1. Town advises one of the following:
-  - charity should be delivered; or
-  - input is required to pay tax; or
-  - null activity in this stage.
+    - charity should be delivered; or
+    - input is required to pay tax; or
+    - null activity in this stage.
 1. If charity applies, GM deals a new card to P1; or
 1. If tax applies, GM presents options to P1 => P1 communicates their selection to GM => GM updates town accordingly.
 1. GM queries town for P1 shopping eligibility.
@@ -90,18 +90,18 @@ There is no direct interaction between the player and the encounter/town; everyt
 1. GM updates town based on P1 selection(s).
 1. GM queries town for next steps.
 1. If new cards were purchased:
-  - Town instructs GM to deliver the appropriate number of cards;
-  - GM deals cards to P1;
-  - GM queries town for next steps.
+    - Town instructs GM to deliver the appropriate number of cards;
+    - GM deals cards to P1;
+    - GM queries town for next steps.
 1. Town advises GM of available options for healing.
 1. GM presents options to P1.
 1. P1 communicates their selection(s) to GM.
 1. GM updates town based on P1 selection(s).
 1. GM queries town for next steps.
 1. If new cards were purchased:
-  - Town instructs GM to deliver the appropriate number of cards;
-  - GM deals cards to P1;
-  - GM queries town for next steps.
+    - Town instructs GM to deliver the appropriate number of cards;
+    - GM deals cards to P1;
+    - GM queries town for next steps.
 1. Town informs GM that the turn has ended.
 1. GM moves to the next player and initiates their turn, requesting confirmation and proceeding as above.
 

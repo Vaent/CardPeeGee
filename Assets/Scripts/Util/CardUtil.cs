@@ -44,14 +44,14 @@ public class CardUtil
 
     public static int GetPriorityOfTenValuedCard(Card card)
     {
-        switch (card.Name)
+        return card.Name switch
         {
-            case "10": return 1;
-            case "Jack": return 2;
-            case "Queen": return 3;
-            case "King": return 4;
-            default: return 0;
-        }
+            "10" => 1,
+            "Jack" => 2,
+            "Queen" => 3,
+            "King" => 4,
+            _ => 0
+        };
     }
 
     public static Predicate<Card> Is(Suit suit, string name)

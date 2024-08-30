@@ -29,20 +29,14 @@ public abstract class Encounter
     // GameState obtains Encounter instances from this factory method
     public static Encounter From(List<Card> cards)
     {
-        switch (cards[0].Suit)
+        return cards[0].Suit switch
         {
-            case Suit.Club:
-                return new Battle(cards);
-            case Suit.Diamond:
-                return new Treasure(cards);
-            case Suit.Heart:
-                return new Healer(cards);
-            case Suit.Spade:
-                return new Trap(cards);
-            default:
-                // provided to satisfy the compiler - this branch should be unreachable
-                throw new Exception("Card suit could not be determined");
-        }
+            Suit.Club => new Battle(cards),
+            Suit.Diamond => new Treasure(cards),
+            Suit.Heart => new Healer(cards),
+            Suit.Spade => new Trap(cards),
+            _ => throw new Exception("Card suit could not be determined") // may need to handle Joker in future
+        };
     }
 
     public abstract void Advance();

@@ -64,6 +64,7 @@ public class Treasure : Encounter
     {
         if (trapsOnChest.Contains(card))
         {
+            // TODO: block player interactions to prevent triggering further disarm attempts while one is in progress
             Debug.Log("Player clicked trap card: " + card);
             trapSelectedForDisarm = card;
             HideText(PromptPlayCards);

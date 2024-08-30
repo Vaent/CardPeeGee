@@ -13,7 +13,8 @@
 ### Required
 
 - Extend TextManager system to provide dynamic Excerpts (similar to Player's HP display but contextual) - mainly to reproduce behaviour formerly provided by the "pointstext" mesh.
-- Implement player death properly. This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
+- Enable suspending code execution while the player is being healed/damaged - ideally without having to calculate the expected delay and apply it manually every time healing/damage methods are invoked.
+- Implement player death properly (has a dependency on the above point). This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.
 - Improve GameState locking/unlocking and use of Next()/Encounter.Advance() as that pattern is not so broadly applicable as it was initially assumed to be; q.v. traps on chests and paying healer fees.
 - Uncouple Battle encounters from Healer battles so that they only share relevant logic/state.

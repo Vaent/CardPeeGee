@@ -52,7 +52,6 @@ public class Trap : Encounter
     {
         if (cardZone is StagingArea)
         {
-            // currently the encounter cards remain in the staging area so scores are not being calculated correctly
             scoreCards = cardZone.Cards;
             if (scoreCards.Count < (player.CardsActivated.Cards.Count + 1))
             {

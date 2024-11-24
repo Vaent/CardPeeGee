@@ -1,3 +1,4 @@
+using static CardUtil;
 using static Constant;
 using static Suit;
 using System;
@@ -72,11 +73,11 @@ public class Town : IGamePhase
             if (JACK.Equals(card.Name) && (card.Suit != Diamond))
             {
                 List<Card> matchingSuits = GameState.GetPlayer.Hand.Cards.FindAll(match => (card.Suit.Equals(match.Suit) && !match.Equals(card)));
-                availableToSpend += CardUtil.SumValues(matchingSuits);
+                availableToSpend += SumValues(matchingSuits);
                 availableToSpend -= (2 * matchingSuits.Count); // conversion penalty
 
                 matchingSuits = GameState.GetPlayer.CardsActivated.Cards.FindAll(match => card.Suit.Equals(match.Suit));
-                availableToSpend += CardUtil.SumValues(matchingSuits);
+                availableToSpend += SumValues(matchingSuits);
                 availableToSpend -= (2 * matchingSuits.Count); // conversion penalty
 
                 if (availableToSpend >= costOfNewCard) return true;
@@ -155,8 +156,8 @@ public class Town : IGamePhase
                 // TODO: hide "points text"
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int amountSpent = CardUtil.SumValues(GameState.GetPlayer.CardsPlayed.Cards);
-                    if (GameState.GetPlayer.CardsActivated.Exists(card => ACE.Equals(card.Name) && Diamond.Equals(card.Suit)))
+                    int amountSpent = SumValues(GameState.GetPlayer.CardsPlayed.Cards);
+                    if (GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE)))
                     {
                         amountSpent = Mathf.CeilToInt(1.5f * amountSpent);
                     }
@@ -180,8 +181,8 @@ public class Town : IGamePhase
                 isAcceptingInput = false;
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int healAmount = CardUtil.SumValues(GameState.GetPlayer.CardsPlayed.Cards);
-                    if (GameState.GetPlayer.CardsActivated.Exists(card => ACE.Equals(card.Name) && Heart.Equals(card.Suit)))
+                    int healAmount = SumValues(GameState.GetPlayer.CardsPlayed.Cards);
+                    if (GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE)))
                     {
                         healAmount = Mathf.CeilToInt(1.5f * healAmount);
                     }

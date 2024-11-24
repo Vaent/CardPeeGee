@@ -1,3 +1,4 @@
+using static CardUtil;
 using static Constant;
 using ExtensionMethods;
 using System;
@@ -127,7 +128,7 @@ public class Player
                     {
                         Suit[] convertableSuits = Array.FindAll(playableSuits, suit =>
                             suit != newSelectedCard.Suit
-                            && cardsActivated.Exists(card => JACK.Equals(card.Name) && card.Suit == suit));
+                            && cardsActivated.Exists(Is(suit, JACK)));
                         if (convertableSuits.Length > 0) ri.IncludePlayAs(convertableSuits);
                     }
                 }
@@ -236,7 +237,7 @@ public class Player
         public void Deselect(Card card)
         {
             var allCards = Cards;
-            CardUtil.Sort(allCards);
+            Sort(allCards);
             var i = allCards.IndexOf(card);
             card.SetHeight(i * 0.01f);
             card.Resize(1);
@@ -264,7 +265,7 @@ public class Player
         protected override void AdjustPositions()
         {
             var allCards = Cards;
-            CardUtil.Sort(allCards);
+            Sort(allCards);
             float spacingFactor = (allCards.Count < 5) ? 1.1f : (3.7f / (allCards.Count - 1));
             for (var i = 0; i < allCards.Count; i++)
             {
@@ -283,7 +284,7 @@ public class Player
         protected override void ProcessNewCards(List<Card> newCards)
         {
             var allCards = Cards;
-            CardUtil.Sort(allCards);
+            Sort(allCards);
             float spacingFactor = (allCards.Count < 5) ? 1.1f : (3.7f / (allCards.Count - 1));
             for (var i = 0; i < allCards.Count; i++)
             {
@@ -328,7 +329,7 @@ public class Player
         protected override void AdjustPositions()
         {
             var allCards = Cards;
-            CardUtil.Sort(allCards);
+            Sort(allCards);
             Debug.Log("Hand now contains " + allCards.Print());
             float spacingFactor = (allCards.Count < 7) ? 1.1f : (6.6f / (allCards.Count));
             Vector3 leftPosition = handPosition + Vector3.left * 0.55f * Min(6, allCards.Count);

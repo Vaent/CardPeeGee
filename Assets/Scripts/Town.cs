@@ -156,7 +156,7 @@ public class Town : IGamePhase
                 // TODO: hide "points text"
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int amountSpent = SumValues(GameState.GetPlayer.CardsPlayed.Cards);
+                    int amountSpent = SumValues(GameState.GetPlayer.CardsPlayed);
                     if (GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE)))
                     {
                         amountSpent = Mathf.CeilToInt(1.5f * amountSpent);
@@ -181,7 +181,7 @@ public class Town : IGamePhase
                 isAcceptingInput = false;
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int healAmount = SumValues(GameState.GetPlayer.CardsPlayed.Cards);
+                    int healAmount = SumValues(GameState.GetPlayer.CardsPlayed);
                     if (GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE)))
                     {
                         healAmount = Mathf.CeilToInt(1.5f * healAmount);

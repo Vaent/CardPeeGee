@@ -69,7 +69,7 @@ public class Battle : Encounter
     {
         bool boostStat = player.CardsActivated.Exists(Is(suit, ACE));
         int bonusFromPlayedCards = reducer(player.CardsPlayed, suit);
-        return defaultValue + (boostStat ? (int)Mathf.Ceil(bonusFromPlayedCards * 1.5f) : bonusFromPlayedCards);
+        return defaultValue + (boostStat ? Mathf.CeilToInt(bonusFromPlayedCards * 1.5f) : bonusFromPlayedCards);
     }
 
     public override void CardSelected(Card card)
@@ -84,7 +84,7 @@ public class Battle : Encounter
         if (player.CardsActivated.Equals(cardZone) || player.CardsPlayed.Equals(cardZone))
         {
             playerAttack = CalculatePlayerStat(defaultPlayerAttack, Suit.Club, SumValues);
-            playerDeal = CalculatePlayerStat(defaultPlayerDeal, Suit.Spade, CountValues);
+            playerDeal = CalculatePlayerStat(defaultPlayerDeal, Suit.Spade, CountMatches);
             RefreshPlayerStatsDisplay();
         }
         else if (cardZone is StagingArea)

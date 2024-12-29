@@ -26,12 +26,12 @@ public class CardUtil
         }
     }
 
-    public static int CountValues(CardZone cardZone, Suit suit)
+    public static int CountMatches(CardZone cardZone, Suit suit)
     {
-        return CountValues(cardZone.Cards, suit);
+        return CountMatches(cardZone.Cards, suit);
     }
 
-    public static int CountValues(List<Card> cards, Suit suit)
+    public static int CountMatches(List<Card> cards, Suit suit)
     {
         if (cards == null || cards.Count == 0) return 0;
         var filteredList = cards.FindAll(card => (card.Suit == suit));
@@ -77,6 +77,11 @@ public class CardUtil
     public static void Sort(List<Card> cards)
     {
         cards.Sort(Compare);
+    }
+
+    public static int SumValues(CardZone cardZone)
+    {
+        return SumValues(cardZone.Cards);
     }
 
     public static int SumValues(CardZone cardZone, Suit suit)

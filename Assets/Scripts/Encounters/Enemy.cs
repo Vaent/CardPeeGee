@@ -13,7 +13,7 @@ public class Enemy
     {
         Agitator = agitator;
         Attack = agitator.Value + CardUtil.SumValues(props, Suit.Club);
-        Deal = BaseDeal + CardUtil.CountValues(props, Suit.Spade);
+        Deal = BaseDeal + CardUtil.CountMatches(props, Suit.Spade);
         Hp = agitator.Value + CardUtil.SumValues(props, Suit.Heart);
     }
 

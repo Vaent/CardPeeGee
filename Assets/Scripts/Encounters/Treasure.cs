@@ -203,7 +203,7 @@ public class Treasure : Encounter
 
     private void UpdateDisarmBonus()
     {
-        disarmBonus = SumValues(player.CardsPlayed.Cards);
+        disarmBonus = SumValues(player.CardsPlayed);
         if (player.CardsActivated.Exists(Is(Suit.Spade, ACE)))
         {
             disarmBonus = (int)Math.Ceiling(disarmBonus * 1.5f);

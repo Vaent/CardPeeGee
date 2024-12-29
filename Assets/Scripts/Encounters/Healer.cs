@@ -21,7 +21,7 @@ public class Healer : Encounter
             + (int)Ceiling((float)CardUtil.SumValues(props) / 2);
         potions = props.FindAll(card => (card.Suit == Suit.Heart));
         feeToPay = CardUtil.SumValues(props, Suit.Diamond);
-        List<Monster> jailors = Monster.FindAllIn(props);
+        List<Enemy> jailors = Enemy.FindAllIn(props);
         if (jailors.Count > 0) battleToResolve = new Battle(jailors);
     }
 

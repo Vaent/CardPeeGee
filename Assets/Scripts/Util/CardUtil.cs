@@ -26,6 +26,11 @@ public class CardUtil
         }
     }
 
+    public static int CountValues(CardZone cardZone, Suit suit)
+    {
+        return CountValues(cardZone.Cards, suit);
+    }
+
     public static int CountValues(List<Card> cards, Suit suit)
     {
         if (cards == null || cards.Count == 0) return 0;
@@ -72,6 +77,11 @@ public class CardUtil
     public static void Sort(List<Card> cards)
     {
         cards.Sort(Compare);
+    }
+
+    public static int SumValues(CardZone cardZone, Suit suit)
+    {
+        return SumValues(cardZone.Cards, suit);
     }
 
     public static int SumValues(List<Card> cards)

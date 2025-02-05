@@ -8,8 +8,8 @@
 - When the game was loaded through cardpeegee.vaent.uk on an Android mobile device, a warning was displayed indicating that WebGL builds are not supported on mobile devices (this is in line with the generated HTML) but the game launched and ran normally when input was received, with the exception that both sides of the play area were cropped. It's not clear if this is due to the layout of the web page, where the game is loaded in an HTML iframe, or something in the generated (Unity) HTML. Mobile support is a planned extension, not within the initial scope, but this is being bugged now as it could be an implementation/build issue and in any case has potential to cause confusion.
 - Rendering of the "LeaveButton" is inconsistent. In the Unity Editor, and fullscreen mode of WebGL build, it has the expected appearance, but the WebGL build displayed in normal windowed browser (Chrome) has the button shifted upwards, slightly overlapping other displayed text. Note: removing the Unity footer from the HTML had no effect on this visual glitch.
 - During the Town phase, after turning in 3 cards worth 18 points for shopping and receiving two cards in exchange, the prompt displayed for healing said that no cards could be played when in fact there were cards which could be converted to hearts via an already-active Jack.
-  - It's possible the cards hadn't been registered to the player's hand before the prompt was displayed, as the whole process ran faster than it probably should.
   - The issue wasn't replicated when trading in 2 cards during a subsequent round of the same game.
+  - Having encountered this issue again in a completely different game, months later, I checked the code and saw that only basic selection logic has been implemented so far for healing (the equivalent logic for shopping is much more complete). There's a TODO comment in the code but I'm keeping the bug report here to ensure it stays visible.
 
 ## In scope
 

@@ -123,10 +123,15 @@ public class Battle : Encounter
         Timer.DelayThenInvoke(2, GameState.EndEncounter, this);
     }
 
-    private void EndCombatRound(float delay)
+    private void EndCombatRound()
     {
         playerScore = enemyScore = 0;
-        Timer.DelayThenInvoke(delay, deck.Accept, GameState.GetStagingArea.Cards);
+        deck.Accept(GameState.GetStagingArea.Cards);
+    }
+
+    private void EndCombatRound(float delay)
+    {
+        Timer.DelayThenInvoke(delay, EndCombatRound);
     }
 
     private void HandleScoresDrawn()
@@ -141,8 +146,10 @@ public class Battle : Encounter
         resultExcerpt = ResultEnemyWon(enemies[0].Attack);
         DisplayText(resultExcerpt);
         player.Damage(enemies[0].Attack);
-        // TODO: fix player.IsAlive check (it doesn't take account of the delay in reducing HP)
-        if (player.IsAlive()) EndCombatRound(1 + (0.05f * enemies[0].Attack));
+        Timer.DelayThenInvoke(1 + (0.05f * enemies[0].Attack), () =>
+        {
+            if (player.IsAlive()) EndCombatRound(0);
+        });
     }
 
     private void HandleScoresPlayerWon()

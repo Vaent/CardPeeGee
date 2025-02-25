@@ -51,7 +51,6 @@ public class Battle : Encounter
         if (!battleHasStarted) battleHasStarted = true;
         HideText(InitialPrompt, PromptNextRound);
         DisplayTextAsExtension(PlayerScoreCardsLabel, 1, playerDealExcerpt, playerAttackExcerpt);
-        // TODO: ensure dealt cards don't overlap encounter text
         deck.DealCards(playerDeal);
     }
 

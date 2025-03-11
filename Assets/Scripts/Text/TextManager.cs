@@ -123,6 +123,12 @@ namespace Text
             }
         }
 
+        public static void ReplaceText(BaseExcerpt excerpt)
+        {
+            TextMesh textMesh = GetTextMeshFor(excerpt);
+            textMesh.text = excerpt.ToString();
+        }
+
         public static void TearDownDisplayedText()
         {
             foreach (TextMesh textMesh in textMeshes.Values)

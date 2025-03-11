@@ -18,7 +18,7 @@ public class Battle : Encounter
     private readonly bool isHealerBattle;
     private int enemyScore;
     private BaseExcerpt enemyScoreExcerpt;
-    private BaseExcerpt enemyStatsExcerpt;
+    private UpdateableExcerpt<int, int, int> enemyStatsExcerpt;
     private int playerAttack = defaultPlayerAttack;
     private BaseExcerpt playerAttackExcerpt;
     private int playerDeal = defaultPlayerDeal;
@@ -155,9 +155,21 @@ public class Battle : Encounter
     {
         resultExcerpt = ResultPlayerWon(playerAttack);
         DisplayText(resultExcerpt);
-        enemies[0].Damage(playerAttack);
-        // TODO: display enemy HP 'ticking down'. Currently requires destroying & recreating full stat text for each point of damage!
-        EndCombatRound(1 + (0.05f * playerAttack));
+        damageEnemy(enemies[0], playerAttack);
+    }
+
+    private void damageEnemy(Enemy enemy, int damageToApply)
+    {
+        if (damageToApply > 0 && enemy.IsAlive())
+        {
+            enemy.Damage(1);
+            updateEnemyHpDisplay(enemyStatsExcerpt, enemy.Hp);
+            Timer.DelayThenInvoke(0.05f, () => damageEnemy(enemy, --damageToApply));
+        }
+        else
+        {
+            EndCombatRound(1);
+        }
     }
 
     private void ProcessEnemyScoreCards(List<Card> cards)

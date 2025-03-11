@@ -53,7 +53,7 @@ namespace Text
 
     public class Excerpt<T0> : BaseExcerpt
     {
-        private T0 arg0;
+        protected T0 arg0;
 
         public Excerpt(Excerpt excerpt, T0 formatArg0) : base(excerpt)
         {
@@ -69,8 +69,8 @@ namespace Text
 
     public class Excerpt<T0, T1> : BaseExcerpt
     {
-        private T0 arg0;
-        private T1 arg1;
+        protected T0 arg0;
+        protected T1 arg1;
 
         public Excerpt(Excerpt excerpt, T0 formatArg0, T1 formatArg1) : base(excerpt)
         {
@@ -87,10 +87,9 @@ namespace Text
 
     public class Excerpt<T0, T1, T2> : BaseExcerpt
     {
-        private T0 arg0;
-        private T1 arg1;
-        private T2 arg2;
-
+        protected T0 arg0;
+        protected T1 arg1;
+        protected T2 arg2;
 
         public Excerpt(Excerpt excerpt, T0 formatArg0, T1 formatArg1, T2 formatArg2) : base(excerpt)
         {
@@ -103,6 +102,31 @@ namespace Text
         public override string ToString()
         {
             return string.Format(excerptFormatString, arg0, arg1, arg2);
+        }
+    }
+
+    public class UpdateableExcerpt<T0, T1, T2> : Excerpt<T0, T1, T2>
+    {
+        public UpdateableExcerpt(Excerpt excerpt, T0 formatArg0, T1 formatArg1, T2 formatArg2)
+            : base(excerpt, formatArg0, formatArg1, formatArg2)
+        { }
+
+        public void updateArg0(T0 newValue)
+        {
+            arg0 = newValue;
+            TextManager.ReplaceText(this);
+        }
+
+        public void updateArg1(T1 newValue)
+        {
+            arg1 = newValue;
+            TextManager.ReplaceText(this);
+        }
+
+        public void updateArg2(T2 newValue)
+        {
+            arg2 = newValue;
+            TextManager.ReplaceText(this);
         }
     }
 }

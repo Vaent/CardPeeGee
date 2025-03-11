@@ -22,9 +22,14 @@ namespace Text.Excerpts
         private static Excerpt ScoreForEnemy_ { get; } = new Excerpt("The monster's strike scores {0}", belowDealtCards);
         private static Excerpt ScoreForPlayer_ { get; } = new Excerpt("Your strike scores {0}", belowDealtCards);
         
-        public static Excerpt<int, int, int> AnnounceStats(int attack, int deal, int hp)
+        public static UpdateableExcerpt<int, int, int> AnnounceStats(int attack, int deal, int hp)
         {
-            return new Excerpt<int, int, int>(AnnounceStats_, attack, deal, hp);
+            return new UpdateableExcerpt<int, int, int>(AnnounceStats_, attack, deal, hp);
+        }
+
+        public static void updateEnemyHpDisplay(UpdateableExcerpt<int, int, int> excerpt, int hp)
+        {
+            excerpt.updateArg2(hp);
         }
 
         public static Excerpt<int> PlayerAttackStat(int attack)

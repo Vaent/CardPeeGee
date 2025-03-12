@@ -27,7 +27,7 @@ public class StagingArea : CardZone
             Card card = cardsToMove[index];
             // If an encounter is in progress, avoid the encounter text, otherwise cards can extend further right
             float rightLimit = GameState.CurrentPhase is EncounterPhase ? 3.8f : 7.7f;
-            float spacingFactor = (i * 1.1f < rightLimit) ? 1.1f : (rightLimit / i);
+            float spacingFactor = (cardsToMove.Count < rightLimit) ? 1.1f : (rightLimit / cardsToMove.Count);
             Vector3 positionAdjustment = new Vector3(index * spacingFactor, 0, index * -0.01f);
             if (isAlternateMode) positionAdjustment += alternateModeOffset;
             CardController.MovementTracker tracker = cardsInMotion[card];

@@ -63,24 +63,36 @@ public class Player
 
     public bool CanConvert(Card card, params Suit[] targetSuits)
     {
-        if (!hand.Contains(card) && !cardsActivated.Contains(card)) return false;
-
-        return CardsActivated.Exists(activeCard =>
-            activeCard != card
-            && JACK.Equals(activeCard.Name)
-            && ((activeCard.Suit == card.Suit) || Array.Exists(targetSuits, suit => activeCard.Suit == suit)));
+        return CanConvert(card, Array.ConvertAll(targetSuits, suit => new TargetSuit(suit, true)));
     }
 
-    public bool CanUse(Card card, params Suit[] playableSuits)
-    {
-        return CanUse(card, true, playableSuits);
-    }
-
-    public bool CanUse(Card card, bool allowActivate, params Suit[] playableSuits)
+    public bool CanConvert(Card card, params TargetSuit[] targetSuits)
     {
         if (!IsHolding(card)) return false;
 
-        return Array.Exists(playableSuits, suit => card.Suit == suit)
+        // Consider each target suit individually as some may permit zero values while others may not
+        foreach (var target in targetSuits)
+        {
+            if (target.Suit.Equals(card.Suit)) continue; // can't convert a card to its own suit
+
+            if (CardsActivated.Exists(activeCard =>
+                activeCard != card
+                && JACK.Equals(activeCard.Name)
+                && ((activeCard.Suit == card.Suit) || target.Suit.Equals(activeCard.Suit))
+                && (!target.HasValue || card.NaturalValue > Card.conversionPenalty)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool CanUse(Card card, bool allowActivate, params TargetSuit[] playableSuits)
+    {
+        if (!IsHolding(card)) return false;
+
+        return Array.Exists(playableSuits, target => target.Suit.Equals(card.Suit))
             || (allowActivate && CanActivate(card))
             || CanConvert(card, playableSuits);
     }
@@ -96,44 +108,36 @@ public class Player
 
     public void ConfigureSelectedCardOptions(Card newSelectedCard, params Suit[] playableSuits)
     {
+        ConfigureSelectedCardOptions(newSelectedCard, Array.ConvertAll(playableSuits, suit => new TargetSuit(suit, true)));
+    }
+
+    public void ConfigureSelectedCardOptions(Card newSelectedCard, params TargetSuit[] playableSuits)
+    {
         ConfigureSelectedCardOptions(newSelectedCard, true, playableSuits);
     }
 
-    public void ConfigureSelectedCardOptions(Card newSelectedCard, bool allowActivate, params Suit[] playableSuits)
+    public void ConfigureSelectedCardOptions(Card newSelectedCard, bool allowActivate, params TargetSuit[] playableSuits)
     {
-        if (!CanUse(newSelectedCard, allowActivate, playableSuits))
+        if (!ConfirmCardSelection(newSelectedCard)) return;
+        
+        if (ConvertedCardRequires(newSelectedCard))
         {
-            CancelSelectedCard();
+            // TODO: display a message advising the card cannot be played because it was used to convert another card
+            Debug.Log($"Unable to play {newSelectedCard} because it is currently converting another played card");
         }
-        else if (ConfirmCardSelection(newSelectedCard))
+        else if (IsHolding(newSelectedCard))
         {
-            if (ConvertedCardRequires(newSelectedCard))
-            {
-                // TODO: display a message advising the card cannot be played because it was used to convert another card
-                Debug.Log($"Unable to play {newSelectedCard} because it is currently converting another played card");
-            }
-            else
-            {
-                Select(newSelectedCard);
-                SelectedCardOptionsPanel.ReInitialiser ri = selectedCardOptionsPanel.PrepareFor(newSelectedCard);
-                if (CanActivate(newSelectedCard)) ri.IncludeActivate();
-                if (Array.Exists(playableSuits, suit => newSelectedCard.Suit == suit)) ri.IncludePlay();
-                if (Array.Exists(playableSuits, suit => newSelectedCard.Suit != suit))
-                {
-                    if (cardsActivated.Exists(card => JACK.Equals(card.Name) && (card.Suit == newSelectedCard.Suit) && (card != newSelectedCard)))
-                    {
-                        ri.IncludePlayAs(Array.FindAll(playableSuits, suit => newSelectedCard.Suit != suit));
-                    }
-                    else
-                    {
-                        Suit[] convertableSuits = Array.FindAll(playableSuits, suit =>
-                            suit != newSelectedCard.Suit
-                            && cardsActivated.Exists(Is(suit, JACK)));
-                        if (convertableSuits.Length > 0) ri.IncludePlayAs(convertableSuits);
-                    }
-                }
-                ri.Display();
-            }
+            bool canActivate = allowActivate && CanActivate(newSelectedCard);
+            bool canPlay = Array.Exists(playableSuits, target => target.Suit.Equals(newSelectedCard.Suit));
+            TargetSuit[] convertableSuits = Array.FindAll(playableSuits, target => CanConvert(newSelectedCard, target));
+            if (!canActivate && !canPlay && convertableSuits.Length == 0) return;
+
+            Select(newSelectedCard);
+            SelectedCardOptionsPanel.ReInitialiser ri = selectedCardOptionsPanel.PrepareFor(newSelectedCard);
+            if (canActivate) ri.IncludeActivate();
+            if (canPlay) ri.IncludePlay();
+            if (convertableSuits.Length > 0) ri.IncludePlayAs(convertableSuits);
+            ri.Display();
         }
     }
 

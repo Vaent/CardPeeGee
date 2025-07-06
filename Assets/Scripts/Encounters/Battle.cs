@@ -75,7 +75,7 @@ public class Battle : Encounter
     {
         if (battleHasStarted && !isHealerBattle) return;
 
-        player.ConfigureSelectedCardOptions(card, Suit.Club, Suit.Spade);
+        player.ConfigureSelectedCardOptions(card, new TargetSuit(Suit.Club, true), new TargetSuit(Suit.Spade, false));
     }
 
     public override void CardsArrivedAt(CardZone cardZone, List<Card> cards)

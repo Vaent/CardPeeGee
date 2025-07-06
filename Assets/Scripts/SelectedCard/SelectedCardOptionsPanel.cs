@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SelectedCardOptionsPanel : MonoBehaviour
 {
@@ -74,7 +73,7 @@ public class SelectedCardOptionsPanel : MonoBehaviour
 	// Builder-style class for preparing a new panel configuration
 	public class ReInitialiser
 	{
-		private SelectedCardOptionsPanel panel;
+		private readonly SelectedCardOptionsPanel panel;
 
 		public bool Activate { get; private set; }
 		public bool Play { get; private set; }
@@ -107,36 +106,15 @@ public class SelectedCardOptionsPanel : MonoBehaviour
 			return this;
 		}
 
-		public ReInitialiser IncludePlayAs(params Suit[] convertableSuits)
+		public ReInitialiser IncludePlayAs(params TargetSuit[] convertableSuits)
         {
-			if (Array.Exists(convertableSuits, suit => suit == Suit.Club)) PlayAsClub = true;
-			if (Array.Exists(convertableSuits, suit => suit == Suit.Diamond)) PlayAsDiamond = true;
-			if (Array.Exists(convertableSuits, suit => suit == Suit.Heart)) PlayAsHeart = true;
-			if (Array.Exists(convertableSuits, suit => suit == Suit.Spade)) PlayAsSpade = true;
-			return this;
-		}
-
-		public ReInitialiser IncludePlayAsClub()
-		{
-			PlayAsClub = true;
-			return this;
-		}
-
-		public ReInitialiser IncludePlayAsDiamond()
-		{
-			PlayAsDiamond = true;
-			return this;
-		}
-
-		public ReInitialiser IncludePlayAsHeart()
-		{
-			PlayAsHeart = true;
-			return this;
-		}
-
-		public ReInitialiser IncludePlayAsSpade()
-		{
-			PlayAsSpade = true;
+            foreach (var target in convertableSuits)
+            {
+                if (Suit.Club.Equals(target.Suit)) PlayAsClub = true;
+                else if (Suit.Diamond.Equals(target.Suit)) PlayAsDiamond = true;
+                else if (Suit.Heart.Equals(target.Suit)) PlayAsHeart = true;
+                else if (Suit.Spade.Equals(target.Suit)) PlayAsSpade = true;
+            }
 			return this;
 		}
 	}

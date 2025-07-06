@@ -43,15 +43,23 @@ public class Town : IGamePhase
 
     private bool PlayerCanHeal()
     {
-        if (GameState.GetPlayer.CardsActivated.Cards.Exists(card => Heart.Equals(card.Suit)))
+        List<Card> usableCards = new List<Card>(GameState.GetPlayer.CardsActivated.Cards);
+        usableCards.AddRange(GameState.GetPlayer.Hand.Cards);
+        // Any Heart card of any value can be used to heal
+        if (usableCards.Exists(card => Heart.Equals(card.Suit)))
         {
             return true;
         }
-        if (GameState.GetPlayer.Hand.Cards.Exists(card => Heart.Equals(card.Suit)))
+        // Check for non-Heart cards which can be converted by a Jack of their own suit and still provide at least 1 point of value
+        Suit[] convertibleSuits = { Club, Diamond, Spade };
+        foreach (Suit suit in convertibleSuits)
         {
-            return true;
+            if (usableCards.Exists(card => suit.Equals(card.Suit) && JACK.Equals(card.Name))
+                && usableCards.Exists(card => suit.Equals(card.Suit) && !JACK.Equals(card.Name) && card.NaturalValue > Card.conversionPenalty))
+            {
+                return true;
+            }
         }
-        // TODO: further logic
         return false;
     }
 

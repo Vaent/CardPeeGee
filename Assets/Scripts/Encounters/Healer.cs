@@ -1,4 +1,7 @@
+using static Constant;
 using ExtensionMethods;
+using System.Linq;
+using System;
 using System.Collections.Generic;
 using static System.Math;
 using Text;
@@ -11,6 +14,7 @@ public class Healer : Encounter
     private Battle battleToResolve;
     private int feeToPay;
     private int healingAmount;
+    private UpdateableExcerpt<int, int> paymentStatus;
     private List<Card> potions;
 
     protected override JukeBox.Track ThemeMusic => (battleToResolve == null) ? JukeBox.Track.Healer : JukeBox.Track.Battle;
@@ -55,13 +59,13 @@ public class Healer : Encounter
         {
             DisplayTextAsExtension(AnnounceFeeCharged, AnnouncePrisonerStatus, healAmountText);
             Debug.Log($"Healer charges a fee of {feeToPay}");
-            // TODO: if player cannot pay the fee, display a message advising of this
+            // TODO: if player cannot pay the fee, display a message advising of this.
+            // Need to check whether that message is only shown when there is also a jailor.
         }
 
         if (IsHealingBlocked())
         {
-            // TODO: prompt input for battle/fee as required
-            Timer.DelayThenInvoke(2, RemoveBlockers);
+            Timer.DelayThenInvoke(2, ResolveBlockers);
         }
         else
         {
@@ -95,14 +99,24 @@ public class Healer : Encounter
         }
         else if (player.CardsActivated.Equals(cardZone) || player.CardsPlayed.Equals(cardZone))
         {
-            // TODO: calculate how much of the fee has been paid, update display
-            // TODO: deliver healing (and potions) to player if fee has been fully paid
+            List<Suit> activeAces = player.CardsActivated.Cards.FindAll(card => ACE.Equals(card.Name)).ConvertAll(card => card.Suit);
+            int amountPaid = ((Suit[]) Enum.GetValues(typeof(Suit))).Aggregate(
+                0,
+                (runningTotal, suit) => runningTotal + (int)Math.Ceiling(
+                    CardUtil.SumValues(player.CardsPlayed.Cards.FindAll(card => suit.Equals(card.Suit)))
+                    * (activeAces.Contains(suit) ? 1.5 : 1)));
+            updatePaymentStatus(paymentStatus, amountPaid, feeToPay - amountPaid);
+            if (amountPaid >= feeToPay)
+            {
+                // TODO: disable leaveButton
+                Timer.DelayThenInvoke(1, DeliverHealing);
+            }
         }
     }
 
     private void DeliverHealing()
     {
-        HideText(TempRemoveJailors, TempRemoveFee);
+        HideText(TempRemoveJailors, paymentStatus, PromptPayFee);
         BaseExcerpt healingDeliveredText = HealingIsDelivered(healingAmount);
         DisplayText(healingDeliveredText);
         player.Heal(healingAmount);
@@ -124,22 +138,28 @@ public class Healer : Encounter
         return (battleToResolve != null) || (feeToPay > 0);
     }
 
-    // temporary method to resolve Healer encounters while full encounter logic has not been delivered
-    public void RemoveBlockers()
+    public void ResolveBlockers()
     {
         if (battleToResolve != null)
         {
+            // temporary code to remove Jailors while full encounter logic has not been delivered
             battleToResolve = null;
             DisplayText(TempRemoveJailors);
-            deck.Accept(props.FindAll(card => card.Suit == Suit.Club));
-            Timer.DelayThenInvoke(2, RemoveBlockers);
+            Timer.DelayThenInvoke(2, () =>
+            {
+                DisplayTextAsExtension(PaymentRequiredPostBattle, TempRemoveJailors);
+                deck.Accept(props.FindAll(card => card.Suit == Suit.Club));
+                Timer.DelayThenInvoke(3, ResolveBlockers);
+            });
             return;
         }
         if (feeToPay > 0)
         {
-            feeToPay = 0;
-            DisplayTextAsExtension(TempRemoveFee, TempRemoveJailors);
-            Timer.DelayThenInvoke(2, RemoveBlockers);
+            HideText(TempRemoveJailors, PaymentRequiredPostBattle);
+            DisplayText(PromptPayFee);
+            paymentStatus = PaymentStatus(0, feeToPay);
+            DisplayText(paymentStatus);
+            // enable leaveButton
             return;
         }
         DeliverHealing();

@@ -147,6 +147,7 @@ public class Healer : Encounter
             DisplayText(TempRemoveJailors);
             Timer.DelayThenInvoke(2, () =>
             {
+                // TODO: only display PaymentRequiredPostBattle text if there is actually a fee to pay
                 DisplayTextAsExtension(PaymentRequiredPostBattle, TempRemoveJailors);
                 deck.Accept(props.FindAll(card => card.Suit == Suit.Club));
                 Timer.DelayThenInvoke(3, ResolveBlockers);

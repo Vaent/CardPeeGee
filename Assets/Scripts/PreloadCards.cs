@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PreloadCards : MonoBehaviour
 {
@@ -9,7 +7,7 @@ public class PreloadCards : MonoBehaviour
 
     void Start()
     {
-        GetComponent<Rigidbody>().velocity = Vector3.down * 10;
+        GetComponent<Rigidbody>().linearVelocity = Vector3.down * 10;
     }
 
     void Update()
@@ -21,7 +19,7 @@ public class PreloadCards : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-    	GetComponent<Rigidbody>().velocity = Vector3.zero;
+    	GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         isTurning = false;
         Destroy(GetComponent<Collider>());
     }

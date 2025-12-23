@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /* Generic class for managing a card's GameObject.
 The Card class complements this class by implementing game logic. */
-public class CardController : MonoBehaviour
+public class CardController : MonoBehaviour, IPointerClickHandler
 {
     // component references
     public Sprite back;
@@ -37,7 +38,7 @@ public class CardController : MonoBehaviour
         }
     }
 
-    void OnMouseDown()
+    public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Clicked " + cardScript);
         GameController.RegisterInteractionWith(cardScript);

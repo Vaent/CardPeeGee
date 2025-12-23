@@ -3,8 +3,9 @@ using ExtensionMethods;
 using System.Collections.Generic;
 using static System.Math;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Deck : CardZone
+public class Deck : CardZone, IPointerClickHandler
 {
     // component references
     public StagingArea stagingArea;
@@ -21,7 +22,7 @@ public class Deck : CardZone
         Debug.Log("Deck contains the following after loading: " + Cards.Print());
     }
 
-    void OnMouseDown()
+    public void OnPointerClick(PointerEventData eventData)
     {
         GameController.RegisterInteractionWithDeck();
     }

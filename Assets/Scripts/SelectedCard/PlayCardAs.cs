@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PlayCardAs : PlayCard
+public class PlayCardAs : PlayCard, IPointerClickHandler
 {
     public Suit suit;
 
@@ -8,9 +9,9 @@ public class PlayCardAs : PlayCard
 
     protected override Color NewColor => convertedCardColor;
 
-    protected override void OnMouseDown()
+    public override void OnPointerClick(PointerEventData eventData)
     {
         panel.SelectedCard.Convert(suit);
-        base.OnMouseDown();
+        base.OnPointerClick(eventData);
     }
 }

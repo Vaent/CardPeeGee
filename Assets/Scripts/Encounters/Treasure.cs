@@ -27,7 +27,7 @@ public class Treasure : Encounter
 
     public Treasure(List<Card> cards) : base(cards)
     {
-        // TODO: improve acquisition of LeaveButton reference
+        // TODO: improve acquisition of LeaveButton reference e.g. using a tag (see also Healer encounter)
         leaveButtonCanvas ??= GameObject.Find("LeaveButtonCanvas").GetComponent<Canvas>();
         leaveButtonCanvas.GetComponentInChildren<Button>().onClick.AddListener(AbandonTreasure);
         trapsOnChest = props.FindAll(card => (card.Suit == Suit.Spade));
@@ -35,6 +35,7 @@ public class Treasure : Encounter
 
     void AbandonTreasure()
     {
+        leaveButtonCanvas.GetComponentInChildren<Button>().onClick.RemoveListener(AbandonTreasure);
         leaveButtonCanvas.enabled = false;
         GameState.EndEncounter(this);
     }

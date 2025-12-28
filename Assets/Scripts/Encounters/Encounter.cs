@@ -2,12 +2,17 @@ using ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public abstract class Encounter
 {
+    private static readonly EncounterCardZone encounterCardZone = new GameObject("EncounterCardZone").AddComponent<EncounterCardZone>();
+    private static readonly Canvas leaveButtonCanvas = GameObject.Find("/Static/LeaveButtonCanvas").GetComponent<Canvas>();
+    private static readonly Button leaveButton = leaveButtonCanvas.GetComponentInChildren<Button>();
+
     protected readonly Card agitator;
     protected Deck deck;
-    private readonly EncounterCardZone encounterCardZone = new GameObject("EncounterCardZone").AddComponent<EncounterCardZone>();
     protected Player player;
     protected readonly List<Card> props;
 
@@ -63,13 +68,27 @@ public abstract class Encounter
         this.player = player;
     }
 
+    protected void HideLeaveButton()
+    {
+        leaveButtonCanvas.enabled = false;
+    }
+
+    protected void RegisterLeaveButtonAction(UnityAction action)
+    {
+        leaveButton.onClick.AddListener(action);
+    }
+
+    protected void ShowLeaveButton()
+    {
+        leaveButtonCanvas.enabled = true;
+    }
+
     public void TearDown()
     {
         Text.TextManager.TearDownDisplayedText();
-
+        HideLeaveButton();
+        leaveButton.onClick.RemoveAllListeners();
         deck.Accept(encounterCardZone.Cards);
-        Timer.DelayThenInvoke(5, UnityEngine.Object.Destroy, encounterCardZone.gameObject);
-        // TODO: refactor to reuse encounterCardZone instead of destroying it
     }
 
     public void Uses(Deck deck)

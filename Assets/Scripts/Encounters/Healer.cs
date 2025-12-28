@@ -8,12 +8,9 @@ using Text;
 using static Text.Excerpts.Healer;
 using static Text.TextManager;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Healer : Encounter
 {
-    private static Canvas leaveButtonCanvas;
-
     private Battle battleToResolve;
     private int feeToPay;
     private int healingAmount;
@@ -24,22 +21,17 @@ public class Healer : Encounter
 
     public Healer(List<Card> cards) : base(cards)
     {
-        // TODO: improve acquisition of LeaveButton reference e.g. using a tag (see also Treasure encounter)
-        leaveButtonCanvas ??= GameObject.Find("LeaveButtonCanvas").GetComponent<Canvas>();
-        leaveButtonCanvas.GetComponentInChildren<Button>().onClick.AddListener(AbandonHealer);
-
         healingAmount = agitator.Value
             + (int)Ceiling((float)CardUtil.SumValues(props) / 2);
         potions = props.FindAll(card => (card.Suit == Suit.Heart));
         feeToPay = CardUtil.SumValues(props, Suit.Diamond);
         List<Enemy> jailors = Enemy.FindAllIn(props);
         if (jailors.Count > 0) battleToResolve = new Battle(jailors);
+        if (feeToPay > 0 || jailors.Count > 0) RegisterLeaveButtonAction(AbandonHealer);
     }
 
     void AbandonHealer()
     {
-        leaveButtonCanvas.GetComponentInChildren<Button>().onClick.RemoveListener(AbandonHealer);
-        leaveButtonCanvas.enabled = false;
         GameState.EndEncounter(this);
     }
 
@@ -122,7 +114,7 @@ public class Healer : Encounter
             updatePaymentStatus(paymentStatus, amountPaid, feeToPay - amountPaid);
             if (amountPaid >= feeToPay)
             {
-                // TODO: disable leaveButton
+                HideLeaveButton();
                 Timer.DelayThenInvoke(1, DeliverHealing);
             }
         }
@@ -172,10 +164,9 @@ public class Healer : Encounter
         {
             HideText(TempRemoveJailors, PaymentRequiredPostBattle);
             DisplayText(PromptPayFee);
-            leaveButtonCanvas.enabled = true;
+            ShowLeaveButton();
             paymentStatus = PaymentStatus(0, feeToPay);
             DisplayText(paymentStatus);
-            // enable leaveButton
             return;
         }
         DeliverHealing();

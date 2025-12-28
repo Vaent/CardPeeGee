@@ -7,12 +7,9 @@ using Text;
 using static Text.Excerpts.Treasure;
 using static Text.TextManager;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Treasure : Encounter
 {
-    private static Canvas leaveButtonCanvas;
-
     private int disarmBonus;
     private BaseExcerpt disarmBonusExcerpt;
     private BaseExcerpt disarmOutcomeExcerpt;
@@ -27,16 +24,12 @@ public class Treasure : Encounter
 
     public Treasure(List<Card> cards) : base(cards)
     {
-        // TODO: improve acquisition of LeaveButton reference e.g. using a tag (see also Healer encounter)
-        leaveButtonCanvas ??= GameObject.Find("LeaveButtonCanvas").GetComponent<Canvas>();
-        leaveButtonCanvas.GetComponentInChildren<Button>().onClick.AddListener(AbandonTreasure);
         trapsOnChest = props.FindAll(card => (card.Suit == Suit.Spade));
+        if (trapsOnChest.Count > 0) RegisterLeaveButtonAction(AbandonTreasure);
     }
 
     void AbandonTreasure()
     {
-        leaveButtonCanvas.GetComponentInChildren<Button>().onClick.RemoveListener(AbandonTreasure);
-        leaveButtonCanvas.enabled = false;
         GameState.EndEncounter(this);
     }
 
@@ -71,7 +64,7 @@ public class Treasure : Encounter
             HideText(PromptPlayCards);
             HideText(PromptClickToDisarm);
             HideText(PromptAbandonEncounter);
-            leaveButtonCanvas.enabled = false;
+            HideLeaveButton();
             deck.DealCards(1);
         }
         else
@@ -159,12 +152,12 @@ public class Treasure : Encounter
         });
     }
 
-    private static void DisplayPrompts()
+    private void DisplayPrompts()
     {
         DisplayText(PromptPlayCards);
         DisplayTextAsExtension(PromptClickToDisarm, 1, PromptPlayCards);
         DisplayTextAsExtension(PromptAbandonEncounter, 2, PromptClickToDisarm);
-        leaveButtonCanvas.enabled = true;
+        ShowLeaveButton();
     }
 
     private void EndDisarmAttempt()

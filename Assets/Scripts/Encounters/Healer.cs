@@ -111,7 +111,7 @@ public class Healer : Encounter
                 (runningTotal, suit) => runningTotal + (int)Math.Ceiling(
                     CardUtil.SumValues(player.CardsPlayed.Cards.FindAll(card => suit.Equals(card.Suit)))
                     * (activeAces.Contains(suit) ? 1.5 : 1)));
-            updatePaymentStatus(paymentStatus, amountPaid, feeToPay - amountPaid);
+            updatePaymentStatus(paymentStatus, amountPaid, Math.Max(feeToPay - amountPaid, 0));
             if (amountPaid >= feeToPay)
             {
                 HideLeaveButton();
@@ -155,6 +155,7 @@ public class Healer : Encounter
             {
                 if (feeToPay > 0) DisplayTextAsExtension(PaymentRequiredPostBattle, TempRemoveJailors);
                 deck.Accept(props.FindAll(card => card.Suit == Suit.Club));
+                Timer.DelayThenInvoke(3, () => JukeBox.Play(JukeBox.Track.Healer));
                 Timer.DelayThenInvoke(3, ResolveBlockers);
             });
             return;

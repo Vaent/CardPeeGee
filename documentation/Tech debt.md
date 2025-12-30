@@ -17,7 +17,6 @@
 ### Required
 
 - Refine hint text for played cards.
-  - When paying a healer's fee, overpayment results in a negative fee being shown; it should have a floor of zero.
   - While shopping in town, the amount paid and the number of cards to be received should be displayed.
   - While healing in town, the amount of healing to be delivered from played cards should be displayed.
 - Enable suspending code execution while the player is being healed/damaged - ideally without having to calculate the expected delay and apply it manually every time healing/damage methods are invoked.

@@ -39,8 +39,7 @@ namespace Text.Excerpts
 
         public static void updatePaymentStatus(UpdateableExcerpt<int, int> excerpt, int feePaid, int feeRemaining)
         {
-            excerpt.updateArg0(feePaid);
-            excerpt.updateArg1(feeRemaining);
+            excerpt.updateAllArgs(feePaid, feeRemaining);
         }
     }
 }

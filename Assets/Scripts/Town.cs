@@ -16,8 +16,10 @@ public class Town : IGamePhase
 
     private static readonly Town instance = new Town();
 
-    private Phase phase;
     private bool isAcceptingInput = false;
+    private Phase phase;
+    private UpdateableExcerpt<int, int> pointsTextShopping;
+    private UpdateableExcerpt<int> pointsTextHealing;
 
     private Town() { }
 
@@ -34,6 +36,12 @@ public class Town : IGamePhase
     {
         TearDownDisplayedText();
         GameState.PlayerLeftTown();
+    }
+
+    private static int CalculatePlayedCardPoints(bool pointsAreBoosted)
+    {
+        int basePoints = SumValues(GameState.GetPlayer.CardsPlayed);
+        return pointsAreBoosted ? Mathf.CeilToInt(1.5f * basePoints) : basePoints;
     }
 
     private void GiveCharity()
@@ -110,9 +118,37 @@ public class Town : IGamePhase
                     break;
             }
         }
-        else if (GameState.GetPlayer.CardsPlayed.Equals(destination))
+        else if (GameState.GetPlayer.CardsPlayed.Equals(destination) || GameState.GetPlayer.CardsActivated.Equals(destination))
         {
-            // TODO: update "points text"
+            if (phase == Phase.Shop)
+            {
+                bool pointsAreBoosted = GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE));
+                int pointsPlayed = CalculatePlayedCardPoints(GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE)));
+                int cardsPurchased = Mathf.FloorToInt(pointsPlayed / costOfNewCard);
+                updateShoppingPoints(pointsTextShopping, pointsPlayed, cardsPurchased);
+                if (pointsAreBoosted)
+                {
+                    DisplayTextAsExtension(ShoppingPointsBoosted, pointsTextShopping);
+                }
+                else
+                {
+                    HideText(ShoppingPointsBoosted);
+                }
+            }
+            else if (phase == Phase.Heal)
+            {
+                bool pointsAreBoosted = GameState.GetPlayer.CardsActivated.Cards.Exists(Is(Heart, ACE));
+                int pointsPlayed = CalculatePlayedCardPoints(GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE)));
+                updateHealingPoints(pointsTextHealing, pointsPlayed);
+                if (pointsAreBoosted)
+                {
+                    DisplayTextAsExtension(HealingPointsBoosted, pointsTextHealing);
+                }
+                else
+                {
+                    HideText(HealingPointsBoosted);
+                }
+            }
         }
     }
 
@@ -160,15 +196,10 @@ public class Town : IGamePhase
         {
             case Phase.Shop:
                 isAcceptingInput = false;
-                HideText(Shopping, ShoppingIsPossible, ShoppingNotPossible, CardsCanBeActivated, Continue);
-                // TODO: hide "points text"
+                HideText(Shopping, ShoppingIsPossible, ShoppingNotPossible, pointsTextShopping, ShoppingPointsBoosted, CardsCanBeActivated, Continue);
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int amountSpent = SumValues(GameState.GetPlayer.CardsPlayed);
-                    if (GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE)))
-                    {
-                        amountSpent = Mathf.CeilToInt(1.5f * amountSpent);
-                    }
+                    int amountSpent = CalculatePlayedCardPoints(GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE)));
                     GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
                     int numberOfNewCards = Mathf.FloorToInt(amountSpent / costOfNewCard);
                     if (numberOfNewCards > 0)
@@ -189,12 +220,9 @@ public class Town : IGamePhase
                 isAcceptingInput = false;
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
-                    int healAmount = SumValues(GameState.GetPlayer.CardsPlayed);
-                    if (GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE)))
-                    {
-                        healAmount = Mathf.CeilToInt(1.5f * healAmount);
-                    }
+                    int healAmount = CalculatePlayedCardPoints(GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE)));
                     GameState.GetPlayer.Heal(healAmount);
+                    HideText(pointsTextHealing, HealingPointsBoosted);
                     GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
                 }
                 LeaveTown();
@@ -229,11 +257,17 @@ public class Town : IGamePhase
     private void SetUpHealPhase()
     {
         SetUpHealOrShopCommon(Phase.Heal, Healing, HealingIsPossible, HealingNotPossible, PlayerCanHeal);
+        pointsTextHealing = HealingPoints(0);
+        DisplayText(pointsTextHealing);
+        if (GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE))) DisplayTextAsExtension(HealingPointsBoosted, pointsTextHealing);
     }
 
     private void SetUpShopPhase()
     {
         SetUpHealOrShopCommon(Phase.Shop, Shopping, ShoppingIsPossible, ShoppingNotPossible, PlayerCanShop);
+        pointsTextShopping = ShoppingPoints(0, 0);
+        DisplayText(pointsTextShopping);
+        if (GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE))) DisplayTextAsExtension(ShoppingPointsBoosted, pointsTextShopping);
     }
 
     private void SetUpTaxPhase()

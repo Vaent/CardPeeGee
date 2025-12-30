@@ -105,11 +105,31 @@ namespace Text
         }
     }
 
+    public class UpdateableExcerpt<T0> : Excerpt<T0>
+    {
+        public UpdateableExcerpt(Excerpt excerpt, T0 formatArg0)
+            : base(excerpt, formatArg0)
+        { }
+
+        public void updateArg0(T0 newValue)
+        {
+            arg0 = newValue;
+            TextManager.ReplaceText(this);
+        }
+    }
+
     public class UpdateableExcerpt<T0, T1> : Excerpt<T0, T1>
     {
         public UpdateableExcerpt(Excerpt excerpt, T0 formatArg0, T1 formatArg1)
             : base(excerpt, formatArg0, formatArg1)
         { }
+
+        public void updateAllArgs(T0 newValue0, T1 newValue1)
+        {
+            arg0 = newValue0;
+            arg1 = newValue1;
+            TextManager.ReplaceText(this);
+        }
 
         public void updateArg0(T0 newValue)
         {

@@ -164,9 +164,15 @@ public class Player
 
     public void Damage(int amount)
     {
-        // TODO: determine and play appropriate audio clip
-        // note that Damage(0) calls result in the "phew" audio clip
         Debug.Log($"Player is taking damage... initial HP {hp}, damage amount {amount}");
+        SoundEffects.Play(amount switch {
+            0 => SoundEffects.DamageLevel0,
+            < 5 => SoundEffects.DamageLevel1,
+            < 13 => SoundEffects.DamageLevel2,
+            < 20 => SoundEffects.DamageLevel3,
+            < 25 => SoundEffects.DamageLevel4,
+            _ => SoundEffects.DamageLevel5
+        });
         UpdateHP(hp - amount);
     }
 
@@ -178,8 +184,8 @@ public class Player
 
     public void Heal(int amount)
     {
-        // TODO: play audio clip
         Debug.Log($"Healing Player... initial HP {hp}, heal amount {amount}");
+        SoundEffects.Play(SoundEffects.HealingChant);
         UpdateHP(hp + amount);
     }
 

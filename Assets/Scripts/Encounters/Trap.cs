@@ -57,7 +57,7 @@ public class Trap : Encounter
             {
                 DisplayTextAsExtension(Assisted, AttemptEvade);
                 deck.DealCards(1);
-                // TODO: play a random "helper" audio clip
+                SoundEffects.PlayRandomTrapAssistClip();
                 return;
             }
             else

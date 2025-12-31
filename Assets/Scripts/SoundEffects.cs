@@ -16,6 +16,7 @@ public class SoundEffects : MonoBehaviour
     public AudioClip damageLevel4;
     public AudioClip damageLevel5;
     public AudioClip healingChant;
+    public AudioClip[] trapAssists;
 
     // audio clip accessors
     public static AudioClip HealingChant { get => instance.healingChant; }
@@ -34,7 +35,11 @@ public class SoundEffects : MonoBehaviour
 
     public static void Play(AudioClip clip)
     {
-        instance.speaker.clip = clip;
-        instance.speaker.Play();
+        instance.speaker.PlayOneShot(clip);
+    }
+
+    public static void PlayRandomTrapAssistClip()
+    {
+        Play(instance.trapAssists[Random.Range(0, instance.trapAssists.Length)]);
     }
 }

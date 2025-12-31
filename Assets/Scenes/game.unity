@@ -2241,6 +2241,14 @@ MonoBehaviour:
   damageLevel4: {fileID: 8300000, guid: 04a936377f8cd8d4faa25da6799c47a3, type: 3}
   damageLevel5: {fileID: 8300000, guid: e5713aad1db131c45a4396eccfa978d7, type: 3}
   healingChant: {fileID: 8300000, guid: e8a6e31d03b4aae42b90863f38df8335, type: 3}
+  trapAssists:
+  - {fileID: 8300000, guid: 9ca3997e805843a40b2bfe1202aa55ac, type: 3}
+  - {fileID: 8300000, guid: 8bbd8b9fa60bbbc4c9051cc7173790b5, type: 3}
+  - {fileID: 8300000, guid: 6f5054e6cbf7d3f45ab8e317e4166e2e, type: 3}
+  - {fileID: 8300000, guid: 83acb69d303e0634da87658fc0fc6b18, type: 3}
+  - {fileID: 8300000, guid: a2cd20a685cf1e94ebfc954e1017d527, type: 3}
+  - {fileID: 8300000, guid: c2eb9df4ad9727d418ec6a823c81c82a, type: 3}
+  - {fileID: 8300000, guid: f48b6efb920ce5a469b99686241d0380, type: 3}
 --- !u!82 &458556842
 AudioSource:
   m_ObjectHideFlags: 0

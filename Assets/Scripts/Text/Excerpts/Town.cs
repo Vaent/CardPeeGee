@@ -1,4 +1,5 @@
 ﻿using static Text.Position;
+using static Util.TextUtil;
 
 namespace Text.Excerpts
 {
@@ -16,7 +17,7 @@ namespace Text.Excerpts
         public static Excerpt Shopping { get; } = new Excerpt("(shopping)", announceEncounter);
         public static Excerpt ShoppingIsPossible { get; } = new Excerpt("You may play diamonds\nfrom your hand, which will\nbe traded for new cards,\nat an exchange rate of\none new card for every\n8 diamonds (total value of\ncards played = amount of\ndiamonds spent).", stagingArea);
         public static Excerpt ShoppingNotPossible { get; } = new Excerpt("You can't afford to buy\nany new cards.", stagingArea);
-        private static Excerpt ShoppingPoints_ { get; } = new Excerpt("{0} diamonds = {1} new cards", rightOfPlayedCards, Options.TinyText);
+        private static Excerpt ShoppingPoints_ { get; } = new Excerpt("{0} = {1}", rightOfPlayedCards, Options.TinyText);
         public static Excerpt ShoppingPointsBoosted { get; } = new Excerpt("(Ace of Diamonds gives\na 50% bonus to total spent)", rightOfPlayedCards, Options.TinyText);
         public static Excerpt Tax { get; } = new Excerpt("You must pay tax:\nSelect a card\nto throw away.", stagingArea);
         // TODO: add "proceed text", replace affected usage of Continue
@@ -31,14 +32,18 @@ namespace Text.Excerpts
             excerpt.updateArg0(amountOfHealing);
         }
 
-        public static UpdateableExcerpt<int, int> ShoppingPoints(int amountPaid, int cardsPurchased)
+        public static UpdateableExcerpt<string, string> ShoppingPoints(int amountPaid, int cardsPurchased)
         {
-            return new UpdateableExcerpt<int, int>(ShoppingPoints_, amountPaid, cardsPurchased);
+            return new UpdateableExcerpt<string, string>(
+                ShoppingPoints_,
+                QuantifiedItem("diamond", amountPaid),
+                QuantifiedItem("new card", cardsPurchased)
+            );
         }
 
-        public static void updateShoppingPoints(UpdateableExcerpt<int, int> excerpt, int amountPaid, int cardsPurchased)
+        public static void updateShoppingPoints(UpdateableExcerpt<string, string> excerpt, int amountPaid, int cardsPurchased)
         {
-            excerpt.updateAllArgs(amountPaid, cardsPurchased);
+            excerpt.updateAllArgs(QuantifiedItem("diamond", amountPaid), QuantifiedItem("new card", cardsPurchased));
         }
     }
 }

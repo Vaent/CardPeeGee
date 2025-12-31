@@ -18,7 +18,7 @@ public class Town : IGamePhase
 
     private bool isAcceptingInput = false;
     private Phase phase;
-    private UpdateableExcerpt<int, int> pointsTextShopping;
+    private UpdateableExcerpt<string, string> pointsTextShopping;
     private UpdateableExcerpt<int> pointsTextHealing;
 
     private Town() { }

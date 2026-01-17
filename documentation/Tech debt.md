@@ -16,6 +16,7 @@
 
 ### Required
 
+- Refactor card dealing logic to trigger the sound effect as each card leaves the deck. This is currently complicated by the receiving CardZone having control over movement of new cards, and Deck typically passing a list of cards rather than one at a time (which makes it easier to inform listeners when all the expected cards have finished moving). A particularly problematic case is Player.Hand, which may receive cards from either Deck or StagingArea and should not play the 'dealt card' sound effect in the latter case.
 - Enable suspending code execution while the player is being healed/damaged - ideally without having to calculate the expected delay and apply it manually every time healing/damage methods are invoked.
 - Implement player death properly (has a dependency on the above point). This should be picked up as part of the general build process but a reminder is added here since a workaround is currently in place and this is a core mechanic which **must not** be overlooked!
 - Document visual layers and their priority levels, begin allocating GameObjects to the appropriate layers.

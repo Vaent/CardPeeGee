@@ -1,3 +1,4 @@
+using Audio;
 using static Constant;
 using ExtensionMethods;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ public class Deck : CardZone, IPointerClickHandler
     public void DealCards(CardZone target, int count)
     {
         Debug.Log("Deal " + count + " cards to " + target);
+        SoundEffects.Play(SoundEffects.DealCard);
         target.Accept(DrawCards(count));
     }
 

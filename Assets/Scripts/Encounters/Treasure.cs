@@ -1,3 +1,4 @@
+using Audio;
 using static CardUtil;
 using static Constant;
 using ExtensionMethods;
@@ -145,6 +146,7 @@ public class Treasure : Encounter
         {
             HideText(disarmOutcomeExcerpt, AnnounceTrap, AnnounceTrapContinuation, Announce);
             DisplayText(KaChing);
+            SoundEffects.Play(SoundEffects.CoinsRattle);
             agitator.ResetDisplayProperties();
             player.Hand.Accept(EncounterCards.Cards);
             // TODO: check for Full Court/Elemental Union victory

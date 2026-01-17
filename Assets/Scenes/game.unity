@@ -2234,12 +2234,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundEffects
   listener: {fileID: 1523728543}
   speaker: {fileID: 458556842}
+  coinsRattle: {fileID: 8300000, guid: b0078eb4d88d36849a3215883a9e2a89, type: 3}
   damageLevel0: {fileID: 8300000, guid: 07f4f0f7b1c4c5b48ad5742373cc181f, type: 3}
   damageLevel1: {fileID: 8300000, guid: 884ca6756c8601444ab4b11258edefb3, type: 3}
   damageLevel2: {fileID: 8300000, guid: fba6929b77e4bef4498081675ac58f4b, type: 3}
   damageLevel3: {fileID: 8300000, guid: 00c3541f831fe374cb2a6f0f315dff28, type: 3}
   damageLevel4: {fileID: 8300000, guid: 04a936377f8cd8d4faa25da6799c47a3, type: 3}
   damageLevel5: {fileID: 8300000, guid: e5713aad1db131c45a4396eccfa978d7, type: 3}
+  dealCard: {fileID: 8300000, guid: a9f198a5cd886ca4e9a3526f8283cb77, type: 3}
   healingChant: {fileID: 8300000, guid: e8a6e31d03b4aae42b90863f38df8335, type: 3}
   trapAssists:
   - {fileID: 8300000, guid: 9ca3997e805843a40b2bfe1202aa55ac, type: 3}

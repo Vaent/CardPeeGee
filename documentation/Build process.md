@@ -10,7 +10,7 @@ Due to issues with the initial Brotli-compressed build which could not be resolv
 
 ### Amendments to generated web page
 
-**Edit 2025-03-20:** The below no longer seems to be applicable. Recent builds were successfully deployed at https://cardpeegee.vaent.uk without the HTML/CSS changes, and no audio issues were observed. This section can be considered archived, the detail is only retained in case the issue reappears in future.
+**Edit 2026-01-18:** The below is no longer necessary for https://cardpeegee.vaent.uk deployments due to changes in how the game is presented to users through that site. It is retained for archive purposes, and in case future hosting changes make it necessary again.
 
 Modern browsers will most likely not allow the AudioContext to be started automatically (user interaction is required). During initial testing in Chrome, the "preload" scene stayed silent until an interaction was registered - e.g. mouse click or keypress - then began playing its audio files from the start, so that they were out of sync with the visuals. If the first interaction registered was a click on the "Play game" button it produced a short, harsh, meaningless sound before the main game music kicked in.
 

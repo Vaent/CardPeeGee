@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Cards;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EncounterPhase : IGamePhase

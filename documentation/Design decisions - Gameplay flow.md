@@ -12,7 +12,7 @@ Gameplay is defined by a series of phases as outlined in [Breakdown of core game
 
 When the scene is set up, phase 0 (Pre-game/player creation) will be loaded in GameState, which thereafter will always have exactly one phase loaded.
 
-The new `GamePhase` interface will ensure messages can be passed through in a consistent manner. All phases will be notified of the following events:
+The new `IGamePhase` interface will ensure messages can be passed through in a consistent manner. All phases will be notified of the following events:
 
 - Phase loaded in GameState (i.e. initialisation)
 - User interaction with the deck (mouse click or D key)

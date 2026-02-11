@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Cards;
+using System.Collections.Generic;
 using static Text.Position;
 
 namespace Text.Excerpts

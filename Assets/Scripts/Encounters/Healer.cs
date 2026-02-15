@@ -156,7 +156,7 @@ public class Healer : Encounter
             Timer.DelayThenInvoke(2, () =>
             {
                 if (feeToPay > 0) DisplayTextAsExtension(PaymentRequiredPostBattle, TempRemoveJailors);
-                deck.Accept(props.FindAll(card => card.Suit == Suit.Club));
+                GameState.GetDealer.ReturnToDeck(props.FindAll(card => card.Suit == Suit.Club));
                 Timer.DelayThenInvoke(3, () => JukeBox.Play(JukeBox.Track.Healer));
                 Timer.DelayThenInvoke(3, ResolveBlockers);
             });

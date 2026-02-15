@@ -44,7 +44,7 @@ public class Trap : Encounter
     {
         DisplayText(ScoreCards);
         DisplayTextAsExtension(AttemptEvade, Announce);
-        deck.DealCards(1);
+        GameState.GetDealer.DealCards(1);
     }
 
     // Traps are resolved automatically - there is no opportunity to play cards in Vanilla CardPeeGee
@@ -58,7 +58,7 @@ public class Trap : Encounter
             if (scoreCards.Count < (player.CardsActivated.Cards.Count + 1))
             {
                 DisplayTextAsExtension(Assisted, AttemptEvade);
-                deck.DealCards(1);
+                GameState.GetDealer.DealCards(1);
                 SoundEffects.PlayRandomTrapAssistClip();
                 return;
             }

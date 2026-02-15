@@ -90,12 +90,7 @@ public abstract class Encounter
         Text.TextManager.TearDownDisplayedText();
         HideLeaveButton();
         leaveButton.onClick.RemoveAllListeners();
-        deck.Accept(encounterCardZone.Cards);
-    }
-
-    public void Uses(Deck deck)
-    {
-        this.deck = deck;
+        GameState.GetDealer.ReturnToDeck(encounterCardZone.Cards);
     }
 
     private class EncounterCardZone : CardZone

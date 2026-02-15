@@ -53,7 +53,7 @@ public class Battle : Encounter
         if (!battleHasStarted) battleHasStarted = true;
         HideText(InitialPrompt, PromptNextRound);
         DisplayTextAsExtension(PlayerScoreCardsLabel, 1, playerDealExcerpt, playerAttackExcerpt);
-        deck.DealCards(playerDeal);
+        GameState.GetDealer.DealCards(playerDeal);
     }
 
     protected override void BeginImpl()
@@ -109,7 +109,7 @@ public class Battle : Encounter
             }
             else
             {
-                deck.Accept(enemies[0].Agitator);
+                GameState.GetDealer.ReturnToDeck(enemies[0].Agitator);
                 enemies.RemoveAt(0);
                 // TODO: alternate handling for end of healer battles
                 ClaimLoot();
@@ -127,7 +127,7 @@ public class Battle : Encounter
     private void EndCombatRound()
     {
         playerScore = enemyScore = 0;
-        deck.Accept(GameState.GetStagingArea.Cards);
+        GameState.GetDealer.ReturnToDeck(GameState.GetStagingArea.Cards);
     }
 
     private void EndCombatRound(float delay)
@@ -201,7 +201,7 @@ public class Battle : Encounter
         playerScore = playerAttack + SumValues(cards);
         playerScoreExcerpt = ScoreForPlayer(playerScore);
         DisplayText(playerScoreExcerpt);
-        Timer.DelayThenInvoke(0.5f, deck.DealCardsAlternate, enemies[0].Deal);
+        Timer.DelayThenInvoke(0.5f, GameState.GetDealer.DealCardsAlternate, enemies[0].Deal);
     }
 
     private void RefreshPlayerStatsDisplay()

@@ -48,7 +48,7 @@ public class Town : IGamePhase
 
     private void GiveCharity()
     {
-        GameState.GetDeck.DealCards(GameState.GetPlayer.Hand, 1);
+        GameState.GetDealer.DealCards(GameState.GetPlayer.Hand, 1);
     }
 
     private bool PlayerCanHeal()
@@ -159,7 +159,7 @@ public class Town : IGamePhase
         if (phase == Phase.Tax)
         {
             isAcceptingInput = false;
-            GameState.GetDeck.Accept(card);
+            GameState.GetDealer.ReturnToDeck(card);
             HideText(Tax);
             Timer.DelayThenInvoke(0.5f, SetUpShopPhase);
         }
@@ -202,11 +202,11 @@ public class Town : IGamePhase
                 if (GameState.GetPlayer.CardsPlayed.Cards.Count > 0)
                 {
                     int amountSpent = CalculatePlayedCardPoints(GameState.GetPlayer.CardsActivated.Exists(Is(Diamond, ACE)));
-                    GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
+                    GameState.GetDealer.ReturnToDeck(GameState.GetPlayer.CardsPlayed.Cards);
                     int numberOfNewCards = Mathf.FloorToInt(amountSpent / costOfNewCard);
                     if (numberOfNewCards > 0)
                     {
-                        Timer.DelayThenInvoke(1f, GameState.GetDeck.DealCards, GameState.GetPlayer.Hand, numberOfNewCards);
+                        Timer.DelayThenInvoke(1f, GameState.GetDealer.DealCards, GameState.GetPlayer.Hand, numberOfNewCards);
                     }
                     else
                     {
@@ -225,7 +225,7 @@ public class Town : IGamePhase
                     int healAmount = CalculatePlayedCardPoints(GameState.GetPlayer.CardsActivated.Exists(Is(Heart, ACE)));
                     GameState.GetPlayer.Heal(healAmount);
                     HideText(pointsTextHealing, HealingPointsBoosted);
-                    GameState.GetDeck.Accept(GameState.GetPlayer.CardsPlayed.Cards);
+                    GameState.GetDealer.ReturnToDeck(GameState.GetPlayer.CardsPlayed.Cards);
                 }
                 LeaveTown();
                 break;

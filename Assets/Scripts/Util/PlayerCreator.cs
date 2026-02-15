@@ -35,7 +35,7 @@ public class PlayerCreator : IGamePhase
     public void BeginCreating()
     {
         DisplayText(CharacterSearch);
-        GameState.GetDeck.DealCards(1);
+        GameState.GetDealer.DealCards(1);
     }
 
     public void CharacterCardCallback(Card card)
@@ -43,7 +43,7 @@ public class PlayerCreator : IGamePhase
         player = new Player(card, hpDisplay);
         if (GameState.GetStagingArea.Cards.Count > 0)
         {
-            GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
+            GameState.GetDealer.ReturnToDeck(GameState.GetStagingArea.Cards);
         }
         else
         {
@@ -51,7 +51,7 @@ public class PlayerCreator : IGamePhase
         }
     }
 
-    public void HPCallback() => GameState.GetDeck.Accept(GameState.GetStagingArea.Cards);
+    public void HPCallback() => GameState.GetDealer.ReturnToDeck(GameState.GetStagingArea.Cards);
 
 // private instance methods
 
@@ -75,20 +75,13 @@ public class PlayerCreator : IGamePhase
         }
         else
         {
-            GameState.GetDeck.DealCards(1);
+            GameState.GetDealer.DealCards(1);
         }
     }
 
     private void NotifyGetHand(CardZone cardZone, List<Card> cards)
     {
-        if (cardZone.Equals(GameState.GetDeck))
-        {
-            HideText(HPSearch);
-            HideText(hpCalculatedExcerpt);
-            DisplayText(DealHand);
-            GameState.GetDeck.DealCards(initialHandNumberOfCards);
-        }
-        else if (cardZone.Equals(GameState.GetStagingArea))
+        if (cardZone.Equals(GameState.GetStagingArea))
         {
             player.AddToHand(cards);
         }
@@ -97,17 +90,26 @@ public class PlayerCreator : IGamePhase
             TearDownDisplayedText();
             GameState.Register(player);
         }
+        else
+        {
+            // Cards were returned to the deck after calculating player HP
+            HideText(HPSearch);
+            HideText(hpCalculatedExcerpt);
+            DisplayText(DealHand);
+            GameState.GetDealer.DealCards(initialHandNumberOfCards);
+        }
     }
 
     private void NotifyGetHP(CardZone cardZone, List<Card> cards)
     {
-        if (cardZone.Equals(GameState.GetDeck))
-        {
-            movedRejectedCandidates = true;
-        }
-        else if (cardZone.Equals(player.CharacterCard))
+        if (cardZone.Equals(player.CharacterCard))
         {
             movedCharacterCard = true;
+        }
+        else
+        {
+            // Rejected cards were returned to the deck
+            movedRejectedCandidates = true;
         }
 
         if (movedCharacterCard && movedRejectedCandidates)
@@ -121,7 +123,7 @@ public class PlayerCreator : IGamePhase
                 HideText(CharacterSearch);
                 HideText(characterIdentifiedExcerpt);
                 DisplayText(HPSearch);
-                GameState.GetDeck.DealCards(initialHpNumberOfCards);
+                GameState.GetDealer.DealCards(initialHpNumberOfCards);
             }
         }
     }

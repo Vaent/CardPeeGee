@@ -9,12 +9,12 @@ public class GameState
 {
     private static readonly GameState instance = new GameState();
 
-    private Deck deck;
+    private Dealer dealer = new Dealer();
     private Player player;
     private StagingArea stagingArea;
 
     public static IGamePhase CurrentPhase { get; private set; } = PlayerCreator.GetClean();
-    public static Deck GetDeck => instance.deck;
+    public static Dealer GetDealer => instance.dealer;
     public static Player GetPlayer => instance.player;
     public static StagingArea GetStagingArea => instance.stagingArea;
 
@@ -62,7 +62,7 @@ public class GameState
         if (!instance.IsPlayerAlive())
         {
             GameObject.Find("eventtext3").GetComponent<TextMesh>().text = "";
-            Player player = new Player(instance.deck.DrawCards(1)[0], GameObject.Find("hptext").GetComponent<TextMesh>());
+            Player player = new Player(instance.dealer.DrawCards(1)[0], GameObject.Find("hptext").GetComponent<TextMesh>());
             player.Heal(30);
             // delay so that Player.HandZone.Start() can be concluded before trying to add cards to the hand
             Timer.DelayThenInvoke(0.01f, QuickStartCallback, player);
@@ -71,22 +71,15 @@ public class GameState
 
     public static void QuickStartCallback(Player player)
     {
-        player.AddToHand(instance.deck.DrawCards(5));
+        player.AddToHand(instance.dealer.DrawCards(5));
         instance.PlayerCreated(player);
     }
     #endregion
 #endif
 
-    public static void Register(CardZone cardZone)
+    public static void Register(StagingArea stagingArea)
     {
-        if (cardZone is Deck)
-        {
-            instance.deck = (Deck)cardZone;
-        }
-        else if (cardZone is StagingArea)
-        {
-            instance.stagingArea = (StagingArea)cardZone;
-        }
+        instance.stagingArea = stagingArea;
     }
 
     public static void Register(Player player)
@@ -126,8 +119,8 @@ public class GameState
     private void LeaveEncounter()
     {
         ((EncounterPhase)CurrentPhase).TearDown();
-        deck.Accept(stagingArea.Cards);
-        deck.Accept(player.CardsPlayed.Cards);
+        dealer.ReturnToDeck(stagingArea.Cards);
+        dealer.ReturnToDeck(player.CardsPlayed.Cards);
         // TODO: ensure tear down is complete & cards have been returned to the deck before continuing
         Debug.Log($"Ending Encounter and entering Town");
         CurrentPhase = Town.GetClean();
@@ -148,12 +141,12 @@ public class GameState
 
     private void StartNewGame()
     {
-        deck.Accept(stagingArea.Cards);
-        deck.Accept(player.CharacterCard.Cards);
+        dealer.ReturnToDeck(stagingArea.Cards);
+        dealer.ReturnToDeck(player.CharacterCard.Cards);
         Debug.Log("Should be destroying... " + player.Hand.Cards.Print());
-        deck.Accept(player.Hand.Cards);
-        deck.Accept(player.CardsActivated.Cards);
-        deck.Accept(player.CardsPlayed.Cards);
+        dealer.ReturnToDeck(player.Hand.Cards);
+        dealer.ReturnToDeck(player.CardsActivated.Cards);
+        dealer.ReturnToDeck(player.CardsPlayed.Cards);
         player = null;
         Timer.DelayThenInvoke(3, ((PlayerCreator)CurrentPhase).BeginCreating);
         return;

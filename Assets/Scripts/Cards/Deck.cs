@@ -1,4 +1,3 @@
-using Audio;
 using static Constant;
 using ExtensionMethods;
 using System.Collections.Generic;
@@ -19,8 +18,8 @@ namespace Cards
         void Start()
         {
             this.isLoading = true;
-            GameState.Register(this);
             CardUtil.NewPack(this);
+            Dealer.Register(this);
             this.isLoading = false;
             Debug.Log("Deck contains the following after loading: " + Cards.Print());
         }
@@ -28,30 +27,6 @@ namespace Cards
         public void OnPointerClick(PointerEventData eventData)
         {
             GameController.RegisterInteractionWithDeck();
-        }
-
-        public void DealCards(int count)
-        {
-            DealCards(stagingArea, count);
-        }
-
-        public void DealCards(CardZone target, int count)
-        {
-            Debug.Log("Deal " + count + " cards to " + target);
-            SoundEffects.Play(SoundEffects.DealCard);
-            target.Accept(DrawCards(count));
-        }
-
-        /**
-         * <summary>
-         * Deals <paramref name="count"/> cards to the lower half of the staging area.
-         * Useful when a distinct second set of cards needs to be dealt before the first set is returned.
-         * </summary>
-         */
-        public void DealCardsAlternate(int count)
-        {
-            stagingArea.SetAlternate();
-            DealCards(stagingArea, count);
         }
 
         // this method will select `count` cards randomly from the deck and return them to the caller

@@ -67,7 +67,7 @@ public class Treasure : Encounter
             HideText(PromptClickToDisarm);
             HideText(PromptAbandonEncounter);
             HideLeaveButton();
-            deck.DealCards(1);
+            GameState.GetDealer.DealCards(1);
         }
         else
         {
@@ -85,7 +85,7 @@ public class Treasure : Encounter
                 playerScore = disarmBonus + SumValues(cards);
                 playerScoreExcerpt = ScoreForPlayer(playerScore);
                 DisplayText(playerScoreExcerpt);
-                deck.DealCardsAlternate(1);
+                GameState.GetDealer.DealCardsAlternate(1);
             }
             else
             {
@@ -166,7 +166,7 @@ public class Treasure : Encounter
     private void EndDisarmAttempt()
     {
         Debug.Log("ending disarm attempt");
-        deck.Accept(GameState.GetStagingArea.Cards);
+        GameState.GetDealer.ReturnToDeck(GameState.GetStagingArea.Cards);
     }
 
     private void HandleDisarmFailure()
@@ -189,7 +189,7 @@ public class Treasure : Encounter
     private void HandleDisarmSuccess()
     {
         SetAndDisplayOutcome(DisarmSuccess);
-        deck.Accept(trapSelectedForDisarm);
+        GameState.GetDealer.ReturnToDeck(trapSelectedForDisarm);
     }
 
     private void SetAndDisplayOutcome(BaseExcerpt outcomeExcerpt)

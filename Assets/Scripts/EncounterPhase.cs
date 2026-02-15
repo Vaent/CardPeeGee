@@ -33,7 +33,6 @@ public class EncounterPhase : IGamePhase
         {
             encounter = Encounter.From(destination.Cards);
             encounter.HappensTo(GameState.GetPlayer);
-            encounter.Uses(GameState.GetDeck);
             Debug.Log($"Starting a {encounter} Encounter");
             encounter.Begin();
         }
@@ -56,7 +55,7 @@ public class EncounterPhase : IGamePhase
                 isCreatingEncounter = true;
                 Debug.Log("New Encounter");
                 Text.TextManager.TearDownDisplayedText();
-                GameState.GetDeck.DealCards(3);
+                GameState.GetDealer.DealCards(3);
             }
         }
         else
